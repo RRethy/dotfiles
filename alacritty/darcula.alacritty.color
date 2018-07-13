@@ -1,0 +1,44 @@
+# Colors Darcula
+colors:
+  # Default colors
+  primary:
+    background: '0x2B2B2B'
+    foreground: '0xA9B7C6'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '0x000000'
+    cursor: '0xffffff'
+
+  # Normal colors
+  normal:
+    black:   '0x000000'
+    red:     '0xD25252'
+    green:   '0x619647'
+    yellow:  '0xCB772F'
+    blue:    '0x214283'
+    magenta: '0x9876AA'
+    cyan:    '0xBED6FF'
+    white:   '0xA9B7C6'
+
+  ## Bright colors
+  bright:
+    black:   '0x323232'
+    red:     '0xD25252'
+    green:   '0x619647'
+    yellow:  '0xFFC66D'
+    blue:    '0x214283'
+    magenta: '0x9876AA'
+    cyan:    '0xBED6FF'
+    white:   '0xA9B7C6'
+
+  # Dim colors (Optional)
+  dim:
+    black:   '0x333333'
+    red:     '0xf2777a'
+    green:   '0x99cc99'
+    yellow:  '0xffcc66'
+    blue:    '0x6699cc'
+    magenta: '0xcc99cc'
+    cyan:    '0x66cccc'
+    white:   '0xdddddd'
