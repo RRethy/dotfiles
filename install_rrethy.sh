@@ -85,6 +85,10 @@ maybeBrewProgram autojump
 maybeBrewProgram ww3m
 #}}}
 
+# Install w3m {{{
+maybeBrewProgram ranger
+#}}}
+
 # Download OnThisDay facts {{{
 if [[ ! -d ~/.config/wikidates ]] ; then
   for day in {1..365}; do
