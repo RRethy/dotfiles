@@ -164,6 +164,13 @@ function maybeShowTodo() {
     cat ~/.todo/todo.md
   fi
 }
+
+function updateGitIgnore() {
+  git rm -r --cached .
+  git add .
+  git commit -m ".gitignore fix"
+}
+
 # }}}
 
 # variable{{{
