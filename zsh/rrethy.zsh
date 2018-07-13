@@ -229,9 +229,6 @@ alias sshto="kitty +kitten ssh"
 alias showTodo="cat ~/.todo/todo.md"
 # }}}
 
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 cat ~/.wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact

@@ -74,6 +74,20 @@ fi
 onInstallFinished "coreutils for gshuf"
 #}}}
 
+# Install autojump {{{
+onInstallStarted autojump
+
+which -s autojump
+
+if [[ $? =/= 0 ]] ; then
+  brew install autojump
+else
+  brew upgrade autojump
+fi
+
+onInstallFinished autojump
+#}}}
+
 # Setup zsh {{{
 echo "source ~/.config/zsh/rrethy.zsh" >> ~/.zshrc
 
