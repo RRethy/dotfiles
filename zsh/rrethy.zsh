@@ -131,10 +131,10 @@ function code {
 
 function updateOnThisDay {
   for day in {1..365}; do
-    mkdir ~/config/.wikidates 2>/dev/null
+    mkdir ~/.config/wikidates 2>/dev/null
     date=$(gdate -d "now + $day days" +%B_%d)
     w3m -cols 99999 -dump http://en.wikipedia.org/wiki/$date | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/$date
-    echo $day
+    echo "Found facts for day: $day of the year!"
   done
   w3m -cols 99999 -dump http://en.wikipedia.org/wiki/february_29 | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/February_29
 }

@@ -88,6 +88,32 @@ fi
 onInstallFinished autojump
 #}}}
 
+# Install w3m {{{
+onInstallStarted w3m
+
+which -s w3m
+
+if [[ $? =/= 0 ]] ; then
+  brew install w3m
+else
+  brew upgrade w3m
+fi
+
+onInstallFinished w3m
+#}}}
+
+# Download OnThisDay facts {{{
+if [[ ! -d ~/.config/wikidates ]] ; then
+  for day in {1..365}; do
+    mkdir ~/.config/wikidates 2>/dev/null
+    date=$(gdate -d "now + $day days" +%B_%d)
+    w3m -cols 99999 -dump http://en.wikipedia.org/wiki/$date | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/$date
+    echo "Found facts for day: $day of the year!"
+  done
+  w3m -cols 99999 -dump http://en.wikipedia.org/wiki/february_29 | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/February_29
+fi
+#}}}
+
 # Setup zsh {{{
 echo "source ~/.config/zsh/rrethy.zsh" >> ~/.zshrc
 
