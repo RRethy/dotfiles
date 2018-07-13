@@ -106,7 +106,7 @@ zsh_internet_signal(){
   #echo -n "%{$color%}$message"
 }
 
-prompt_zsh_showStatus () {
+prompt_zsh_showStatus_spotify () {
   local color='%F{white}'
   state=`osascript -e 'tell application "Spotify" to player state as string'`;
   if [ $state = "playing" ]; then
@@ -131,12 +131,12 @@ function code {
 
 function updateOnThisDay {
   for day in {1..365}; do
-    mkdir ~/.wikidates 2>/dev/null
+    mkdir ~/config/.wikidates 2>/dev/null
     date=$(gdate -d "now + $day days" +%B_%d)
-    w3m -cols 99999 -dump http://en.wikipedia.org/wiki/$date | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.wikidates/$date
+    w3m -cols 99999 -dump http://en.wikipedia.org/wiki/$date | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/$date
     echo $day
   done
-  w3m -cols 99999 -dump http://en.wikipedia.org/wiki/february_29 | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.wikidates/February_29
+  w3m -cols 99999 -dump http://en.wikipedia.org/wiki/february_29 | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/February_29
 }
 
 # fbr - checkout git branch
@@ -231,10 +231,10 @@ alias showTodo="cat ~/.todo/todo.md"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-cat ~/.wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
+maybeShowTodo
 
 echo '\n'
 
-maybeShowTodo
+cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
 
 # vim: foldmethod=marker foldlevel=1
