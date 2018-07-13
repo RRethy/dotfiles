@@ -41,6 +41,7 @@ DISABLE_CORRECTION="true"
 # }}}
 
 # Functions{{{
+
 cool_ice_cream() {
   echo -n "\ue70e "
 }

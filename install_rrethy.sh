@@ -12,6 +12,17 @@ onInstallFinished() {
 onConfigSourced() {
   echo "[Sourcing $1] Status: Finished!"
 }
+
+maybeBrewProgram() {
+  onInstallStarted $1
+
+  which -s $1
+  if [[ $? -ne 0 ]] ; then
+    brew install $1
+  else
+    brew upgrade $1
+  fi
+}
 #}}}
 
 # Install Brew {{{
@@ -19,7 +30,7 @@ onInstallStarted Brew
 
 which -s brew
 
-if [[ $? != 0 ]] ; then
+if [[ $? -ne 0 ]] ; then
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 else
   brew update
@@ -29,15 +40,7 @@ onInstallFinished Brew
 #}}}
 
 # Install zsh {{{
-onInstallStarted zsh
-
-which -s zsh
-
-if [[ $? != 0 ]] ; then
-  brew install zsh
-else
-  brew upgrade zsh
-fi
+maybeBrewProgram zsh
 
 sudo -s 'echo /usr/local/bin/zsh >> /etc/shells' && chsh -s /usr/local/bin/zsh
 
@@ -65,7 +68,7 @@ onInstallStarted "coreutils for gshuf"
 
 which -s gshuf
 
-if [[ $? != 0 ]] ; then
+if [[ $? -ne 0 ]] ; then
   brew install coreutils
 else
   brew upgrade coreutils
@@ -75,31 +78,11 @@ onInstallFinished "coreutils for gshuf"
 #}}}
 
 # Install autojump {{{
-onInstallStarted autojump
-
-which -s autojump
-
-if [[ $? =/= 0 ]] ; then
-  brew install autojump
-else
-  brew upgrade autojump
-fi
-
-onInstallFinished autojump
+maybeBrewProgram autojump
 #}}}
 
 # Install w3m {{{
-onInstallStarted w3m
-
-which -s w3m
-
-if [[ $? =/= 0 ]] ; then
-  brew install w3m
-else
-  brew upgrade w3m
-fi
-
-onInstallFinished w3m
+maybeBrewProgram ww3m
 #}}}
 
 # Download OnThisDay facts {{{
@@ -139,4 +122,4 @@ echo "source-file \"~/.config/tmux/tmux.conf\"" >> ~/.tmux.conf
 onConfigSourced tmux
 #}}}
 
-# vim: foldmethod=marker
+# vim: foldmethod=marker foldlevel=1
