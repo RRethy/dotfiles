@@ -85,8 +85,14 @@ maybeBrewProgram autojump
 maybeBrewProgram ww3m
 #}}}
 
-# Install w3m {{{
+# Install ranger {{{
 maybeBrewProgram ranger
+#}}}
+
+# Install fzf {{{
+onInstallStarted fzf
+brew install fzf
+$(brew --prefix)/opt/fzf/install
 #}}}
 
 # Download OnThisDay facts {{{
