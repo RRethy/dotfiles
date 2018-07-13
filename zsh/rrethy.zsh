@@ -158,6 +158,12 @@ fcommits() {
   {}
   FZF-EOF"
 }
+
+function maybeShowTodo() {
+  if [ -e ~/.todo/todo.md ]; then
+    cat ~/.todo/todo.md
+  fi
+}
 # }}}
 
 # variable{{{
@@ -232,10 +238,6 @@ cat ~/.wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
 
 echo '\n'
 
-showTodo
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/rethy/.sdkman"
-[[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
+maybeShowTodo
 
 # vim: foldmethod=marker foldlevel=1
