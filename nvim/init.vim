@@ -3,6 +3,7 @@ let mapleader=" "
 let maplocalleader="\\"
 colorscheme myonedark
 
+" Ensure tmp folder exists for vim to write backups to
 call mkdir($HOME . "/.config/nvim/tmp/", "p")
 
 "Plugins{{{
@@ -20,6 +21,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-unimpaired'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/gv.vim'
