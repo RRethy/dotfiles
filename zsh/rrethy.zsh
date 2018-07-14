@@ -36,7 +36,7 @@ HYPHEN_INSENSITIVE="true"
 ENABLE_CORRECTION="true"
 #DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="dd/mm/yyyy"
-plugins=(git brew common-aliases gitfast git-extras sudo)
+plugins=(git autojump brew common-aliases gitfast git-extras sudo)
 DISABLE_CORRECTION="true"
 # }}}
 
@@ -222,7 +222,7 @@ alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="nvim ~/.todo/todo.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
-alias esrc="vim ~/.config/zsh/rrethy.zsh"
+alias esrc="vim ~/.config/zsh/rrethy.zsh -c 'cs %:p:h'"
 alias startcleanstatusbar="adb shell settings put global sysui_demo_allowed 1"
 alias cleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200 | adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e level 4 -e datatype false | adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false | adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false -e level 100"
 alias endcleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command exit"
