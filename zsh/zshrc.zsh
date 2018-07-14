@@ -50,63 +50,6 @@ formatted_time() {
   echo -n "\uf252 $(date +%r)"
 }
 
-spotify_info() {
-  #echo -n $(spotify status | ag "Artist|Album")
-  echo "$(spotify status)"
-}
-
-zsh_internet_signal(){
-  #source on quality levels - http://www.wireless-nets.com/resources/tutorials/define_SNR_values.html
-  #source on signal levels  - http://www.speedguide.net/faq/how-to-read-rssisignal-and-snrnoise-ratings-440
-  local signal=$(airport -I | grep agrCtlRSSI | awk '{print $2}' | sed 's/-//g')
-  local noise=$(airport -I | grep agrCtlNoise | awk '{print $2}' | sed 's/-//g')
-  local SNR=$(bc <<<"scale=2; $signal / $noise")
-  local net=$(curl -D- -o /dev/null -s http://www.google.com | grep HTTP/1.1 | awk '{print $2}')
-  local color='%F{yellow}'
-  local symbol="\uf197"
-  local message="No Signal"
-
-  # Excellent Signal (5 bars)
-  if [[ ! -z "${signal// }" ]] && [[ $SNR -gt .40 ]] ;
-  then color='%F{green}' ; symbol="\uf1eb" ; message="Strong" ;
-  fi
-
-  # Good Signal (3-4 bars)
-  if [[ ! -z "${signal// }" ]] && [[ ! $SNR -gt .40 ]] && [[ $SNR -gt .25 ]] ;
-  then color='%F{blue}' ; symbol="\uf1eb" ; message="Good" ;
-  fi
-
-  # Low Signal (2 bars)
-  if [[ ! -z "${signal// }" ]] && [[ ! $SNR -gt .25 ]] && [[ $SNR -gt .15 ]] ;
-  then color='%F{yellow}' ; symbol="\uf1eb" ; message="Low" ;
-  fi
-
-  # Very Low Signal (1 bar)
-  if [[ ! -z "${signal// }" ]] && [[ ! $SNR -gt .15 ]] && [[ $SNR -gt .10 ]] ;
-  then color='%F{red}' ; symbol="\uf1eb" ; message="Very Low" ;
-  fi
-
-  # No Signal - No Internet
-  if [[ ! -z "${signal// }" ]] && [[ ! $SNR -gt .10 ]] ;
-  then color='%F{red}' ; symbol="\uf011"; message="No Signal" ;
-  fi
-
-  # This has been fucking up and needs to be fixed
-  # Internet is off I think
-  if [[ -z "${signal// }" ]] && [[ "$net" -ne 200 ]] ;
-  then color='%F{red}' ; symbol="\uf011" ; message="No Signal";
-  fi
-
-  # Ethernet Connection (no wifi, hardline)
-  if [[ -z "${signal// }" ]] && [[ "$net" -eq 200 ]] ;
-  then color='%F{blue}' ; symbol="\uf197" ; message="Ethernet" ;
-  fi
-
-  echo -n "%{$color%}$symbol " # \f1eb is wifi bars
-  #echo -n "%{$color%} $message"
-  #echo -n "%{$color%}$message"
-}
-
 prompt_zsh_showStatus_spotify () {
   local color='%F{white}'
   state=`osascript -e 'tell application "Spotify" to player state as string'`;
@@ -115,8 +58,6 @@ prompt_zsh_showStatus_spotify () {
     track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
 
     echo -n "%{$color%} $artist - $track " ;
-    #echo -n "$artist - $track";
-
   fi
 }
 
