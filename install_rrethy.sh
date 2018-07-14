@@ -132,4 +132,9 @@ echo "source-file \"~/.config/tmux/tmux.conf\"" >> ~/.tmux.conf
 onConfigSourced tmux
 #}}}
 
+# Download vim-plug {{{
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+#}}}
+
 # vim: foldmethod=marker foldlevel=1
