@@ -108,7 +108,7 @@ fi
 #}}}
 
 # Setup zsh {{{
-echo "source ~/.config/zsh/rrethy.zsh" >> ~/.zshrc
+echo "source ~/.config/zsh/zshrc.zsh" >> ~/.zshrc
 
 onConfigSourced zsh
 #}}}
