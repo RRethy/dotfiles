@@ -3,6 +3,8 @@ let mapleader=" "
 let maplocalleader="\\"
 colorscheme myonedark
 
+call mkdir($HOME . "/.config/nvim/tmp/", "p")
+
 "Plugins{{{
 "=============================================================================
 "
