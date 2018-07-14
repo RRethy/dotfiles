@@ -82,7 +82,7 @@ maybeBrewProgram autojump
 #}}}
 
 # Install w3m {{{
-maybeBrewProgram ww3m
+maybeBrewProgram w3m
 #}}}
 
 # Install ranger {{{
