@@ -1,3 +1,13 @@
+# Installation
+
+```
+mkdir ~/.config
+cd ~/.config
+git clone git@github.com:RRethy/dotfiles.git .
+chmod +x install_rrethy.sh
+./install_rrethy.sh
+```
+
 # Kitty (terminal) screenshots
 
 <img src="https://user-images.githubusercontent.com/21000943/40283078-ad2b77dc-5c2d-11e8-8f53-f14f6c1ff166.png" title="terminal screenshots 2">
@@ -12,5 +22,4 @@
 # TODO
 
 * Add compatibility checks inside init.vim
-* Add install script
 * Add video
