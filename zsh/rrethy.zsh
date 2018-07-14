@@ -194,20 +194,19 @@ export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Ho
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
-export FLUTTER="/Users/rethy/Programming/flutter"
+export FLUTTER="~/Programming/flutter"
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 
 export LANG=en_US.UTF-8
 export TERM="xterm-256color"
-export ZSH=/Users/rethy/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
 export MANPAGER="nvim -c 'set ft=man' -"
 # }}}
 
 # aliases{{{
-alias demoRealm="/Users/rethy/Programming/BonnetRouge/realm-mobile-platform/start-object-server.command; exit;"
 alias lsa="ls -a"
 alias vm="nvim -c 'h help.txt|only'"
 alias vimhelp="nvim -c 'h help.txt|only'"
