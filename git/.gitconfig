@@ -44,6 +44,7 @@
   ca = !git add -A && git commit -av
   caa = !git add -A && git commit --amend -av
   caaf = !git add -A && git commit --amend
+  caas = !git add -A && git commit --amend --no-edit
   rn = "!f() { git branch -m $1; }; f"
   d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
   rh = reset --hard

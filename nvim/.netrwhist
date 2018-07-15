@@ -1,7 +1,10 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_cnt =8
 let g:netrw_dirhist_1='/Users/rethy/.config/nvim/mehplugins/vim-syntax-extra/after'
 let g:netrw_dirhist_2='/Users/rethy/.config/nvim/mehplugins/vim-syntax-extra/after/syntax'
 let g:netrw_dirhist_3='/Users/rethy/.dotfiles/branches'
 let g:netrw_dirhist_4='/Users/rethy/.dotfiles'
 let g:netrw_dirhist_5='/Users/rethy/IdeaProjects'
+let g:netrw_dirhist_6='/usr/local/Cellar/neovim/0.2.2_1/share/nvim/runtime/doc'
+let g:netrw_dirhist_7='/usr/local/Cellar/neovim/0.2.2_1/share/nvim/runtime'
+let g:netrw_dirhist_8='/usr/local/Cellar/neovim/0.2.2_1/share/nvim/runtime/autoload'

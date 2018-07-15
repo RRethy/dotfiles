@@ -215,6 +215,9 @@ onoremap A :<C-u>normal! ggVG<CR>
 vnoremap <C-g> "*y
 vnoremap <C-q> <C-a>
 vnoremap <Leader>; :'<,'>norm A;<CR>
+vnoremap <Leader>n :call listmaker#generateNumbers()<CR>
+vnoremap <Leader>l :call listmaker#generateLowercaseLetters()<CR>
+vnoremap <Leader>L :call listmaker#generateUppercaseLetters()<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 "}}}
