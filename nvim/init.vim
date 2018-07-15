@@ -218,6 +218,8 @@ vnoremap <C-q> <C-a>
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
+
+abbreviate @@ rethy.spud@gmail.com
 "}}}
 
 "Autocommands{{{
