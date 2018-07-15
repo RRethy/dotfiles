@@ -108,7 +108,7 @@ set noshowcmd " Don't show the current cmd in bottom right
 set iskeyword+=- " Add hyphen to be a keyword, bad for racket and python
 set hidden " Absolutely necessary. Allows hidden buffers
 set matchpairs+=<:> " Add carrets to be matchpairs. TODO: Only for specific filetypes
-" set path+=** " Search recursively with find(). Redundant since I use fzf
+set path+=** " Search recursively with find()
 set nolist " Needed for listchars, kinda shit to have on always IMO, toggle w/ <Leader>l
 set listchars=tab:-,eol:¬,extends:>,precedes:< " Just some niceties for set list
 set tabstop=2 " A tab is 2 spaces
@@ -136,13 +136,14 @@ set nospell " Enable dynamically
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
 set shortmess+=c " Don't show annoying completion messages
-" set grepprg=rg\ --vimgrep
+" set grepprg=rg\ --vimgrep " Currently using Ag from fzf
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set modeline " This can be a HUGE security risk
 set backup
-set backupdir=~/.config/nvim/tmp
-set foldcolumn=1
+set backupdir=~/.config/nvim/tmp " Where to store ~ backup files
+set foldcolumn=1 " Bar on the left showing folds in the document
+set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 "}}}
 
 "Custom Cursor{{{
@@ -185,7 +186,6 @@ nnoremap <Leader>b :Buffers<CR>
 nnoremap <Leader>t :tabnew<CR>
 nnoremap <Leader>y :4,$y+<CR>
 nnoremap <Leader>h :Helptags<CR>
-nnoremap <Leader>o :on<CR>
 nnoremap <Leader>ev :vs $MYVIMRC<CR>
 nnoremap <Leader>sv :source $MYVIMRC<CR>:nohls<CR>
 nnoremap <Leader>u viwU
@@ -214,6 +214,9 @@ onoremap A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
 vnoremap <C-q> <C-a>
+vnoremap <Leader>; :'<,'>norm A;<CR>
+
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 "}}}
 
 "Autocommands{{{
