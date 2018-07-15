@@ -4,6 +4,8 @@
 mkdir ~/.config
 cd ~/.config
 git clone git@github.com:RRethy/dotfiles.git .
+git submodule init
+git submodule update
 chmod +x install_rrethy.sh
 ./install_rrethy.sh
 ```
