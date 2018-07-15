@@ -1,0 +1,3 @@
+[submodule "nvim/mehplugins/indexor"]
+	path = nvim/mehplugins/indexor
+	url = git@github.com:RRethy/vim-indexor.git
