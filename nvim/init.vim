@@ -31,6 +31,8 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neco-vim'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'udalov/kotlin-vim'
 Plug 'justinmk/vim-syntax-extra'
@@ -44,6 +46,12 @@ if has("autocmd")
     autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() "
   augroup END
 endif
+
+" UltiSnips stuff
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
 
 " Incearch stuff with very magic regex
 map /  <Plug>(incsearch-forward)\v
