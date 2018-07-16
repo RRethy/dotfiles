@@ -245,11 +245,6 @@ if has("autocmd")
     autocmd InsertEnter * match none
     autocmd InsertLeave,CursorHold * match Error /\v\s+$/
   augroup END
-  augroup statusline_autocmd
-    autocmd!
-    autocmd WinEnter,VimEnter,BufEnter * call statusline#showFullStatusLine()
-    autocmd WinLeave * call statusline#showDimStatusLine()
-  augroup END
 endif
 "}}}
 

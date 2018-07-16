@@ -1,12 +1,19 @@
-function! statusline#showDimStatusLine() abort
+if has("autocmd")
+  augroup statusline_autocmd
+    autocmd!
+    autocmd WinEnter,VimEnter,BufEnter * call s:ShowFullStatusLine()
+    autocmd WinLeave * call s:ShowDimStatusLine()
+  augroup END
+endif
+
+function! s:ShowDimStatusLine() abort
   let &l:statusline="%#SilentStatusline#"
         \ . ' %{WebDevIconsGetFileTypeSymbol()}'
         \ . ' %t'
 endfunction
 
-function! statusline#showFullStatusLine() abort
+function! s:ShowFullStatusLine() abort
   " Change this to a setlocal
-  " Can't get bufferline working using set statusline
   " Comments don't work beside the lines due to VimL behaviour
   let &l:statusline="%#SpySl# \uf21b  "
         \ . "%#SpySlInv#"
