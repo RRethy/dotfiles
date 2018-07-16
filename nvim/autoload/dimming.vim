@@ -1,5 +1,6 @@
 " These are a bunch of function for dimming
 " and undimming buffers and regions of buffers
+"
 " The buffer dimming can be done much more effectively
 " with higlight group NormalNC
 
