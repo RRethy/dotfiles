@@ -155,28 +155,13 @@ set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 "}}}
 
-"Custom Cursor{{{
-"=============================================================================
-"
-"============================Custom Cursor====================================
-"
-"=============================================================================
-" TODO: Throw into a plugin in case I choose to use again in the future
-" Change colour of block cursor while in insert mode
-" highlight Cursor guifg=#1e1e1e guibg=#a7a7a7
-" highlight iCursor guifg=black guibg=white
-" set guicursor=n-v-c:block-Cursor " Show block cursor for these modes
-" set guicursor+=i:block-iCursor " Show block iCursor in insert mode
-" set guicursor+=a:blinkon0 " Stop the blinking
-"}}}
-
 "Mappings{{{
 "=============================================================================
 "
 "================================[Mappings]===================================
 "
 "=============================================================================
-nnoremap cl 0dg_
+nnoremap cl 0D
 nnoremap Y y$
 nnoremap z7 zz9<C-y>
 nnoremap ]b :bnext<CR>
@@ -216,6 +201,7 @@ nnoremap <Leader>; :tablast<CR>
 nnoremap <Leader>] gt
 nnoremap <Leader>[ gT
 nnoremap <Leader>c :tabclose<CR>
+nnoremap <Leader>- i <Esc><Right>a <Esc><Left>
 
 onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
