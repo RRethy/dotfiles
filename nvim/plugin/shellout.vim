@@ -16,7 +16,7 @@ function! s:RunShellCommand(cmdline)
   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
   call setline(1, 'You entered:    ' . a:cmdline)
   call setline(2, 'Expanded Form:  ' . expanded_cmdline)
-  call setline(3,substitute(getline(2),'.','=','g'))
+  call setline(3, substitute(getline(2),'.','=','g'))
   execute '$read !'. expanded_cmdline
   setlocal nomodifiable
   1

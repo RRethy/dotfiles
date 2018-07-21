@@ -179,20 +179,8 @@ nnoremap <Leader>n :nohls<CR>
 nnoremap <Leader>l :set list!<CR>
 nnoremap <Leader>' :set wrap\|set linebreak<CR>
 nnoremap <Leader>" :set nowrap<CR>
-nnoremap <Leader>1 1gt
-nnoremap <Leader>2 2gt
-nnoremap <Leader>3 3gt
-nnoremap <Leader>4 4gt
-nnoremap <Leader>5 5gt
-nnoremap <Leader>6 6gt
-nnoremap <Leader>7 7gt
-nnoremap <Leader>8 8gt
-nnoremap <Leader>9 9gt
-nnoremap <Leader>; :tablast<CR>
-nnoremap <Leader>] gt
-nnoremap <Leader>[ gT
 nnoremap <Leader>c :tabclose<CR>
-nnoremap <Leader>- i <Esc><Right>a <Esc><Left>
+nnoremap <Leader>- :call utils#pad(' ')<CR>
 
 onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
