@@ -30,9 +30,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neco-vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'udalov/kotlin-vim'
 Plug 'justinmk/vim-syntax-extra'
@@ -46,11 +45,13 @@ if has("autocmd")
   augroup END
 endif
 
-" UltiSnips stuff
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
+" Plugin key-mappings. neosnippet
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
 
 " Incearch stuff with very magic regex
 map /  <Plug>(incsearch-forward)\v
@@ -177,7 +178,7 @@ nnoremap <Leader>u viwU
 nnoremap <Leader>s :w<CR>
 nnoremap <Leader>n :nohls<CR>
 nnoremap <Leader>l :set list!<CR>
-nnoremap <Leader>' :set wrap\|set linebreak<CR>
+nnoremap <Leader>' :set wrap!\|set linebreak!<CR>
 nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
@@ -186,7 +187,9 @@ onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
 onoremap A :<C-u>normal! ggVG<CR>
 
-vnoremap <C-g> "*y
+inoremap <C-\> <Up>
+
+vnoremap <C-g> "*ygv
 vnoremap <C-q> <C-a>
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
