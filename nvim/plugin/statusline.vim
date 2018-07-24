@@ -7,14 +7,14 @@ if has("autocmd")
 endif
 
 function! s:ShowDimStatusLine() abort
+  " TODO: Change this to a setlocal
   let &l:statusline="%#SilentStatusline#"
         \ . ' %{WebDevIconsGetFileTypeSymbol()}'
         \ . ' %t'
 endfunction
 
 function! s:ShowFullStatusLine() abort
-  " Change this to a setlocal
-  " Comments don't work beside the lines due to VimL behaviour
+  " TODO: Change this to a setlocal
   let &l:statusline="%#SpySl# \uf21b  "
         \ . "%#SpySlInv#"
         \ . "\ue0b0"
