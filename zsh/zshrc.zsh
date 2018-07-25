@@ -102,8 +102,8 @@ fcommits() {
 }
 
 function maybeShowTodo() {
-  if [ -e ~/.todo/todo.md ]; then
-    cat ~/.todo/todo.md
+  if [ -e ~/.todo/hometodo.md ]; then
+    cat ~/.todo/hometodo.md
   fi
 }
 
@@ -160,7 +160,7 @@ alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim'"
 alias h="cd ~"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
-alias todo="nvim ~/.todo/todo.md -c 'cd %:p:h'"
+alias todo="nvim ~/.todo/hometodo.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
 alias esrc="vim ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
 alias startcleanstatusbar="adb shell settings put global sysui_demo_allowed 1"
@@ -174,7 +174,6 @@ alias d="kitty +kitten diff"
 alias gd="git difftool --no-symlinks --dir-diff"
 alias showpng="kitty +kitten icat"
 alias sshto="kitty +kitten ssh"
-alias showTodo="cat ~/.todo/todo.md"
 # }}}
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
