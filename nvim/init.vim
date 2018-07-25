@@ -41,7 +41,7 @@ call plug#end()
 if has("autocmd")
   augroup plugin_autocmds
     autocmd!
-    autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() "
+    autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable()
   augroup END
 endif
 
@@ -178,7 +178,7 @@ nnoremap <Leader>u viwU
 nnoremap <Leader>s :w<CR>
 nnoremap <Leader>n :nohls<CR>
 nnoremap <Leader>l :set list!<CR>
-nnoremap <Leader>' :set wrap!\|set linebreak!<CR>
+nnoremap <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
