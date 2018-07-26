@@ -209,7 +209,7 @@ if has("autocmd")
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
     autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
-    autocmd Filetype nerdtree setlocal winhighlight=NormalNC:NerdtreeNC
+    autocmd FileType nerdtree setlocal winhighlight=NormalNC:NerdtreeNC
   augroup END
   augroup dim_inactive_windows
     autocmd!
