@@ -24,16 +24,24 @@ fun! s:Illuminate() abort
 
   let l:matched_word = s:Cur_word()
   if l:matched_word !~ @/ || !&hls || !v:hlsearch
-    let s:match_ids = matchadd("illuminatedWord", '\V' . l:matched_word)
-    let s:previous_match = l:matched_word
-    " TODO: Figure out if this is needed, maybe do it based on language?
-    " TODO: Maybe do it based on dict provided by user based on language
-    " if synIDattr(synID(line('.'), col('.'), 1), "name") != "Keyword"
-    " endif
+    if exists('g:Illuminate_ftHighlightGroups') && has_key(g:Illuminate_ftHighlightGroups, &ft)
+      if index(g:Illuminate_ftHighlightGroups[&ft], synIDattr(synID(line('.'), col('.'), 1), "name")) >= 0
+        let s:match_ids = matchadd("illuminatedWord", '\V' . l:matched_word)
+        let s:previous_match = l:matched_word
+      endif
+    else
+      let s:match_ids = matchadd("illuminatedWord", '\V' . l:matched_word)
+      let s:previous_match = l:matched_word
+    endif
   endif
 endf
 
-fun s:Cur_word()
+fun! s:Match_word(word)
+  let s:match_ids = matchadd("illuminatedWord", '\V' . l:matched_word)
+  let s:previous_match = l:matched_word
+endf
+
+fun! s:Cur_word()
   return '\<' . expand("<cword>") . '\>'
 endf
 
@@ -54,10 +62,10 @@ fun! s:Remove_illumination()
 endf
 
 " TODO: This could be in autoload
-fun s:Should_illuminate_file()
+fun! s:Should_illuminate_file()
   if !exists('g:Illuminate_ftblacklist')
-    let g:Illuminate_ftblacklist=['nerdtree']
+    let g:Illuminate_ftblacklist=['']
   endif
 
   return index(g:Illuminate_ftblacklist, &filetype) < 0
-endfunction
+endf
