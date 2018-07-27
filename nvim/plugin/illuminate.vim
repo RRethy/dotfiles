@@ -1,10 +1,15 @@
 hi link illuminatedWord cursorline
 
+if exists('g:loaded_illuminate')
+  finish
+endif
+let g:loaded_illuminate = 1
+
 if has("autocmd")
   augroup illuminated_autocmd
     autocmd!
-    autocmd CursorMoved,InsertLeave * call s:Illuminate()
-    autocmd WinLeave,BufLeave,InsertEnter * call s:Remove_illumination()
+    autocmd CursorMoved,WinLeave,BufLeave,InsertEnter * call s:Remove_illumination()
+    autocmd CursorHold,InsertLeave * call s:Illuminate()
   augroup END
 endif
 
@@ -17,7 +22,7 @@ fun! s:Illuminate() abort
 
   let l:matched_word = '\<' . expand("<cword>") . '\>'
   if l:matched_word !~ @/ || !&hls || !v:hlsearch
-    let s:match_ids = matchadd("illuminatedWord", l:matched_word)
+    let s:match_ids = matchadd("illuminatedWord", '\V' . l:matched_word)
     " TODO: Figure out if this is needed, maybe do it based on language?
     " TODO: Maybe do it based on dict provided by user based on language
     " if synIDattr(synID(line('.'), col('.'), 1), "name") != "Keyword"
