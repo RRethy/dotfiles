@@ -8,8 +8,9 @@ let g:loaded_illuminate = 1
 if has("autocmd")
   augroup illuminated_autocmd
     autocmd!
-    autocmd CursorMoved,WinLeave,BufLeave,InsertEnter * call s:MaybeRemove_illumination()
-    autocmd CursorHold,InsertLeave * call s:Illuminate()
+    autocmd CursorMoved,WinLeave,BufLeave,InsertEnter * if s:Should_illuminate_file() | call s:MaybeRemove_illumination() | endif
+    autocmd WinLeave,BufLeave,InsertEnter * if s:Should_illuminate_file() | call s:Remove_illumination() | endif
+    autocmd CursorHold,InsertLeave * if s:Should_illuminate_file() | call s:Illuminate() | endif
   augroup END
 endif
 
@@ -51,3 +52,12 @@ fun! s:Remove_illumination()
     let s:match_ids = -1
   endif
 endf
+
+" TODO: This could be in autoload
+fun s:Should_illuminate_file()
+  if !exists('g:Illuminate_ftblacklist')
+    let g:Illuminate_ftblacklist=['nerdtree']
+  endif
+
+  return index(g:Illuminate_ftblacklist, &filetype) < 0
+endfunction
