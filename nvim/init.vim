@@ -41,7 +41,7 @@ call plug#end()
 if has("autocmd")
   augroup plugin_autocmds
     autocmd!
-    autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable()
+    autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() | endif
   augroup END
 endif
 
