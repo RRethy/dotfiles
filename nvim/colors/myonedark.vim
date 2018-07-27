@@ -32,7 +32,7 @@ hi IncSearch    guifg=#d19a66   guibg=NONE      gui=NONE
 hi LineNr       guifg=#4b5263   guibg=NONE      gui=NONE
 hi CursorLineNr guifg=#abb2bf   guibg=#2c323c  gui=NONE
 hi MatchParen   guifg=#e06c75   guibg=#2c323c  gui=underline,bold
-hi Italic       guifg=NONE      guibg=NONE      gui=italic
+hi Italic       guifg=NONE      guibg=NONE      gui=NONE
 hi ModeMsg      guifg=#abb2bf   guibg=NONE      gui=NONE
 hi MoreMsg      guifg=#abb2bf   guibg=NONE      gui=NONE
 hi NonText      guifg=#5c6370   guibg=NONE      gui=NONE
@@ -67,7 +67,7 @@ hi helpSectionDelim guifg=#5c6370   guibg=NONE      gui=NONE
 " }}}
 
 " Standard syntax highlighting --------------------------------------------{{{
-hi Comment        guifg=#5c6370         guibg=NONE          gui=italic
+hi Comment        guifg=#5c6370         guibg=NONE          gui=NONE
 hi Constant       guifg=#98c379         guibg=NONE          gui=NONE
 hi String         guifg=#98c379         guibg=NONE          gui=NONE
 hi Character      guifg=#98c379         guibg=NONE          gui=NONE
@@ -381,7 +381,7 @@ hi phpSuperGlobals guifg=#e06c75   guibg=NONE gui=NONE
 " Pug (Formerly Jade) highlighting ----------------------------------------{{{
 hi pugAttributesDelimiter   guifg=#d19a66    guibg=NONE gui=NONE
 hi pugClass                 guifg=#d19a66    guibg=NONE gui=NONE
-hi pugDocType               guifg=#5c6370    guibg=NONE gui=italic
+hi pugDocType               guifg=#5c6370    guibg=NONE gui=NONE
 hi pugTag                   guifg=#e06c75    guibg=NONE gui=NONE
 " }}}
 
@@ -401,7 +401,7 @@ hi pythonBuiltin              guifg=#56b6c2     guibg=NONE gui=NONE
 hi pythonStatement            guifg=#c678dd     guibg=NONE gui=NONE
 hi pythonParam                guifg=#d19a66     guibg=NONE gui=NONE
 hi pythonEscape               guifg=#e06c75     guibg=NONE gui=NONE
-hi pythonSelf                 guifg=#828997     guibg=NONE gui=italic
+hi pythonSelf                 guifg=#828997     guibg=NONE gui=NONE
 hi pythonClass                guifg=#61afef     guibg=NONE gui=NONE
 hi pythonOperator             guifg=#c678dd     guibg=NONE gui=NONE
 hi pythonEscape               guifg=#e06c75     guibg=NONE gui=NONE
@@ -448,10 +448,11 @@ hi SpellRare    guifg=NONE guibg=#282c34 gui=undercurl
 " Vim highlighting --------------------------------------------------------{{{
 hi vimCommand      guifg=#c678dd  guibg=NONE gui=NONE
 hi vimCommentTitle guifg=#5c6370 guibg=NONE gui=bold
+hi vimComment guifg=#5c6370         guibg=NONE          gui=NONE
 hi vimFunction     guifg=#56b6c2  guibg=NONE gui=NONE
 hi vimFuncName     guifg=#c678dd  guibg=NONE gui=NONE
 hi vimHighlight    guifg=#61afef  guibg=NONE gui=NONE
-hi vimLineComment  guifg=#5c6370 guibg=NONE gui=italic
+hi vimLineComment  guifg=#5c6370 guibg=NONE gui=NONE
 hi vimParenSep     guifg=#828997 guibg=NONE gui=NONE
 hi vimSep          guifg=#828997 guibg=NONE gui=NONE
 hi vimUserFunc     guifg=#56b6c2  guibg=NONE gui=NONE
