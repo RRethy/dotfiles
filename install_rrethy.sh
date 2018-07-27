@@ -96,7 +96,7 @@ $(brew --prefix)/opt/fzf/install
 #}}}
 
 # Download OnThisDay facts {{{
-if [[ ! -d ~/.config/wikidates ]] ; then
+if [[ ! -d $HOME/.config/wikidates ]] ; then
   for day in {1..365}; do
     mkdir ~/.config/wikidates 2>/dev/null
     date=$(gdate -d "now + $day days" +%B_%d)
@@ -108,26 +108,26 @@ fi
 #}}}
 
 # Setup zsh {{{
-echo "source ~/.config/zsh/zshrc.zsh" >> ~/.zshrc
+echo "source $HOME/.config/zsh/zshrc.zsh" >> ~/.zshrc
 
 onConfigSourced zsh
 #}}}
 
 # Setup ideavim {{{
-echo "source ~/.config/ideavimrc.vim" >> ~/.ideavimrc
+echo "source $HOME/.config/ideavimrc.vim" >> ~/.ideavimrc
 
 onConfigSourced ideavimrc
 #}}}
 
 # Setup gitconfig {{{
 echo "[include]" >> ~/.gitconfig
-echo "  path = ~/.config/git/.gitconfig" >> ~/.gitconfig
+echo "  path = $HOME/.config/git/.gitconfig" >> ~/.gitconfig
 
 onConfigSourced gitconfig
 #}}}
 
 # Setup tmux {{{
-echo "source-file \"~/.config/tmux/tmux.conf\"" >> ~/.tmux.conf
+echo "source-file \"$HOME/.config/tmux/tmux.conf\"" >> ~/.tmux.conf
 
 onConfigSourced tmux
 #}}}
