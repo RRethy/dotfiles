@@ -87,7 +87,7 @@ let g:sneak#label = 1
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree']
 let g:Illuminate_ftHighlightGroups = {
-      \ 'vim': ['vimVar', 'vimFBVar', 'vimString', 'vimLineComment', 'vimFuncName', 'vimFunction', 'vimUserFunc']
+      \ 'vim': ['vimVar', 'vimFBVar', 'vimString', 'vimLineComment', 'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
       \ }
 
 "}}}
