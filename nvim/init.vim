@@ -46,7 +46,7 @@ if has("autocmd")
   augroup END
 endif
 
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+" Trigger configuration
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
@@ -88,7 +88,8 @@ let g:sneak#label = 1
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree']
 let g:Illuminate_ftHighlightGroups = {
-      \ 'vim': ['vimVar', 'vimFBVar', 'vimString', 'vimLineComment', 'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
+      \ 'vim': ['vimVar', 'vimFBVar', 'vimString', 'vimLineComment',
+      \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
       \ }
 
 "}}}
