@@ -88,7 +88,7 @@ let g:sneak#label = 1
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree']
 let g:Illuminate_ftHighlightGroups = {
-      \ 'vim': ['vimVar', 'vimFBVar', 'vimString', 'vimLineComment',
+      \ 'vim': ['vimVar', 'vimString', 'vimLineComment',
       \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
       \ }
 
@@ -190,7 +190,7 @@ nnoremap <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
-nnoremap <Leader>= :echo synIDattr(synID(line('.'), col('.'), 1), "name")<CR>
+nnoremap <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 
 onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
