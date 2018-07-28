@@ -15,6 +15,7 @@ call mkdir($HOME . "/.config/nvim/tmp/", "p")
 
 call plug#begin('~/.local/share/nvim/mehplugins')
 Plug '~/.config/nvim/mehplugins/indexor'
+Plug '~/.config/nvim/mehplugins/illuminate'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
