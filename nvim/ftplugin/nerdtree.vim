@@ -1,0 +1,1 @@
+set winhighlight=NormalNC:NerdtreeNC
