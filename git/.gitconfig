@@ -18,7 +18,7 @@
   untracked = red
 [core]
   editor = nvim
-  excludesfile = /Users/rethy/.gitignore_global
+  excludesfile = ~/.gitignore_global
 [push]
   default = current
 [merge]
