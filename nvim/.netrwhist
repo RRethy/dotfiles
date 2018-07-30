@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/Users/rethy/.local/share/nvim/mehplugins/fzf.vim/autoload'
-let g:netrw_dirhist_2='/Users/rethy/.local/share/nvim/mehplugins/fzf.vim/autoload/fzf'
-let g:netrw_dirhist_3='/Users/adamregasz-rethy/.config/nvim/ftplugin'
