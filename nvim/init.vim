@@ -35,7 +35,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/gv.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
-Plug 'haya14busa/incsearch.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -59,11 +58,6 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
-
-" Incearch stuff with very magic regex
-map /  <Plug>(incsearch-forward)\v
-map ?  <Plug>(incsearch-backward)\v
-map g/ <Plug>(incsearch-stay)\v
 
 " NERDTree
 let NERDTreeAutoDeleteBuffer=0
@@ -99,6 +93,7 @@ let g:Illuminate_delay = 250
 "       \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
 "       \ }
 " hi illuminatedWord cterm=underline gui=underline
+" let g:Illuminate_highlightUnderCursor = 0
 
 "}}}
 
@@ -174,7 +169,6 @@ nnoremap Y y$
 nnoremap z7 zz9<C-y>
 nnoremap ]b :bnext<CR>
 nnoremap [b :bprev<CR>
-nnoremap # <C-^>
 nnoremap <F1> :!raco cover %<cr>
 nnoremap <F4> :vs<CR><C-w>l:term<CR>
 nnoremap <C-s> :%s/\<<C-r><C-w>\>/
@@ -204,7 +198,7 @@ onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
 onoremap A :<C-u>normal! ggVG<CR>
 
-inoremap <C-\> <Up>
+inoremap <C-\> O
 
 vnoremap <C-g> "*ygv
 vnoremap <C-q> <C-a>
