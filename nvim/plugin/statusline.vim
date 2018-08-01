@@ -1,10 +1,14 @@
 if has("autocmd")
   augroup statusline_autocmd
     autocmd!
-    autocmd WinEnter,VimEnter,BufEnter * call s:ShowFullStatusLine()
-    autocmd WinLeave * call s:ShowDimStatusLine()
+    autocmd WinEnter,VimEnter,BufEnter * if s:ShouldOverrideStatusline() | call s:ShowFullStatusLine() | endif
+    autocmd WinLeave * if s:ShouldOverrideStatusline() | call s:ShowDimStatusLine() | endif
   augroup END
 endif
+
+fun! s:ShouldOverrideStatusline()
+  return index(['nerdtree'], &filetype) < 0
+endf
 
 function! s:ShowDimStatusLine() abort
   " TODO: Change this to a setlocal
