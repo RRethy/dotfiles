@@ -26,9 +26,10 @@ hi ErrorMsg     guifg=#e06c75   guibg=#282c34  gui=NONE
 hi VertSplit    guifg=#181a1f   guibg=NONE      gui=NONE
 " hi Folded       guifg=#282c34   guibg=#5c6370  gui=NONE
 " hi Folded       guifg=#1e2127 guibg=#818E9C   gui=NONE
-hi Folded       guifg=#e5c07b guibg=#313440   gui=NONE
+hi Folded       guifg=#e5c07b   guibg=#313440   gui=NONE
 hi FoldColumn   guifg=#5c6370   guibg=#1e2127   gui=NONE
-hi IncSearch    guifg=#d19a66   guibg=NONE      gui=NONE
+hi IncSearch    guifg=NONE      guibg=#0c4260   gui=BOLD
+hi Search       guifg=NONE      guibg=#0c4260   gui=NONE
 hi LineNr       guifg=#4b5263   guibg=NONE      gui=NONE
 hi CursorLineNr guifg=#abb2bf   guibg=#2c323c  gui=NONE
 hi MatchParen   guifg=#e06c75   guibg=#2c323c  gui=underline,bold
@@ -41,7 +42,6 @@ hi PMenuSel     guifg=NONE      guibg=#4b5263   gui=NONE
 hi PMenuSbar    guifg=NONE      guibg=#282c34   gui=NONE
 hi PMenuThumb   guifg=NONE      guibg=#abb2bf   gui=NONE
 hi Question     guifg=#61afef   guibg=NONE      gui=NONE
-hi Search       guifg=#282c34   guibg=#e5c07b   gui=NONE
 hi SpecialKey   guifg=#3b4048   guibg=NONE      gui=NONE
 hi Whitespace   guifg=#3b4048   guibg=NONE      gui=NONE
 hi StatusLine   guifg=#abb2bf   guibg=#2c323c  gui=NONE
@@ -542,4 +542,4 @@ hi ALEErrorSign guifg=#e06c75   guibg=NONE gui=NONE
 
 set background=dark
 
-" vim: set fdl=0 fdm=marker:
+" vim: set fdl=1 fdm=marker:

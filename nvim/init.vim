@@ -164,8 +164,6 @@ set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 "================================[Mappings]===================================
 "
 "=============================================================================
-nnoremap n :norm! nzz<CR>
-nnoremap N :norm! Nzz<CR>
 nnoremap / /\v
 nnoremap cl 0D
 nnoremap Y y$
@@ -175,7 +173,8 @@ nnoremap [b :bprev<CR>
 nnoremap <F1> :!raco cover %<cr>
 nnoremap <F4> :vs<CR><C-w>l:term<CR>
 nnoremap <C-s> :%s/\<<C-r><C-w>\>/
-nnoremap <C-p> :Files<CR>
+" nnoremap <C-p> :Files<CR>
+nnoremap <C-p> :find 
 nnoremap <C-q> <C-a>
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <Leader>q :q<CR>
