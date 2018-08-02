@@ -498,6 +498,7 @@ hi manFooter guifg=#5c6370 guibg=NONE gui=NONE
 
 " my highlight groups --------------------------------------------------------{{{
 hi NerdtreeNC          guibg=#1e2127
+hi NerdtreeEndOfBuffer guifg=bg
 
 hi SilentStatusline    guifg=#1e2127 guibg=#808080
 hi SpySl               guifg=#1e2127 guibg=#A9B7C6
