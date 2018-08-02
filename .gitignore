@@ -4,3 +4,4 @@ nvim/views/
 nvim/tmp/
 ranger/
 nvim/.netrwhist
+configstore/

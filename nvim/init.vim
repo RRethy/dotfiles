@@ -164,7 +164,8 @@ set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 "================================[Mappings]===================================
 "
 "=============================================================================
-nnoremap gn :norm! nzz<CR>
+nnoremap n :norm! nzz<CR>
+nnoremap N :norm! Nzz<CR>
 nnoremap / /\v
 nnoremap cl 0D
 nnoremap Y y$
