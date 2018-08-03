@@ -10,7 +10,8 @@ onInstallFinished() {
 }
 
 onConfigSourced() {
-  echo "[Sourcing $1] Status: Finished!"
+  echo "[Moving $1 to ~/.oldconfig] Status: Finished!"
+  echo "[Symlinking $1] Status: Finished!"
 }
 
 maybeBrewProgram() {
@@ -101,33 +102,52 @@ if [[ ! -d $HOME/.config/wikidates ]] ; then
     mkdir ~/.config/wikidates 2>/dev/null
     date=$(gdate -d "now + $day days" +%B_%d)
     w3m -cols 99999 -dump http://en.wikipedia.org/wiki/$date | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/$date
-    echo "Found facts for day: $day of the year!"
+    echo "Found facts for day $day of the year!"
   done
   w3m -cols 99999 -dump http://en.wikipedia.org/wiki/february_29 | sed -n '/Events.*edit/,/Births/ p' | sed -n 's/^.*• //p' > ~/.config/wikidates/February_29
 fi
 #}}}
 
+if [ ! -d ~/.oldconfig ]; then
+  mkdir ~/.oldconfig
+fi
+
 # Setup zsh {{{
-echo "source $HOME/.config/zsh/zshrc.zsh" >> ~/.zshrc
+if [ -f ~/.zshrc ]; then
+  mv ~/.zshrc ~/.oldconfig/
+fi
+
+ln -s ~/.config/zsh/zshrc.zsh ~/.zshrc
 
 onConfigSourced zsh
 #}}}
 
 # Setup ideavim {{{
-echo "source $HOME/.config/ideavimrc.vim" >> ~/.ideavimrc
+if [ -f ~/.ideavimrc ]; then
+  mv ~/.ideavimrc ~/.oldconfig/
+fi
+
+ln -s ~/.config/ideavimrc.vim ~/.ideavimrc
 
 onConfigSourced ideavimrc
 #}}}
 
 # Setup gitconfig {{{
-echo "[include]" >> ~/.gitconfig
-echo "  path = $HOME/.config/git/.gitconfig" >> ~/.gitconfig
+if [ -f ~/.gitconfig ]; then
+  mv ~/.gitconfig ~/.oldconfig/
+fi
+
+ln -s ~/.config/git/.gitconfig ~/.gitconfig
 
 onConfigSourced gitconfig
 #}}}
 
 # Setup tmux {{{
-echo "source-file \"$HOME/.config/tmux/tmux.conf\"" >> ~/.tmux.conf
+if [ -f ~/.tmux.conf ]; then
+  mv ~/.tmux.conf ~/.oldconfig/
+fi
+
+ln -s ~/.config/tmux/tmux.conf ~/.tmux.conf
 
 onConfigSourced tmux
 #}}}
