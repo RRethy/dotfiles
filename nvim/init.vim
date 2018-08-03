@@ -42,7 +42,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'udalov/kotlin-vim'
 Plug 'justinmk/vim-syntax-extra'
 Plug 'justinmk/vim-sneak'
-Plug 'wincent/loupe'
 call plug#end()
 
 if has("autocmd")
@@ -173,8 +172,8 @@ nnoremap [b :bprev<CR>
 nnoremap <F1> :!raco cover %<cr>
 nnoremap <F4> :vs<CR><C-w>l:term<CR>
 nnoremap <C-s> :%s/\<<C-r><C-w>\>/
-" nnoremap <C-p> :Files<CR>
-nnoremap <C-p> :find 
+nnoremap <C-p> :Files<CR>
+" nnoremap <C-p> :find 
 nnoremap <C-q> <C-a>
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <Leader>q :q<CR>
