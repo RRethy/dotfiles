@@ -19,7 +19,7 @@ endfunction
 
 function! s:ShowFullStatusLine() abort
   " TODO: Change this to a setlocal
-  let &l:statusline="%#SpySl# \uf21b  "
+  let &l:statusline="%#SpySl# \ue779  "
         \ . "%#SpySlInv#"
         \ . "\ue0b0"
         \ . "%#LeftPrompt# "
