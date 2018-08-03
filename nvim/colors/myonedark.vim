@@ -17,7 +17,8 @@ hi NormalNC     guifg=NONE      guibg=#2c323c   gui=NONE
 hi bold         guifg=NONE      guibg=NONE      gui=bold
 hi ColorColumn  guifg=NONE      guibg=#2c323c   gui=NONE
 hi Conceal      guifg=#4b5263   guibg=#282c34   gui=NONE
-hi Cursor       guifg=NONE      guibg=#528bff   gui=NONE
+" hi Cursor       guifg=NONE      guibg=#528bff   gui=NONE
+hi Cursor       guifg=NONE      guibg=NONE   gui=NONE
 hi CursorIM     guifg=NONE      guibg=NONE      gui=NONE
 hi CursorColumn guifg=NONE      guibg=#2c323c   gui=NONE
 hi CursorLine   guifg=NONE      guibg=#2c323c  gui=NONE
@@ -28,7 +29,8 @@ hi VertSplit    guifg=#181a1f   guibg=NONE      gui=NONE
 " hi Folded       guifg=#1e2127 guibg=#818E9C   gui=NONE
 hi Folded       guifg=#e5c07b   guibg=#313440   gui=NONE
 hi FoldColumn   guifg=#5c6370   guibg=#1e2127   gui=NONE
-hi IncSearch    guifg=NONE      guibg=#0c4260   gui=BOLD
+" hi IncSearch    guifg=NONE      guibg=#0c4260   gui=BOLD
+hi IncSearch    guifg=NONE      guibg=#000   gui=BOLD
 hi Search       guifg=NONE      guibg=#0c4260   gui=NONE
 hi LineNr       guifg=#4b5263   guibg=NONE      gui=NONE
 hi CursorLineNr guifg=#abb2bf   guibg=#2c323c  gui=NONE

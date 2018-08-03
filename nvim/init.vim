@@ -42,6 +42,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'udalov/kotlin-vim'
 Plug 'justinmk/vim-syntax-extra'
 Plug 'justinmk/vim-sneak'
+Plug 'wincent/loupe'
 call plug#end()
 
 if has("autocmd")
@@ -164,7 +165,6 @@ set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 "================================[Mappings]===================================
 "
 "=============================================================================
-nnoremap / /\v
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap z7 zz9<C-y>
