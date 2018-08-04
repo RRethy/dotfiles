@@ -5,11 +5,6 @@ colorscheme myonedark
 
 " Make sure my shit exists{{{
 call mkdir($HOME . '/.config/nvim/tmp/', 'p')
-if empty($HOME . '~/.config/nvim/autoload/plug.vim')
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
 " }}}
 
 "Plugins{{{
@@ -18,35 +13,14 @@ endif
 "=================================[Plugins]===================================
 "
 "=============================================================================
-
-call plug#begin('~/.local/share/nvim/mehplugins')
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-unimpaired'
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/gv.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'ryanoasis/vim-devicons'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'udalov/kotlin-vim'
-Plug 'justinmk/vim-syntax-extra'
-call plug#end()
-
 " if has("autocmd")
 "   augroup plugin_autocmds
 "     autocmd!
 "     autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() | endif
 "   augroup END
 " endif
+
+" set runtimepath+=/usr/local/opt/fzf
 
 " Trigger configuration
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -153,6 +127,7 @@ set backup
 set backupdir=~/.config/nvim/tmp " Where to store ~ backup files
 set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
+set runtimepath+=/usr/local/opt/fzf
 "}}}
 
 "Mappings{{{
@@ -167,11 +142,10 @@ nnoremap z7 zz9<C-y>
 nnoremap ]b :bnext<CR>
 nnoremap [b :bprev<CR>
 nnoremap <F1> :!raco cover %<cr>
-nnoremap <F4> :vs<CR><C-w>l:term<CR>
 nnoremap <C-s> :%s/\<<C-r><C-w>\>/
-nnoremap <C-p> :Files<CR>
+nnoremap <silent> <C-p> :Files<CR>
 nnoremap <C-q> <C-a>
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <silent> <C-n> :NERDTreeToggle<CR>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>0 :q!<CR>
 nnoremap <Leader>w :wq<CR>
@@ -183,11 +157,11 @@ nnoremap <Leader>sv :source $MYVIMRC<CR>:nohls<CR>
 nnoremap <Leader>u viwU
 nnoremap <Leader>s :w<CR>
 nnoremap <Leader>l :set list!<CR>
-nnoremap <Leader>' :call utils#togglewrapping()<CR>
+nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
-nnoremap <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
+nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 
 onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>

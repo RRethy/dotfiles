@@ -1,9 +1,10 @@
 nnoremap / /\v
-nnoremap <silent> n :call g:MoveNext('n')<CR>
-nnoremap <silent> N :call g:MoveNext('N')<CR>
-nnoremap <silent> <Leader>n :call g:StopdatHi()<bar>:nohls<CR>
+" nnoremap <silent> n :call g:MoveNext('n')<CR>
+" nnoremap <silent> N :call g:MoveNext('N')<CR>
+" nnoremap <silent> <Leader>n :call g:StopdatHi()<bar>:nohls<CR>
+nnoremap <silent> <Leader>n :nohls<CR>
 
-cnoremap <silent> <CR> <CR>:call Foo()<CR>
+" cnoremap <silent> <CR> <CR>:call Foo()<CR>
 
 " if has("autocmd")
 "   augroup searchnext_autocmd
