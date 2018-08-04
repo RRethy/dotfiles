@@ -4,3 +4,54 @@
 [submodule "nvim/pack/myplugins/start/indexor"]
 	path = nvim/pack/myplugins/start/indexor
 	url = https://github.com/RRethy/vim-indexor
+[submodule "nvim/pack/othersplugins/opt/nerdtree"]
+	path = nvim/pack/othersplugins/opt/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "nvim/pack/othersplugins/start/fzf.vim"]
+  path = nvim/pack/othersplugins/start/fzf.vim
+  url = https://github.com/junegunn/fzf.vim.git
+[submodule "nvim/pack/othersplugins/start/kotlin"]
+  path = nvim/pack/othersplugins/start/kotlin
+  url = https://github.com/udalov/kotlin-vim.git
+[submodule "nvim/pack/othersplugins/start/nerdtree-git-plugin"]
+  path = nvim/pack/othersplugins/start/nerdtree-git-plugin
+  url = https://github.com/Xuyuanp/nerdtree-git-plugin.git
+[submodule "nvim/pack/othersplugins/start/ultisnips"]
+  path = nvim/pack/othersplugins/start/ultisnips
+  url = https://github.com/SirVer/ultisnips.git
+[submodule "nvim/pack/othersplugins/start/vim-commentary"]
+  path = nvim/pack/othersplugins/start/vim-commentary
+  url = https://github.com/tpope/vim-commentary.git
+[submodule "nvim/pack/othersplugins/start/vim-devicons"]
+  path = nvim/pack/othersplugins/start/vim-devicons
+  url = https://github.com/ryanoasis/vim-devicons.git
+[submodule "nvim/pack/othersplugins/start/vim-eunuch"]
+  path = nvim/pack/othersplugins/start/vim-eunuch
+  url = https://github.com/tpope/vim-eunuch.git
+[submodule "nvim/pack/othersplugins/start/vim-gitgutter"]
+  path = nvim/pack/othersplugins/start/vim-gitgutter
+  url = https://github.com/airblade/vim-gitgutter.git
+[submodule "nvim/pack/othersplugins/start/vim-repeat"]
+  path = nvim/pack/othersplugins/start/vim-repeat
+  url = https://github.com/tpope/vim-repeat.git
+[submodule "nvim/pack/othersplugins/start/vim-snippets"]
+  path = nvim/pack/othersplugins/start/vim-snippets
+  url = https://github.com/honza/vim-snippets.git
+[submodule "nvim/pack/othersplugins/start/vim-surround"]
+  path = nvim/pack/othersplugins/start/vim-surround
+  url = https://github.com/tpope/vim-surround.git
+[submodule "nvim/pack/othersplugins/start/vim-tmux-navigation"]
+  path = nvim/pack/othersplugins/start/vim-tmux-navigation
+  url = https://github.com/christoomey/vim-tmux-navigator.git
+[submodule "nvim/pack/othersplugins/start/vim-unimpared"]
+  path = nvim/pack/othersplugins/start/vim-unimpared
+  url = https://github.com/tpope/vim-unimpaired.git
+[submodule "nvim/pack/othersplugins/start/vim-unimpaired"]
+	path = nvim/pack/othersplugins/start/vim-unimpaired
+	url = https://github.com/tpope/vim-unimpaired.git
+[submodule "nvim/pack/othersplugins/start/vim-tmux-navigator"]
+	path = nvim/pack/othersplugins/start/vim-tmux-navigator
+	url = https://github.com/christoomey/vim-tmux-navigator.git
+[submodule "nvim/pack/othersplugins/start/vim-fugitive"]
+	path = nvim/pack/othersplugins/start/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive.git
