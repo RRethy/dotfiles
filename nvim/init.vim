@@ -31,18 +31,14 @@ Plug 'tpope/vim-unimpaired'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/gv.vim'
-" Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-" Plug 'christoomey/vim-tmux-navigator'
-" Plug 'udalov/kotlin-vim'
-" Plug 'justinmk/vim-syntax-extra'
-" Plug 'justinmk/vim-sneak'
-" Plug 'wincent/command-t', {
-"       \   'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
-"       \ }
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'udalov/kotlin-vim'
+Plug 'justinmk/vim-syntax-extra'
 call plug#end()
 
 " if has("autocmd")
@@ -174,14 +170,12 @@ nnoremap <F1> :!raco cover %<cr>
 nnoremap <F4> :vs<CR><C-w>l:term<CR>
 nnoremap <C-s> :%s/\<<C-r><C-w>\>/
 nnoremap <C-p> :Files<CR>
-" nnoremap <C-p> :find 
 nnoremap <C-q> <C-a>
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>0 :q!<CR>
 nnoremap <Leader>w :wq<CR>
 nnoremap <Leader>b :Buffers<CR>
-" nnoremap <Leader>t :tabnew<CR>
 nnoremap <Leader>y :4,$y+<CR>
 nnoremap <Leader>h :Helptags<CR>
 nnoremap <Leader>ev :vs $MYVIMRC<CR>
