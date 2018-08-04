@@ -20,8 +20,6 @@ endif
 "=============================================================================
 
 call plug#begin('~/.local/share/nvim/mehplugins')
-Plug '~/.config/nvim/mehplugins/indexor'
-Plug '~/.config/nvim/mehplugins/illuminate'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
@@ -33,26 +31,26 @@ Plug 'tpope/vim-unimpaired'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/gv.vim'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'udalov/kotlin-vim'
-Plug 'justinmk/vim-syntax-extra'
-Plug 'justinmk/vim-sneak'
+" Plug 'christoomey/vim-tmux-navigator'
+" Plug 'udalov/kotlin-vim'
+" Plug 'justinmk/vim-syntax-extra'
+" Plug 'justinmk/vim-sneak'
 " Plug 'wincent/command-t', {
 "       \   'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
 "       \ }
 call plug#end()
 
-if has("autocmd")
-  augroup plugin_autocmds
-    autocmd!
-    autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() | endif
-  augroup END
-endif
+" if has("autocmd")
+"   augroup plugin_autocmds
+"     autocmd!
+"     autocmd CursorHold * if vimrchelpers#shouldLoadDeoplete() | call deoplete#enable() | endif
+"   augroup END
+" endif
 
 " Trigger configuration
 let g:UltiSnipsExpandTrigger="<tab>"

@@ -1,6 +1,6 @@
-[submodule "nvim/mehplugins/indexor"]
-	path = nvim/mehplugins/indexor
-	url = git@github.com:RRethy/vim-indexor.git
-[submodule "nvim/mehplugins/illuminate"]
-	path = nvim/mehplugins/illuminate
-	url = git@github.com:RRethy/vim-illuminate.git
+[submodule "nvim/pack/myplugins/start/illuminate"]
+	path = nvim/pack/myplugins/start/illuminate
+	url = https://github.com/RRethy/vim-illuminate
+[submodule "nvim/pack/myplugins/start/indexor"]
+	path = nvim/pack/myplugins/start/indexor
+	url = https://github.com/RRethy/vim-indexor
