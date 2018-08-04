@@ -42,6 +42,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'udalov/kotlin-vim'
 Plug 'justinmk/vim-syntax-extra'
 Plug 'justinmk/vim-sneak'
+" Plug 'wincent/command-t', {
+"       \   'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
+"       \ }
 call plug#end()
 
 if has("autocmd")
@@ -180,14 +183,13 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>0 :q!<CR>
 nnoremap <Leader>w :wq<CR>
 nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>t :tabnew<CR>
+" nnoremap <Leader>t :tabnew<CR>
 nnoremap <Leader>y :4,$y+<CR>
 nnoremap <Leader>h :Helptags<CR>
 nnoremap <Leader>ev :vs $MYVIMRC<CR>
 nnoremap <Leader>sv :source $MYVIMRC<CR>:nohls<CR>
 nnoremap <Leader>u viwU
 nnoremap <Leader>s :w<CR>
-nnoremap <Leader>n :nohls<CR>
 nnoremap <Leader>l :set list!<CR>
 nnoremap <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <Leader>" :set nowrap<CR>
