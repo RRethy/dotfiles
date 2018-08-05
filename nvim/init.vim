@@ -40,9 +40,9 @@ let NERDTreeWinSize=40
 let NERDTreeMinimalUI=1
 
 " Deoplete stuff
-let g:deoplete#enable_at_startup=0 " I enable this on CursorHold autocmd
-let g:deoplete#enable_camel_case=1 " Match foB with FooBar not foobar
-let g:deoplete#auto_complete_delay=250 " Delay 250 milliseconds
+" let g:deoplete#enable_at_startup=0 " I enable this on CursorHold autocmd
+" let g:deoplete#enable_camel_case=1 " Match foB with FooBar not foobar
+" let g:deoplete#auto_complete_delay=250 " Delay 250 milliseconds
 
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
