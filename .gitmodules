@@ -55,3 +55,6 @@
 [submodule "nvim/pack/othersplugins/start/vim-fugitive"]
 	path = nvim/pack/othersplugins/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
+[submodule "nvim/pack/myplugins/start/vim-pathetic"]
+	path = nvim/pack/myplugins/start/vim-pathetic
+	url = https://github.com/rrethy/vim-pathetic.git
