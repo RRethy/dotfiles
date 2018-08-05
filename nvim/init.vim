@@ -38,7 +38,7 @@ let NERDTreeAutoDeleteBuffer=0
 let NERdTreeChDirMode=2
 let NERDTreeShowLineNumbers=1
 let NERDTreeStatusline=-1
-let NERDTreeWinSize=40
+let NERDTreeWinSize=30
 let NERDTreeMinimalUI=1
 
 " Deoplete stuff

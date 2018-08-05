@@ -27,5 +27,6 @@ endf
 fun! g:NerdTreeInitialToggle() abort
   delcommand NERDTreeToggle
   packadd nerdtree
+  exe 'helptags ' . $HOME . '/.config/nvim/pack/othersplugins/opt/nerdtree/doc/'
   NERDTreeToggle
 endf
