@@ -21,6 +21,8 @@ call mkdir($HOME . '/.config/nvim/tmp/', 'p')
 "   augroup END
 " endif
 
+let g:loaded_netrw = 1
+
 " set runtimepath+=/usr/local/opt/fzf
 
 " Trigger configuration
