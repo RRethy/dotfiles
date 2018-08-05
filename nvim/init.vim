@@ -13,6 +13,7 @@ call mkdir($HOME . '/.config/nvim/tmp/', 'p')
 "=================================[Plugins]===================================
 "
 "=============================================================================
+" TODO: Maybe bring back deoplete, maybe make my own
 " if has("autocmd")
 "   augroup plugin_autocmds
 "     autocmd!

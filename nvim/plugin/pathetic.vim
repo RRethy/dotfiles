@@ -10,7 +10,7 @@ command -nargs=1 AddPlug call g:AddPlugin(<args>)
 command UpdatePlugs call g:UpdatePlugins()
 
 fun! g:AddPlugin(plugin) abort
-  exe '!git submodule add git@github.com:' . a:plugin . '.git' . ' ~/.config/nvim/pack/othersplugins/start/' . split(a:plugin, '/')[1]
+  silent exe '!git submodule add git@github.com:' . a:plugin . '.git' . ' ~/.config/nvim/pack/othersplugins/start/' . split(a:plugin, '/')[1]
 endf
 
 fun! s:RemovePlugin(plugin) abort
@@ -20,8 +20,8 @@ fun! s:RemovePlugin(plugin) abort
 endf
 
 fun! g:UpdatePlugins() abort
-  !git submodule update --recursive --remote
-  !git submodule foreach --recursive git checkout master
+  silent exe '!git submodule update --recursive --remote'
+  silent exe '!git submodule foreach --recursive git checkout master'
 endf
 
 fun! g:NerdTreeInitialToggle() abort
