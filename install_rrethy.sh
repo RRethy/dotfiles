@@ -26,6 +26,11 @@ maybeBrewProgram() {
 }
 #}}}
 
+# Get my submodules ready {{{
+git submodule init
+git submodule update
+# }}}
+
 # Install Brew {{{
 onInstallStarted Brew
 
