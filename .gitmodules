@@ -58,6 +58,3 @@
 [submodule "nvim/pack/myplugins/start/vim-pathetic"]
 	path = nvim/pack/myplugins/start/vim-pathetic
 	url = https://github.com/rrethy/vim-pathetic.git
-[submodule "nvim/pack/othersplugins/start/vim-indent-guides"]
-	path = nvim/pack/othersplugins/start/vim-indent-guides
-	url = git@github.com:nathanaelkane/vim-indent-guides.git
