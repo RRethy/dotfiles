@@ -31,7 +31,7 @@ onoremap A :<C-u>normal! ggVG<CR>
 
 inoremap <C-\> O
 
-vnoremap <C-g> "*ygv
+vnoremap <C-g> "*y
 vnoremap <C-q> <C-a>
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
