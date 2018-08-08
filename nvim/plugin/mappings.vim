@@ -24,6 +24,7 @@ nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
 nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
+nnoremap <silent> <Leader>n :nohls<CR>
 
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
