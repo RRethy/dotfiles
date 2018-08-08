@@ -9,7 +9,7 @@ onInstallFinished() {
   echo "[Installing $1] Status: Finished!"
 }
 
-onConfigSourced() {
+onConfigSymLinked() {
   echo "[Moving $1 to ~/.oldconfig] Status: Finished!"
   echo "[Symlinking $1] Status: Finished!"
 }
@@ -124,7 +124,7 @@ fi
 
 ln -s ~/.config/zsh/zshrc.zsh ~/.zshrc
 
-onConfigSourced zsh
+onConfigSymLinked zsh
 #}}}
 
 # Setup ideavim {{{
@@ -134,7 +134,7 @@ fi
 
 ln -s ~/.config/ideavimrc.vim ~/.ideavimrc
 
-onConfigSourced ideavimrc
+onConfigSymLinked ideavimrc
 #}}}
 
 # Setup gitconfig {{{
@@ -144,7 +144,7 @@ fi
 
 ln -s ~/.config/git/.gitconfig ~/.gitconfig
 
-onConfigSourced gitconfig
+onConfigSymLinked gitconfig
 #}}}
 
 # Setup tmux {{{
@@ -154,7 +154,7 @@ fi
 
 ln -s ~/.config/tmux/tmux.conf ~/.tmux.conf
 
-onConfigSourced tmux
+onConfigSymLinked tmux
 #}}}
 
 # vim: foldmethod=marker foldlevel=1
