@@ -25,6 +25,11 @@ nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
 nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+nnoremap <C-j> <C-w>j
+nnoremap <C-h> <C-w>h
+
 onoremap p i(
 onoremap in( :<C-u>normal! f(vi(<CR>
 onoremap A :<C-u>normal! ggVG<CR>
