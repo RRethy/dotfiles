@@ -49,9 +49,6 @@
 [submodule "nvim/pack/othersplugins/start/vim-unimpaired"]
 	path = nvim/pack/othersplugins/start/vim-unimpaired
 	url = https://github.com/tpope/vim-unimpaired.git
-[submodule "nvim/pack/othersplugins/start/vim-tmux-navigator"]
-	path = nvim/pack/othersplugins/start/vim-tmux-navigator
-	url = https://github.com/christoomey/vim-tmux-navigator.git
 [submodule "nvim/pack/othersplugins/start/vim-fugitive"]
 	path = nvim/pack/othersplugins/start/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive.git
