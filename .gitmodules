@@ -55,3 +55,6 @@
 [submodule "nvim/pack/myplugins/start/vim-pathetic"]
 	path = nvim/pack/myplugins/start/vim-pathetic
 	url = https://github.com/rrethy/vim-pathetic.git
+[submodule "nvim/pack/othersplugins/start/neovim-intellij-complete-deoplete"]
+	path = nvim/pack/othersplugins/start/neovim-intellij-complete-deoplete
+	url = git@github.com:vhakulinen/neovim-intellij-complete-deoplete.git
