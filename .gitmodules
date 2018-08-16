@@ -4,9 +4,6 @@
 [submodule "nvim/pack/myplugins/start/indexor"]
 	path = nvim/pack/myplugins/start/indexor
 	url = https://github.com/RRethy/vim-indexor
-[submodule "nvim/pack/othersplugins/opt/nerdtree"]
-	path = nvim/pack/othersplugins/opt/nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
 [submodule "nvim/pack/othersplugins/start/fzf.vim"]
   path = nvim/pack/othersplugins/start/fzf.vim
   url = https://github.com/junegunn/fzf.vim.git
