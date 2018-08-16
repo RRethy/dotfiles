@@ -47,7 +47,7 @@ hi Question     guifg=#61afef   guibg=NONE      gui=NONE
 hi SpecialKey   guifg=#3b4048   guibg=NONE      gui=NONE
 hi Whitespace   guifg=#3b4048   guibg=NONE      gui=NONE
 hi StatusLine   guifg=#abb2bf   guibg=#2c323c  gui=NONE
-hi StatusLineNC guifg=#5c6370   guibg=NONE      gui=NONE
+hi StatusLineNC guifg=#5c6370   guibg=NONE      gui=NONE " TODO
 hi TabLine      guifg=#abb2bf   guibg=#282c34   gui=NONE
 hi TabLineFill  guifg=#5c6370   guibg=#3e4452  gui=NONE
 hi TabLineSel   guifg=#282c34   guibg=#61afef   gui=NONE
@@ -509,8 +509,8 @@ hi GitPrompt           guifg=#1e2127 guibg=#657281
 hi RightPrompt         guifg=#1e2127 guibg=#A9B7C6
 hi SpySlInv            guifg=#A9B7C6 guibg=#818E9C
 hi LeftPromptInv       guifg=#818E9C guibg=#657281
-hi GitPromptInv        guifg=#657281 guibg=#323232
-hi RightPromptInv      guifg=#A9B7C6 guibg=#323232
+hi GitPromptInv        guifg=#657281 guibg=#2c323c
+hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
 
 hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
 hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
