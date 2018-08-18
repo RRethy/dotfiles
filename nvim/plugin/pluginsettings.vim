@@ -29,9 +29,9 @@ endif
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree']
 let g:Illuminate_delay = 250
-let g:Illuminate_ftHighlightGroups = {
-      \ 'vim': ['vimVar', 'vimString', 'vimLineComment',
-      \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
-      \ }
+" let g:Illuminate_ftHighlightGroups = {
+"       \ 'vim': ['vimVar', 'vimString', 'vimLineComment',
+"       \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc']
+"       \ }
 " hi illuminatedWord cterm=underline gui=underline
 " let g:Illuminate_highlightUnderCursor = 0

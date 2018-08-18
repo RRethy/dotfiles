@@ -502,7 +502,7 @@ hi manFooter guifg=#5c6370 guibg=NONE gui=NONE
 hi NerdtreeNC          guibg=#1e2127
 hi NerdtreeEndOfBuffer guifg=bg
 
-hi SilentStatusline    guifg=#1e2127 guibg=#808080
+hi SilentStatusline    guifg=#A9B7C6 guibg=#2c323c
 hi SpySl               guifg=#1e2127 guibg=#A9B7C6
 hi LeftPrompt          guifg=#1e2127 guibg=#818E9C
 hi GitPrompt           guifg=#1e2127 guibg=#657281
