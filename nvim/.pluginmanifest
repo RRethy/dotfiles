@@ -1,0 +1,15 @@
+start https://github.com/junegunn/fzf.vim.git
+start https://github.com/udalov/kotlin-vim.git
+start https://github.com/Xuyuanp/nerdtree-git-plugin.git
+start https://github.com/SirVer/ultisnips.git
+start https://github.com/tpope/vim-abolish.git
+start https://github.com/tpope/vim-commentary.git
+start https://github.com/ryanoasis/vim-devicons.git
+start https://github.com/tpope/vim-eunuch.git
+start https://github.com/tpope/vim-fugitive.git
+start https://github.com/airblade/vim-gitgutter.git
+start https://github.com/tpope/vim-repeat.git
+start https://github.com/honza/vim-snippets.git
+start https://github.com/tpope/vim-surround.git
+start https://github.com/tpope/vim-unimpaired.git
+opt https://github.com/scrooloose/nerdtree.git
