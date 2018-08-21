@@ -139,6 +139,7 @@ export FLUTTER="~/Programming/flutter"
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 
+export VISUAL=nvim
 export LANG=en_US.UTF-8
 export TERM="xterm-256color"
 export ZSH=~/.oh-my-zsh
@@ -155,14 +156,13 @@ alias nvm="nvim -c 'h vim_diff.txt|only'"
 alias ds="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias now="date +%d-%m-%y"
 alias v="nvim"
-alias vim="nvim"
 alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim'"
 alias h="cd ~"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="nvim ~/.todo/hometodo.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
-alias esrc="vim ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
+alias esrc="nvim ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
 alias startcleanstatusbar="adb shell settings put global sysui_demo_allowed 1"
 alias cleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200 | adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e level 4 -e datatype false | adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false | adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false -e level 100"
 alias endcleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command exit"
@@ -183,5 +183,9 @@ maybeShowTodo
 echo '\n'
 
 cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/Users/rethy/.sdkman"
+[[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
 
 # vim: foldmethod=marker foldlevel=1

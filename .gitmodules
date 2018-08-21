@@ -1,9 +1,0 @@
-[submodule "nvim/pack/myplugins/start/vim-pathetic"]
-	path = nvim/pack/myplugins/start/vim-pathetic
-	url = https://github.com/rrethy/vim-pathetic.git
-[submodule "nvim/pack/myplugins/start/vim-illuminate"]
-	path = nvim/pack/myplugins/start/vim-illuminate
-	url = git@github.com:RRethy/vim-illuminate.git
-[submodule "nvim/pack/myplugins/start/vim-indexor"]
-	path = nvim/pack/myplugins/start/vim-indexor
-	url = git@github.com:RRethy/vim-indexor.git
