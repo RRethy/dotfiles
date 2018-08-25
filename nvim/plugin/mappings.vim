@@ -19,6 +19,7 @@ nnoremap <Leader>sv :source $MYVIMRC<CR>:nohls<CR>
 nnoremap <Leader>u viwU
 nnoremap <Leader>s :w<CR>
 nnoremap <Leader>l :set list!<CR>
+nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <Leader>" :set nowrap<CR>
 nnoremap <Leader>c :tabclose<CR>

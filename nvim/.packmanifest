@@ -7,7 +7,6 @@ start https://github.com/tpope/vim-commentary.git
 start https://github.com/ryanoasis/vim-devicons.git
 start https://github.com/tpope/vim-eunuch.git
 start https://github.com/tpope/vim-fugitive.git
-start https://github.com/airblade/vim-gitgutter.git
 start https://github.com/tpope/vim-repeat.git
 start https://github.com/honza/vim-snippets.git
 start https://github.com/tpope/vim-surround.git
