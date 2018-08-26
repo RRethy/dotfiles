@@ -27,7 +27,7 @@ nnoremap <Leader>s :w<CR>
 nnoremap <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
-nnoremap <Leader>" :set nowrap<CR>
+nnoremap <Leader>" :set wrap!<CR>
 nnoremap <Leader>c :tabclose<CR>
 nnoremap <Leader>- :call utils#pad(' ')<CR>
 nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
@@ -84,11 +84,9 @@ set splitright " Vsplit new window to the right
 set noshowmode " Don't show current mode in bottom
 set title " Show filename in title of window
 set noruler " Don't show line info bottom right since I have a custom statusline
-" set nrformats= " Treat numbers as decimals for Ctrl-a/Ctrl-x
 set showmatch " Jump cursor to '(' when inputting the closing ')'
 set matchtime=5 " showmatch above operates for 5 millis
 set spelllang=en_ca " Spell language for Canadian English
-" set undodir=$HOME/.config/nvim/undodo " Keep the undos here
 " set undofile " Persist undo after file closes
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
@@ -96,7 +94,6 @@ set shortmess+=c " Don't show annoying completion messages
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
-set backupdir=~/.local/share/nvim/tmp " Where to store ~ backup files
 set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 
