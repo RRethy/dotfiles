@@ -18,7 +18,7 @@ hi bold         guifg=NONE      guibg=NONE      gui=bold
 hi ColorColumn  guifg=NONE      guibg=#2c323c   gui=NONE
 hi Conceal      guifg=#4b5263   guibg=#282c34   gui=NONE
 " hi Cursor       guifg=NONE      guibg=#528bff   gui=NONE
-hi Cursor       guifg=NONE      guibg=NONE   gui=NONE
+hi Cursor       guifg=NONE      guibg=#abb2b5   gui=NONE
 hi CursorIM     guifg=NONE      guibg=NONE      gui=NONE
 hi CursorColumn guifg=NONE      guibg=#2c323c   gui=NONE
 hi CursorLine   guifg=NONE      guibg=#2c323c  gui=NONE

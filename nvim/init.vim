@@ -2,7 +2,7 @@ let mapleader=" "
 let maplocalleader="\\"
 colorscheme myonedark
 
-call mkdir($HOME . '/.local/share/nvim/tmp/', 'p')
+call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -50,7 +50,9 @@ vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-set runtimepath+=~/.fzf
+if isdirectory(expand('/usr/local/opt/fzf'))
+  set runtimepath+=/usr/local/opt/fzf
+endif
 
 if exists('&inccommand')
   set inccommand=split " Neovim specific feature
@@ -94,6 +96,7 @@ set shortmess+=c " Don't show annoying completion messages
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
+set backupdir=~/.local/share/nvim/backup
 set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 
