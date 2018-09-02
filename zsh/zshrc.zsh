@@ -141,7 +141,7 @@ export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 
 export VISUAL=nvim
 export LANG=en_US.UTF-8
-export TERM="xterm-256color"
+export TERM="screen-256color"
 export ZSH=~/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'

@@ -16,4 +16,9 @@ if has("autocmd")
     autocmd InsertEnter * match none
     autocmd InsertLeave,CursorHold * match Error /\v\s+$/
   augroup END
+
+  augroup nerdtree_hi
+    autocmd!
+    autocmd WinLeave * silent hi! default link NormalNC NONE
+  augroup end
 endif
