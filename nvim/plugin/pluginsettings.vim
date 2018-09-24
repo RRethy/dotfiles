@@ -1,10 +1,10 @@
 " NERDTree
-let NERDTreeAutoDeleteBuffer=0
-let NERdTreeChDirMode=2
-let NERDTreeShowLineNumbers=1
-let NERDTreeStatusline=-1
-let NERDTreeWinSize=30
-let NERDTreeMinimalUI=1
+" let NERDTreeAutoDeleteBuffer=0
+" let NERdTreeChDirMode=2
+" let NERDTreeShowLineNumbers=1
+" let NERDTreeStatusline=-1
+" let NERDTreeWinSize=30
+" let NERDTreeMinimalUI=1
 
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
@@ -21,5 +21,9 @@ let g:fzf_colors = {
       \ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['nerdtree']
+let g:Illuminate_ftblacklist = ['nerdtree', 'sixpack', '']
 let g:Illuminate_delay = 250
+hi illuminatedWord guibg=#28293a
+
+" javacomplete2
+autocmd FileType java setlocal omnifunc=javacomplete#Complete

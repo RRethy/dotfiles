@@ -11,6 +11,7 @@ fun! utils#togglewrapping()
   else
     set wrap
     set linebreak
+    set nolist
     nnoremap j gj
     nnoremap k gk
   endif

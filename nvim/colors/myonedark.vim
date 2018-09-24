@@ -35,7 +35,7 @@ hi Search       guifg=NONE      guibg=#0c4260   gui=NONE
 hi LineNr       guifg=#4b5263   guibg=NONE      gui=NONE
 hi CursorLineNr guifg=#abb2bf   guibg=#2c323c  gui=NONE
 hi MatchParen   guifg=#e06c75   guibg=#2c323c  gui=underline,bold
-hi Italic       guifg=NONE      guibg=NONE      gui=NONE
+hi Italic       guifg=NONE      guibg=NONE      gui=italic
 hi ModeMsg      guifg=#abb2bf   guibg=NONE      gui=NONE
 hi MoreMsg      guifg=#abb2bf   guibg=NONE      gui=NONE
 hi NonText      guifg=#5c6370   guibg=NONE      gui=NONE
@@ -69,7 +69,7 @@ hi helpSectionDelim guifg=#5c6370   guibg=NONE      gui=NONE
 " }}}
 
 " Standard syntax highlighting --------------------------------------------{{{
-hi Comment        guifg=#5c6370         guibg=NONE          gui=NONE
+hi Comment        guifg=#5c6370         guibg=NONE          gui=italic
 hi Constant       guifg=#98c379         guibg=NONE          gui=NONE
 hi String         guifg=#98c379         guibg=NONE          gui=NONE
 hi Character      guifg=#98c379         guibg=NONE          gui=NONE
@@ -217,7 +217,7 @@ hi elixirOperator          guifg=#d19a66   guibg=NONE gui=NONE
 " }}}
 
 " Git and git related plugins highlighting --------------------------------{{{
-hi gitcommitComment       guifg=#5c6370  guibg=NONE gui=NONE
+hi gitcommitComment       guifg=#5c6370  guibg=NONE gui=italic
 hi gitcommitUnmerged      guifg=#98c379   guibg=NONE gui=NONE
 hi gitcommitOnBranch      guifg=NONE guibg=NONE gui=NONE
 hi gitcommitBranch        guifg=#c678dd   guibg=NONE gui=NONE
@@ -450,11 +450,11 @@ hi SpellRare    guifg=NONE guibg=#282c34 gui=undercurl
 " Vim highlighting --------------------------------------------------------{{{
 hi vimCommand      guifg=#c678dd  guibg=NONE gui=NONE
 hi vimCommentTitle guifg=#5c6370 guibg=NONE gui=bold
-hi vimComment guifg=#5c6370         guibg=NONE          gui=NONE
+hi vimComment guifg=#5c6370         guibg=NONE          gui=italic
 hi vimFunction     guifg=#56b6c2  guibg=NONE gui=NONE
 hi vimFuncName     guifg=#c678dd  guibg=NONE gui=NONE
 hi vimHighlight    guifg=#61afef  guibg=NONE gui=NONE
-hi vimLineComment  guifg=#5c6370 guibg=NONE gui=NONE
+hi vimLineComment  guifg=#5c6370 guibg=NONE gui=italic
 hi vimParenSep     guifg=#828997 guibg=NONE gui=NONE
 hi vimSep          guifg=#828997 guibg=NONE gui=NONE
 hi vimUserFunc     guifg=#56b6c2  guibg=NONE gui=NONE
@@ -499,24 +499,6 @@ hi manFooter guifg=#5c6370 guibg=NONE gui=NONE
 " }}}
 
 " my highlight groups --------------------------------------------------------{{{
-hi NerdtreeNC          guibg=#1e2127
-hi NerdtreeEndOfBuffer guifg=bg
-
-hi SilentStatusline    guifg=#A9B7C6 guibg=#2c323c
-hi SpySl               guifg=#1e2127 guibg=#A9B7C6
-hi LeftPrompt          guifg=#1e2127 guibg=#818E9C
-hi GitPrompt           guifg=#1e2127 guibg=#657281
-hi RightPrompt         guifg=#1e2127 guibg=#A9B7C6
-hi SpySlInv            guifg=#A9B7C6 guibg=#818E9C
-hi LeftPromptInv       guifg=#818E9C guibg=#657281
-hi GitPromptInv        guifg=#657281 guibg=#2c323c
-hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
-
-hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
-hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
-hi TabLineSel          guifg=#A9B7C6 guibg=#1e2127
-
-hi TestGroup guifg=#0061ff guibg=#ff9d00
 " }}}
 
 " Neovim Terminal Colors --------------------------------------------------{{{

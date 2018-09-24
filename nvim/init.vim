@@ -10,47 +10,39 @@ nnoremap z7 zz9<C-y>
 nnoremap ]b :bnext<CR>
 nnoremap [b :bprev<CR>
 nnoremap <F1> :!raco cover %<cr>
-nnoremap <C-s> :%s/\<<C-r><C-w>\>/
-nnoremap <silent> <C-p> :Files<CR>
-nnoremap <C-q> <C-a>
-nnoremap <silent> <C-n> :NERDTreeToggle<CR>
-nnoremap <Leader>q :q<CR>
-nnoremap <Leader>0 :q!<CR>
-nnoremap <Leader>w :wq<CR>
-nnoremap <Leader>b :Buffers<CR>
-nnoremap <Leader>y :4,$y+<CR>
-nnoremap <Leader>h :Helptags<CR>
-nnoremap <Leader>ev :vs $MYVIMRC<CR>
-nnoremap <Leader>sv :source $MYVIMRC<CR>:nohls<CR>
-nnoremap <Leader>u viwU
-nnoremap <Leader>s :w<CR>
-nnoremap <Leader>l :set list!<CR>
-nnoremap <silent> <Leader>m :messages<CR>
-nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
-nnoremap <Leader>" :set wrap!<CR>
-nnoremap <Leader>c :tabclose<CR>
-nnoremap <Leader>- :call utils#pad(' ')<CR>
-nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
-nnoremap <silent> <Leader>n :nohls<CR>
+nnoremap          <C-s>      :%s/\<<C-r><C-w>\>/
+nnoremap <silent> <C-p>      :Files<CR>
+nnoremap          <C-q>      <C-a>
+nnoremap          <C-l>      <C-w>l
+nnoremap          <C-k>      <C-w>k
+nnoremap          <C-j>      <C-w>j
+nnoremap          <C-h>      <C-w>h
+nnoremap          <Leader>q  :q<CR>
+nnoremap          <Leader>0  :q!<CR>
+nnoremap          <Leader>w  :wq<CR>
+nnoremap          <Leader>b  :Buffers<CR>
+nnoremap          <Leader>h  :Helptags<CR>
+nnoremap          <Leader>u  viwU
+nnoremap          <Leader>s  :w<CR>
+nnoremap <silent> <Leader>l  :set list!<CR>
+nnoremap <silent> <Leader>m  :messages<CR>
+nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
+nnoremap          <Leader>c  :tabclose<CR>
+nnoremap <silent> <Leader>-  :call utils#pad(' ')<CR>
+nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
+nnoremap <silent> <Leader>n  :nohls<CR>
+nnoremap <silent> - :Ex<CR>
 
-nnoremap <C-l> <C-w>l
-nnoremap <C-k> <C-w>k
-nnoremap <C-j> <C-w>j
-nnoremap <C-h> <C-w>h
-
-onoremap p i(
-onoremap in( :<C-u>normal! f(vi(<CR>
 onoremap A :<C-u>normal! ggVG<CR>
 
 inoremap <C-\> O
 
 vnoremap <C-g> "*y
-vnoremap <C-q> <C-a>
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-if isdirectory(expand('/usr/local/opt/fzf'))
+if isdirectory('/usr/local/opt/fzf')
   set runtimepath+=/usr/local/opt/fzf
 endif
 
@@ -99,6 +91,26 @@ set backup
 set backupdir=~/.local/share/nvim/backup
 set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
+
+if has("autocmd")
+  augroup filetype_automcds
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
+  augroup END
+
+  augroup dim_inactive_windows
+    autocmd!
+    autocmd WinLeave * setlocal nocursorline
+    autocmd WinEnter,BufEnter * setlocal cursorline
+  augroup END
+
+  augroup highlight_trailing_whitespace
+    autocmd!
+    autocmd InsertEnter * match none
+    autocmd InsertLeave,CursorHold * match Error /\v\s+$/
+  augroup END
+endif
 
 " TODO Figure out what I want to do with this:
 " vim:set et sw=2 foldmethod=expr foldexpr=getline(v\:lnum)=~'^\"\ Section\:'?'>1'\:getline(v\:lnum)=~#'^fu'?'a1'\:getline(v\:lnum)=~#'^endf'?'s1'\:'=':

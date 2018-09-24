@@ -2,7 +2,7 @@
 POWERLEVEL9K_MODE="nerdfont-complete"
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(custom_ice_cream dir vcs)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(custom_user dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=()
 
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
@@ -16,6 +16,10 @@ POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\ue0b0 ' # Triangle seperator
 POWERLEVEL9K_CUSTOM_ICE_CREAM="cool_ice_cream"
 POWERLEVEL9K_CUSTOM_ICE_CREAM_FOREGROUND="blue"
 POWERLEVEL9K_CUSTOM_ICE_CREAM_BACKGROUND="white"
+
+POWERLEVEL9K_CUSTOM_USER="prompt_user"
+POWERLEVEL9K_CUSTOM_USER_FOREGROUND="blue"
+POWERLEVEL9K_CUSTOM_USER_BACKGROUND="white"
 
 POWERLEVEL9K_DIR_HOME_FOREGROUND="white"
 POWERLEVEL9K_DIR_HOME_BACKGROUND="blue"
@@ -41,6 +45,10 @@ DISABLE_CORRECTION="true"
 # }}}
 
 # Functions{{{
+
+prompt_user() {
+  echo -n $(whoami)
+}
 
 cool_ice_cream() {
   echo -n "\ue70e "
@@ -141,11 +149,12 @@ export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 
 export VISUAL=nvim
 export LANG=en_US.UTF-8
-export TERM="screen-256color"
+export TERM="xterm-256color"
 export ZSH=~/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
 export MANPAGER="nvim -c 'set ft=man' -"
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/openssl/lib/pkgconfig:"
 # }}}
 
 # aliases{{{
@@ -156,6 +165,7 @@ alias nvm="nvim -c 'h vim_diff.txt|only'"
 alias ds="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias now="date +%d-%m-%y"
 alias v="nvim"
+# alias vim="nvim"
 alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim'"
 alias h="cd ~"
 alias python="python3"
@@ -178,9 +188,9 @@ alias sshto="kitty +kitten ssh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-maybeShowTodo
+# maybeShowTodo
 
-echo '\n'
+# echo '\n'
 
 cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
 
