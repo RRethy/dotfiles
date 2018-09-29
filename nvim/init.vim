@@ -7,10 +7,11 @@ call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap z7 zz9<C-y>
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprev<CR>
+nnoremap z3 zz9<C-e>
+nnoremap g4 $
+nnoremap g6 ^
 nnoremap <F1> :!raco cover %<cr>
-nnoremap          <C-s>      :%s/\<<C-r><C-w>\>/
+nnoremap          <C-s>      :<C-U>%s/\<<C-r><C-w>\>//g<Left><Left>a<BS>
 nnoremap <silent> <C-p>      :Files<CR>
 nnoremap          <C-q>      <C-a>
 nnoremap          <C-l>      <C-w>l
@@ -41,10 +42,17 @@ vnoremap <C-g> "*y
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
+cnoremap <C-A>		<Home>
+cnoremap <C-E>		<End>
+cnoremap <C-N>		<Down>
+cnoremap <C-P>		<Up>
+cnoremap <expr> q1 'q!'
 
 if isdirectory('/usr/local/opt/fzf')
   set runtimepath+=/usr/local/opt/fzf
 endif
+
+set rtp+=~/Programming/ijaas/vim/
 
 if exists('&inccommand')
   set inccommand=split " Neovim specific feature
@@ -89,7 +97,7 @@ set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
 set backupdir=~/.local/share/nvim/backup
-set foldcolumn=1 " Bar on the left showing folds in the document
+" set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 
 if has("autocmd")

@@ -5,7 +5,6 @@ start https://github.com/tpope/vim-commentary.git
 start https://github.com/ryanoasis/vim-devicons.git
 start https://github.com/tpope/vim-eunuch.git
 start https://github.com/tpope/vim-fugitive.git
-start git@github.com:artur-shaik/vim-javacomplete2.git
 start https://github.com/moll/vim-node.git
 start https://github.com/tpope/vim-repeat.git
 start https://github.com/tpope/vim-surround.git
