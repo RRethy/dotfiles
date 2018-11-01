@@ -14,5 +14,10 @@ let g:fzf_colors = {
 
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree', 'sixpack', '']
+" let g:Illuminate_ftHighlightGroups = {
+"       \ 'vim': ['vimVar', 'vimString', 'vimLineComment',
+"       \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc'],
+"       \ 'cpp': ['cType', 'Repeat', 'cStatement']
+"       \ }
 let g:Illuminate_delay = 250
 hi illuminatedWord guibg=#28293a

@@ -13,7 +13,7 @@ let g:colors_name = "myonedark"
 " Vim editor color --------------------------------------------------------{{{
 
 hi Normal       guifg=#abb2bf   guibg=#1e2127   gui=NONE
-hi NormalNC     guifg=NONE      guibg=#2c323c   gui=NONE
+" hi NormalNC     guifg=NONE      guibg=#2c323c   gui=NONE
 hi bold         guifg=NONE      guibg=NONE      gui=bold
 hi ColorColumn  guifg=NONE      guibg=#2c323c   gui=NONE
 hi Conceal      guifg=#4b5263   guibg=#282c34   gui=NONE

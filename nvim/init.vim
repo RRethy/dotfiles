@@ -4,12 +4,25 @@ colorscheme myonedark
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
+fun! CleverTab()
+  if (getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+)$')
+    return "\<Tab>"
+  else
+    return "\<C-N>"
+  endif
+endf
+
+inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
+
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap z7 zz9<C-y>
 nnoremap z3 zz9<C-e>
 nnoremap g4 $
 nnoremap g6 ^
+nnoremap g8 :norm! *N<CR>
+nnoremap <silent> g9  :call utils#pad(' ')<CR>
+nnoremap <silent> - :Ex<CR>
 nnoremap <F1> :!raco cover %<cr>
 nnoremap          <C-s>      :<C-U>%s/\<<C-r><C-w>\>//g<Left><Left>a<BS>
 nnoremap <silent> <C-p>      :Files<CR>
@@ -18,6 +31,7 @@ nnoremap          <C-l>      <C-w>l
 nnoremap          <C-k>      <C-w>k
 nnoremap          <C-j>      <C-w>j
 nnoremap          <C-h>      <C-w>h
+nnoremap <silent> <leader>d  :Dash<CR>
 nnoremap          <Leader>q  :q<CR>
 nnoremap          <Leader>0  :q!<CR>
 nnoremap          <Leader>w  :wq<CR>
@@ -29,30 +43,26 @@ nnoremap <silent> <Leader>l  :set list!<CR>
 nnoremap <silent> <Leader>m  :messages<CR>
 nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
 nnoremap          <Leader>c  :tabclose<CR>
-nnoremap <silent> <Leader>-  :call utils#pad(' ')<CR>
 nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>n  :nohls<CR>
-nnoremap <silent> - :Ex<CR>
 
 onoremap A :<C-u>normal! ggVG<CR>
 
-inoremap <C-\> O
+" inoremap <C-o> O
 
 vnoremap <C-g> "*y
 vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
-cnoremap <C-A>		<Home>
-cnoremap <C-E>		<End>
-cnoremap <C-N>		<Down>
-cnoremap <C-P>		<Up>
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End>
+cnoremap <C-N> <Down>
+cnoremap <C-P> <Up>
 cnoremap <expr> q1 'q!'
 
 if isdirectory('/usr/local/opt/fzf')
   set runtimepath+=/usr/local/opt/fzf
 endif
-
-set rtp+=~/Programming/ijaas/vim/
 
 if exists('&inccommand')
   set inccommand=split " Neovim specific feature
@@ -67,8 +77,8 @@ set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
 set iskeyword+=- " Add hyphen to be a keyword, bad for racket and python
 set hidden " Absolutely necessary. Allows hidden buffers
-set matchpairs+=<:> " Add carrets to be matchpairs. TODO: Only for specific filetypes
-set path+=** " Search recursively with find()
+" set matchpairs+=<:> " Add carrets to be matchpairs. TODO: Only for specific filetypes
+" set path+=** " Search recursively with find()
 set nolist " Needed for listchars, kinda shit to have on always IMO, toggle with <Leader>l
 set listchars=tab:-,eol:¬,extends:>,precedes:< " Just some niceties for set list
 set tabstop=2 " A tab is 2 spaces
@@ -80,7 +90,8 @@ set nowrap " Don't wrap the text, it's annoying
 set mouse=n " Mouse support is nice for resizing splits
 set sidescroll=10 " Scroll horizontally when 10 cols from edge
 set scrolloff=1 " Scroll vertically when 1 rows from edge
-set whichwrap=<,>,[,] " Allow arrow keys (d+h/j/k/l) to scroll to next line
+set whichwrap=[,] " Allow arrow keys (d+h/j/k/l) to scroll to next line
+" set whichwrap=<,>,[,] " Allow arrow keys (d+h/j/k/l) to scroll to next line
 set cmdheight=1 " Leave here in case I want to change it from default (1) in future
 set splitright " Vsplit new window to the right
 set noshowmode " Don't show current mode in bottom
