@@ -1,6 +1,6 @@
 let mapleader=" "
 let maplocalleader="\\"
-colorscheme myonedark
+" colorscheme newscheme
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
@@ -23,26 +23,18 @@ nnoremap g6 ^
 nnoremap g8 :norm! *N<CR>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap <F1> :!raco cover %<cr>
 nnoremap          <C-s>      :<C-U>%s/\<<C-r><C-w>\>//g<Left><Left>a<BS>
 nnoremap <silent> <C-p>      :Files<CR>
-nnoremap          <C-q>      <C-a>
 nnoremap          <C-l>      <C-w>l
 nnoremap          <C-k>      <C-w>k
 nnoremap          <C-j>      <C-w>j
 nnoremap          <C-h>      <C-w>h
 nnoremap <silent> <leader>d  :Dash<CR>
-nnoremap          <Leader>q  :q<CR>
-nnoremap          <Leader>0  :q!<CR>
-nnoremap          <Leader>w  :wq<CR>
 nnoremap          <Leader>b  :Buffers<CR>
 nnoremap          <Leader>h  :Helptags<CR>
-nnoremap          <Leader>u  viwU
-nnoremap          <Leader>s  :w<CR>
 nnoremap <silent> <Leader>l  :set list!<CR>
 nnoremap <silent> <Leader>m  :messages<CR>
 nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
-nnoremap          <Leader>c  :tabclose<CR>
 nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>n  :nohls<CR>
 
@@ -51,7 +43,6 @@ onoremap A :<C-u>normal! ggVG<CR>
 " inoremap <C-o> O
 
 vnoremap <C-g> "*y
-vnoremap <Leader>; :'<,'>norm A;<CR>
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>

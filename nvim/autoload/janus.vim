@@ -1,5 +1,5 @@
 fun! janus#dark() abort
-  colorscheme myonedark
+  colorscheme newscheme
 
   hi link illuminatedWord cursorline
   hi NerdtreeNC          guibg=#1e2127
