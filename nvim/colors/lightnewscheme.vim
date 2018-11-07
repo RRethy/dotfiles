@@ -4,12 +4,13 @@ set termguicolors
 
 let g:colors_name = "newscheme"
 
-let FG="#ABB2BF"
-let DARKER_FG="#515e77"
+let BG="#ABB2BF"
+let DARKER_FG="#3d4554"
 " let BG="#282C34"
-let BG="#1E2127"
-let BG_LIGHT="#43485a"
-let VISUAL_BG="#2d323d"
+let FG="#1E2127"
+" let BG_LIGHT="#43485a"
+let BG_LIGHT="#47466b"
+let VISUAL_BG="#3E4451"
 let CURSORLINE_BG="#2C313C"
 let DARKER_BG="#172030"
 let ACCENT="#528BFF"
@@ -34,7 +35,7 @@ endf
 " call s:add_hi("Conceal")
 call s:add_hi("Cursor", NONE, BLUE, NONE)
 call s:add_hi("CursorLine", NONE, CURSORLINE_BG, NONE)
-call s:add_hi("Directory", ACCENT, NONE, BOLD)
+call s:add_hi("Directory", NONE, NONE, BOLD)
 call s:add_hi("DiffAdd", GREEN, NONE, NONE)
 call s:add_hi("DiffChange", ORANGE_LIGHT, NONE, NONE)
 call s:add_hi("DiffDelete", RED_DARK, NONE, NONE)
@@ -43,7 +44,7 @@ call s:add_hi("EndOfBuffer", "fg", "bg", NONE)
 call s:add_hi("ErrorMsg", RED_DARK, DARKER_BG, BOLD)
 call s:add_hi("VertSplit", FG, NONE, NONE)
 call s:add_hi("Folded", ACCENT, DARKER_BG, NONE)
-call s:add_hi("SignColumn", FG, DARKER_BG, NONE)
+" call s:add_hi("SignColumn")
 call s:add_hi("IncSearch", BG, BLUE, BOLD)
 call s:add_hi("LineNr", BG_LIGHT, NONE, NONE)
 call s:add_hi("CursorLineNr", ACCENT, CURSORLINE_BG, BOLD)
@@ -57,7 +58,7 @@ call s:add_hi("PmenuSel", NONE, BG_LIGHT, NONE)
 call s:add_hi("PmenuSbar", NONE, DARKER_BG, NONE)
 call s:add_hi("PmenuThumb", NONE, ACCENT, NONE)
 call s:add_hi("Question", ACCENT, NONE, BOLD)
-call s:add_hi("QuickFixLine", "bg", ACCENT, BOLD)
+call s:add_hi("QuickFixLine", NONE, ACCENT, BOLD)
 call s:add_hi("Search", BG, ACCENT, NONE)
 call s:add_hi("SpecialKey", BG_LIGHT, RED_LIGHT, BOLD)
 call s:add_hi("SpellBad", RED_DARK, NONE, BOLD_UNDERLINE)
@@ -69,7 +70,7 @@ call s:add_hi("StatusLineTermNC", NONE, CURSORLINE_BG, NONE)
 call s:add_hi("TabLine", NONE, CURSORLINE_BG, NONE)
 call s:add_hi("TabLineFill", NONE, NONE, NONE)
 call s:add_hi("TabLineSel", BG, FG, NONE)
-call s:add_hi("Title", PURPLE, NONE, BOLD)
+call s:add_hi("Title", FG, NONE, NONE)
 call s:add_hi("Visual", NONE, VISUAL_BG, NONE)
 call s:add_hi("WarningMsg", RED_LIGHT, NONE, BOLD)
 call s:add_hi("Whitespace", CURSORLINE_BG, CURSORLINE_BG, NONE)
@@ -83,7 +84,7 @@ hi def link Substitute IncSearch
 hi def link WildMenu PMenuSel
 
 call s:add_hi("Comment", DARKER_FG, NONE, ITALIC)
-call s:add_hi("Constant", ORANGE_DARK, NONE, NONE)
+call s:add_hi("Constant", RED_DARK, NONE, NONE)
 call s:add_hi("String", GREEN, NONE, NONE)
 hi def link Character String
 call s:add_hi("Number", ORANGE_LIGHT, NONE, NONE)
@@ -115,7 +116,7 @@ call s:add_hi("SpecialComment", ACCENT, NONE, NONE)
 call s:add_hi("Debug", ACCENT, NONE, NONE)
 call s:add_hi("Underlined", NONE, NONE, BOLD_UNDERLINE)
 hi def link Ignore Conceal
-call s:add_hi("Error", RED_DARK, NONE, BOLD_UNDERLINE)
+call s:add_hi("Error", RED_DARK, ACCENT, BOLD)
 call s:add_hi("Todo", ACCENT, NONE, BOLD)
 call s:add_hi("keywords", ACCENT, NONE, BOLD)
 
@@ -129,27 +130,6 @@ hi def link vimUserFunc Function
 hi def link vimVar Identifier
 
 hi def link helpExample Number
-
-hi def link markdownCode Number
-
-hi def link htmlBold keywords
-
-let g:terminal_color_0  = "#353a44"
-let g:terminal_color_1  = "#e88388"
-let g:terminal_color_2  = "#a7cc8c"
-let g:terminal_color_3  = "#ebca8d"
-let g:terminal_color_4  = "#72bef2"
-let g:terminal_color_5  = "#d291e4"
-let g:terminal_color_6  = "#65c2cd"
-let g:terminal_color_7  = "#e3e5e9"
-let g:terminal_color_8  = "#353a44"
-let g:terminal_color_9  = "#e88388"
-let g:terminal_color_10 = "#a7cc8c"
-let g:terminal_color_11 = "#ebca8d"
-let g:terminal_color_12 = "#72bef2"
-let g:terminal_color_13 = "#d291e4"
-let g:terminal_color_14 = "#65c2cd"
-let g:terminal_color_15 = "#e3e5e9"
 
 unlet FG
 unlet DARKER_FG
@@ -173,4 +153,4 @@ unlet UNDERLINE
 unlet BOLD_UNDERLINE
 unlet NONE
 
-set bg=dark
+set bg=light

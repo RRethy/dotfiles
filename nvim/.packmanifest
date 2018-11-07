@@ -1,11 +1,14 @@
+start https://github.com/w0rp/ale.git
+start https://github.com/rizzatti/dash.vim.git
 start https://github.com/junegunn/fzf.vim.git
 start https://github.com/udalov/kotlin-vim.git
 start https://github.com/tpope/vim-abolish.git
 start https://github.com/tpope/vim-commentary.git
+start https://github.com/bfrg/vim-cpp-modern.git
 start https://github.com/ryanoasis/vim-devicons.git
 start https://github.com/tpope/vim-eunuch.git
 start https://github.com/tpope/vim-fugitive.git
-start https://github.com/moll/vim-node.git
+start https://github.com/pangloss/vim-javascript.git
 start https://github.com/tpope/vim-repeat.git
 start https://github.com/tpope/vim-surround.git
 start https://github.com/tpope/vim-unimpaired.git

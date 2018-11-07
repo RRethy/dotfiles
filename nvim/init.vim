@@ -1,6 +1,6 @@
-let mapleader=" "
-let maplocalleader="\\"
-" colorscheme newscheme
+scriptencoding utf-8
+
+let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
@@ -39,8 +39,6 @@ nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."
 nnoremap <silent> <Leader>n  :nohls<CR>
 
 onoremap A :<C-u>normal! ggVG<CR>
-
-" inoremap <C-o> O
 
 vnoremap <C-g> "*y
 
@@ -102,7 +100,7 @@ set backupdir=~/.local/share/nvim/backup
 " set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 
-if has("autocmd")
+if has('autocmd')
   augroup filetype_automcds
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker

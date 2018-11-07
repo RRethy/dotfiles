@@ -15,15 +15,15 @@ fun! janus#dark() abort
   hi GitPromptInv        guifg=#657281 guibg=#2c323c
   hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
 
-  hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
-  hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
-  hi TabLineSel          guifg=#A9B7C6 guibg=#1e2127
+  " hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
+  " hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
+  " hi TabLineSel          guifg=#A9B7C6 guibg=#1e2127
 
   hi TestGroup guifg=#0061ff guibg=#ff9d00
 endf
 
 fun! janus#light() abort
-  colorscheme base16-one-light
+  colorscheme lightnewscheme
 
   hi link illuminatedWord cursorline
   hi NerdtreeNC          guibg=#1e2127
@@ -39,9 +39,9 @@ fun! janus#light() abort
   hi GitPromptInv        guifg=#657281 guibg=#2c323c
   hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
 
-  hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
-  hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
-  hi TabLineSel          guifg=#A9B7C6 guibg=#1e2127
+  " hi TabLine             guifg=#2B2B2B guibg=#A9B7C6
+  " hi TabLineFill         guifg=#2B2B2B guibg=#1e2127
+  " hi TabLineSel          guifg=#A9B7C6 guibg=#1e2127
 
   hi TestGroup guifg=#0061ff guibg=#ff9d00
 endf
