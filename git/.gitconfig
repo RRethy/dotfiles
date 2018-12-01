@@ -16,6 +16,8 @@
   added = green bold
   changed = green
   untracked = red
+[commit]
+  verbose = true
 [core]
   editor = nvim
   excludesfile = ~/.gitignore_global

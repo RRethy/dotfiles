@@ -185,6 +185,7 @@ alias gd="git difftool --no-symlinks --dir-diff"
 alias showpng="kitty +kitten icat"
 alias sshto="kitty +kitten ssh"
 alias g++14="g++ -std=c++14"
+alias vs="v -S"
 # }}}
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -5,7 +5,7 @@ let mapleader=' '
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
 fun! CleverTab()
-  if (getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+)$')
+  if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
     return "\<Tab>"
   else
     return "\<C-N>"
@@ -16,19 +16,16 @@ inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
 
 nnoremap cl 0D
 nnoremap Y y$
-nnoremap z7 zz9<C-y>
-nnoremap z3 zz9<C-e>
+nnoremap g0 ^
 nnoremap g4 $
 nnoremap g6 ^
+nnoremap g5 %
 nnoremap g8 :norm! *N<CR>
+nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap          <C-s>      :<C-U>%s/\<<C-r><C-w>\>//g<Left><Left>a<BS>
+nnoremap          <C-s>      :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>a<BS>
 nnoremap <silent> <C-p>      :Files<CR>
-nnoremap          <C-l>      <C-w>l
-nnoremap          <C-k>      <C-w>k
-nnoremap          <C-j>      <C-w>j
-nnoremap          <C-h>      <C-w>h
 nnoremap <silent> <leader>d  :Dash<CR>
 nnoremap          <Leader>b  :Buffers<CR>
 nnoremap          <Leader>h  :Helptags<CR>
@@ -38,9 +35,21 @@ nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>n  :nohls<CR>
 
+" Currently testing out which of the two sets is better
+" Arrow keys are rebinded using karabiner to d+{hjkl}
+nnoremap          <C-l>      <C-w>l
+nnoremap          <C-k>      <C-w>k
+nnoremap          <C-j>      <C-w>j
+nnoremap          <C-h>      <C-w>h
+nnoremap          <Right>    <C-w>l
+nnoremap          <Up>       <C-w>k
+nnoremap          <Down>     <C-w>j
+nnoremap          <Left>     <C-w>h
+
 onoremap A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
+vnoremap 4 $
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
@@ -99,6 +108,7 @@ set backup
 set backupdir=~/.local/share/nvim/backup
 " set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
+set lazyredraw
 
 if has('autocmd')
   augroup filetype_automcds
