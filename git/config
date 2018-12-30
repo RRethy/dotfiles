@@ -1,0 +1,43 @@
+[user]
+  name = Adam P. Regasz-Rethy
+  email = rethy.spud@gmail.com
+[core]
+  editor = nvim
+  excludesfile = ~/.gitignore_global
+[commit]
+  verbose = true
+[push]
+  default = current
+[credential]
+  helper = cache --timeout=3600
+[alias]
+  co = checkout
+  st = status
+  sst = status -s
+  up = remote update -p
+  b  = branch --sort=committerdate
+  pls = push --force-with-lease
+  ca = !git add -A && git commit -av
+  newca = commit -a
+  caa = !git add -A && git commit --amend -av
+  caas = !git add -A && git commit --amend --no-edit
+  rn = "!f() { git branch -m $1; }; f"
+  rh = reset --hard
+  cp = cherry-pick
+  rwc = commit -v --amend
+  cob = !git checkout $(git branch --sort=committerdate | fzf)
+[rerere]
+  enabled = true
+[diff]
+  tool = nvimdiff2
+[difftool "nvimdiff2"]
+  cmd = nvim -d $LOCAL $REMOTE
+  trustExitCode = true
+[merge]
+  tool = nvimdiff4
+[mergetool "nvimdiff4"]
+  cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+  trustExitCode = true
+[mergetool "nfugitive"]
+  cmd = nvim -f -c "Gdiff" "$MERGED"
+  trustExitCode = true

@@ -23,8 +23,8 @@
   excludesfile = ~/.gitignore_global
 [push]
   default = current
-[merge]
-  conflictstyle = diff3
+; [merge]
+;   conflictstyle = diff3
 [credential]
   helper = cache --timeout=3600
 [alias]
@@ -63,12 +63,16 @@
 [rerere]
   enabled = true
 [diff]
-    tool = kitty
-    guitool = kitty.gui
+  tool = nvimdiff2
+[difftool "nvimdiff2"]
+  cmd = nvim -d $LOCAL $REMOTE
 [difftool]
-    prompt = false
-    trustExitCode = true
-[difftool "kitty"]
-    cmd = kitty +kitten diff $LOCAL $REMOTE
-[difftool "kitty.gui"]
-    cmd = kitty kitty +kitten diff $LOCAL $REMOTE
+  trustExitCode = true
+[merge]
+  tool = nvimdiff4
+[mergetool "nvimdiff4"]
+  trustExitCode = true
+  cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[mergetool "nfugitive"]
+  trustExitCode = true
+  cmd = nvim -f -c "Gdiff" "$MERGED"

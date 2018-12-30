@@ -30,10 +30,10 @@ nnoremap <silent> <leader>d  :Dash<CR>
 nnoremap          <Leader>b  :Buffers<CR>
 nnoremap          <Leader>h  :Helptags<CR>
 nnoremap <silent> <Leader>l  :set list!<CR>
+nnoremap <silent> <Leader>n  :nohls<CR>
 nnoremap <silent> <Leader>m  :messages<CR>
 nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
-nnoremap <silent> <Leader>n  :nohls<CR>
 
 " Currently testing out which of the two sets is better
 " Arrow keys are rebinded using karabiner to d+{hjkl}
@@ -109,6 +109,7 @@ set backupdir=~/.local/share/nvim/backup
 " set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw
+set path-=/usr/include
 
 if has('autocmd')
   augroup filetype_automcds
@@ -126,7 +127,7 @@ if has('autocmd')
   augroup highlight_trailing_whitespace
     autocmd!
     autocmd InsertEnter * match none
-    autocmd InsertLeave,CursorHold * match Error /\v\s+$/
+    autocmd InsertLeave,CursorHold * match CursorLine /\v\s+$/
   augroup END
 endif
 

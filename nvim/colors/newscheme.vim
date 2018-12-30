@@ -35,11 +35,11 @@ endf
 call s:add_hi('Cursor', NONE, BLUE, NONE)
 call s:add_hi('CursorLine', NONE, CURSORLINE_BG, NONE)
 call s:add_hi('Directory', ACCENT, NONE, BOLD)
-call s:add_hi('DiffAdd', GREEN, NONE, NONE)
-call s:add_hi('DiffChange', ORANGE_LIGHT, NONE, NONE)
-call s:add_hi('DiffDelete', RED_DARK, NONE, NONE)
-call s:add_hi('DiffText', ORANGE_DARK, NONE, BOLD)
-call s:add_hi('EndOfBuffer', BG_LIGHT, 'bg', NONE)
+call s:add_hi('DiffAdd', NONE, '#1B5E20', NONE)
+call s:add_hi('DiffChange', NONE, '#9C27B0', NONE)
+call s:add_hi('DiffDelete', NONE, '#B71C1C', NONE)
+call s:add_hi('DiffText', FG, '#4A148C', BOLD)
+call s:add_hi('EndOfBuffer', BG_LIGHT, BG, NONE)
 call s:add_hi('ErrorMsg', RED_DARK, DARKER_BG, BOLD)
 call s:add_hi('VertSplit', FG, NONE, NONE)
 call s:add_hi('Folded', ACCENT, DARKER_BG, NONE)
@@ -115,7 +115,7 @@ call s:add_hi('SpecialComment', ACCENT, NONE, NONE)
 call s:add_hi('Debug', ACCENT, NONE, NONE)
 call s:add_hi('Underlined', NONE, NONE, BOLD_UNDERLINE)
 hi def link Ignore Conceal
-call s:add_hi('Error', RED_DARK, DARKER_FG, BOLD)
+call s:add_hi('Error', RED_DARK, NONE, BOLD)
 call s:add_hi('Todo', ACCENT, NONE, BOLD)
 call s:add_hi('keywords', ACCENT, NONE, BOLD)
 
@@ -133,6 +133,15 @@ hi def link helpExample Number
 hi def link markdownCode Number
 
 hi def link htmlBold keywords
+
+hi link NeomakeError Error
+hi link NeomakeWarning WarningMsg
+hi link NeomakeInfo Debug
+hi link NeomakeMessage MoreMsg
+hi link NeomakeVirtualtextError Error
+hi link NeomakeVirtualtextWarning WarningMsg
+hi link NeomakeVirtualtextInfo Debug
+hi link NeomakeVirtualtextMessag MoreMsg
 
 let g:terminal_color_0  = '#282c34'
 let g:terminal_color_1  = '#353b45'

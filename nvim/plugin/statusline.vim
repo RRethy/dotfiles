@@ -1,23 +1,29 @@
 if has("autocmd")
   augroup statusline_autocmd
     autocmd!
-    autocmd WinEnter,VimEnter,BufEnter * if s:ShouldOverrideStatusline() | call s:ShowFullStatusLine() | endif
-    autocmd WinLeave * if s:ShouldOverrideStatusline() | call s:ShowDimStatusLine() | endif
+    autocmd WinEnter,VimEnter,BufEnter * if s:should_override_statusline() | call s:fancy_active_statusline() | endif
+    autocmd WinLeave * if s:should_override_statusline() | call s:fancy_inactive_statusline() | endif
   augroup END
 endif
 
-fun! s:ShouldOverrideStatusline()
+fun! s:should_override_statusline()
   return index(['nerdtree'], &filetype) < 0
 endf
 
-function! s:ShowDimStatusLine() abort
+function! s:fancy_inactive_statusline() abort
   " TODO: Change this to a setlocal
   let &l:statusline="%#SilentStatusline#"
         \ . ' %{WebDevIconsGetFileTypeSymbol()}'
         \ . ' %t'
 endfunction
 
-function! s:ShowFullStatusLine() abort
+fun! s:simple_inactive_statusline() abort
+endf
+
+fun! s:simple_active_statusline() abort
+endf
+
+function! s:fancy_active_statusline() abort
   " TODO: Change this to a setlocal
   let &l:statusline="%#SpySl# \ue779  "
         \ . "%#SpySlInv#"

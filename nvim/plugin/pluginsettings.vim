@@ -15,17 +15,15 @@ let g:fzf_colors = {
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['nerdtree', 'sixpack', '', 'qf']
 let g:Illuminate_ftHighlightGroups = {
-      \ 'vim': ['vimVar', 'vimString', 'vimLineComment',
-      \         'vimFuncName', 'vimFunction', 'vimUserFunc', 'vimFunc'],
       \ 'cpp': ['', 'Function', 'Constant']
       \ }
 let g:Illuminate_delay = 250
 " hi illuminatedWord guibg=#28293a
 
-let g:ale_c_gcc_executable='g++'
-let g:ale_c_gcc_options='-std=c++14 -Wall -MMD -g'
+" let g:ale_c_gcc_executable='g++'
+" let g:ale_c_gcc_options='-std=c++14 -Wall -MMD -g'
 
-" call neomake#configure#automake('nw', 1000)
+call neomake#configure#automake('nw', 1250)
 
 nnoremap <Leader>* :Grepper -tool rg -cword -noprompt<CR>
 nnoremap <leader>g :Grepper<cr>
