@@ -20,7 +20,7 @@ nnoremap g0 ^
 nnoremap g4 $
 nnoremap g6 ^
 nnoremap g5 %
-nnoremap g8 :norm! *N<CR>
+nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
@@ -35,16 +35,39 @@ nnoremap <silent> <Leader>m  :messages<CR>
 nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 
+nnoremap <silent> [a :previous<CR>
+nnoremap <silent> ]a :next<CR>
+nnoremap <silent> [A :first<CR>
+nnoremap <silent> ]A :last<CR>
+
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
+
+nnoremap <silent> [l :lprevious<CR>
+nnoremap <silent> ]l :lnext<CR>
+nnoremap <silent> [L :lfirst<CR>
+nnoremap <silent> ]L :llast<CR>
+
+nnoremap <silent> [q :cprevious<CR>
+nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [Q :cfirst<CR>
+nnoremap <silent> ]Q :clast<CR>
+
+nnoremap <silent> yon :set number!<CR>
+nnoremap <silent> yor :set relativenumber!<CR>
+
+nnoremap <silent> yos :set spell!<CR>
+nnoremap <silent> [os :set spell<CR>
+nnoremap <silent> ]os :set nospell<CR>
+
 " Currently testing out which of the two sets is better
 " Arrow keys are rebinded using karabiner to d+{hjkl}
-nnoremap          <C-l>      <C-w>l
-nnoremap          <C-k>      <C-w>k
-nnoremap          <C-j>      <C-w>j
-nnoremap          <C-h>      <C-w>h
-nnoremap          <Right>    <C-w>l
-nnoremap          <Up>       <C-w>k
-nnoremap          <Down>     <C-w>j
-nnoremap          <Left>     <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+nnoremap <C-j> <C-w>j
+nnoremap <C-h> <C-w>h
 
 onoremap A :<C-u>normal! ggVG<CR>
 
@@ -68,8 +91,8 @@ endif
 set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
-set number " Show current line number on left
-set relativenumber " Show relative line numbers on left for jk jumping
+" set number " Show current line number on left
+" set relativenumber " Show relative line numbers on left for jk jumping
 set numberwidth=4 " Give the left bar of line numbers 4 cols to use
 set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
@@ -122,12 +145,6 @@ if has('autocmd')
     autocmd!
     autocmd WinLeave * setlocal nocursorline
     autocmd WinEnter,BufEnter * setlocal cursorline
-  augroup END
-
-  augroup highlight_trailing_whitespace
-    autocmd!
-    autocmd InsertEnter * match none
-    autocmd InsertLeave,CursorHold * match CursorLine /\v\s+$/
   augroup END
 endif
 

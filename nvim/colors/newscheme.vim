@@ -143,22 +143,22 @@ hi link NeomakeVirtualtextWarning WarningMsg
 hi link NeomakeVirtualtextInfo Debug
 hi link NeomakeVirtualtextMessag MoreMsg
 
-let g:terminal_color_0  = '#282c34'
+let g:terminal_color_0  = '#1e2127'
 let g:terminal_color_1  = '#353b45'
-let g:terminal_color_2  = '#3e4451'
-let g:terminal_color_3  = '#545862'
-let g:terminal_color_4  = '#565c64'
-let g:terminal_color_5  = '#abb2bf'
-let g:terminal_color_6  = '#b6bdca'
-let g:terminal_color_7  = '#c8ccd4'
-let g:terminal_color_8  = '#e06c75'
-let g:terminal_color_9  = '#d19a66'
-let g:terminal_color_10 = '#e5c07b'
-let g:terminal_color_11 = '#98c379'
-let g:terminal_color_12 = '#56b6c2'
-let g:terminal_color_13 = '#61afef'
-let g:terminal_color_14 = '#c678dd'
-let g:terminal_color_15 = '#be5046'
+let g:terminal_color_2  = '#98c379'
+let g:terminal_color_3  = '#d19a66'
+let g:terminal_color_4  = '#61AFEF'
+let g:terminal_color_5  = '#c678dd'
+let g:terminal_color_6  = '#0dcdcd'
+let g:terminal_color_7  = '#abb2bf'
+let g:terminal_color_8  = '#5c6370'
+let g:terminal_color_9  = '#e06c75'
+let g:terminal_color_10 = '#98c379'
+let g:terminal_color_11 = '#d19a66'
+let g:terminal_color_12 = '#2C323B'
+let g:terminal_color_13 = '#cb1ed1'
+let g:terminal_color_14 = '#0dcdcd'
+let g:terminal_color_15 = '#ffffff'
 
 unlet FG
 unlet DARKER_FG

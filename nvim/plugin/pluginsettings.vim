@@ -23,7 +23,7 @@ let g:Illuminate_delay = 250
 " let g:ale_c_gcc_executable='g++'
 " let g:ale_c_gcc_options='-std=c++14 -Wall -MMD -g'
 
-call neomake#configure#automake('nw', 1250)
+call neomake#configure#automake('w')
 
 nnoremap <Leader>* :Grepper -tool rg -cword -noprompt<CR>
 nnoremap <leader>g :Grepper<cr>
