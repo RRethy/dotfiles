@@ -4,16 +4,6 @@ let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
-fun! CleverTab()
-  if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
-    return "\<Tab>"
-  else
-    return "\<C-N>"
-  endif
-endf
-
-inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
-
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap g0 ^
@@ -24,7 +14,7 @@ nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap          <C-s>      :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>a<BS>
+nnoremap          <C-s>      :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>
 nnoremap <silent> <C-p>      :Files<CR>
 nnoremap <silent> <leader>d  :Dash<CR>
 nnoremap          <Leader>b  :Buffers<CR>
@@ -116,7 +106,7 @@ set whichwrap=[,] " Allow arrow keys (d+h/j/k/l) to scroll to next line
 set cmdheight=1 " Leave here in case I want to change it from default (1) in future
 set splitright " Vsplit new window to the right
 set noshowmode " Don't show current mode in bottom
-set title " Show filename in title of window
+" set title " Show filename in title of window
 set noruler " Don't show line info bottom right since I have a custom statusline
 set showmatch " Jump cursor to '(' when inputting the closing ')'
 set matchtime=5 " showmatch above operates for 5 millis
@@ -132,7 +122,10 @@ set backupdir=~/.local/share/nvim/backup
 " set foldcolumn=1 " Bar on the left showing folds in the document
 set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw
-set path-=/usr/include
+" set completeopt-=preview
+" set path-=/usr/include
+set grepprg=rg\ -H\ --no-heading\ --smart-case\ --vimgrep
+set grepformat=%f:%l:%c:%m
 
 if has('autocmd')
   augroup filetype_automcds

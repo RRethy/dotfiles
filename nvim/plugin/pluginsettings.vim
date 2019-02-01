@@ -1,3 +1,5 @@
+call sixpack#init()
+
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
 if has('autocmd')
@@ -20,17 +22,13 @@ let g:Illuminate_ftHighlightGroups = {
 let g:Illuminate_delay = 250
 " hi illuminatedWord guibg=#28293a
 
-" let g:ale_c_gcc_executable='g++'
-" let g:ale_c_gcc_options='-std=c++14 -Wall -MMD -g'
-
 call neomake#configure#automake('w')
 
-nnoremap <Leader>* :Grepper -tool rg -cword -noprompt<CR>
-nnoremap <leader>g :Grepper<cr>
-let g:grepper = {}
-let g:grepper.prompt_mapping_tool = '<leader>g'
-let g:grepper.tools = ['rg', 'ag', 'grep', 'git']
-runtime plugin/grepper.vim
-let g:grepper.rg.grepprg .= ' --smart-case'
-
 let g:netrw_banner = 0
+
+delc SixpackUpgrade
+delc SixpackUninstall
+
+command! PU PackUpdate
+
+nnoremap <silent> <Leader>i :PackBrowse<CR>

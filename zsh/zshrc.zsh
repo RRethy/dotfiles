@@ -146,6 +146,11 @@ export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Ho
 export FLUTTER="~/Programming/flutter"
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+export PATH=$PATH:~/.pub-cache/bin/
+export PATH=$PATH:~/Library/Android/sdk/tools/bin/
+export ANDROID_HOME=~/Library/Android/sdk/
 
 export VISUAL=nvim
 export LANG=en_US.UTF-8
@@ -202,4 +207,4 @@ export SDKMAN_DIR="/Users/rethy/.sdkman"
 
 # vim: foldmethod=marker foldlevel=1
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+eval "$(rbenv init -)"
