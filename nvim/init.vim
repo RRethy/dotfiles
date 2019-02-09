@@ -14,16 +14,17 @@ nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap          <C-s>      :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>
-nnoremap <silent> <C-p>      :Files<CR>
-nnoremap <silent> <leader>d  :Dash<CR>
-nnoremap          <Leader>b  :Buffers<CR>
-nnoremap          <Leader>h  :Helptags<CR>
-nnoremap <silent> <Leader>l  :set list!<CR>
-nnoremap <silent> <Leader>n  :nohls<CR>
-nnoremap <silent> <Leader>m  :messages<CR>
-nnoremap <silent> <Leader>'  :call utils#togglewrapping()<CR>
-nnoremap <silent> <Leader>=  :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
+nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>
+nnoremap <silent> <C-p>     :Files<CR>
+nnoremap <silent> <leader>d :Dash<CR>
+nnoremap          <Leader>b :Buffers<CR>
+nnoremap          <Leader>h :Helptags<CR>
+nnoremap <silent> <Leader>l :set list!<CR>
+nnoremap <silent> <Leader>n :nohls<CR>
+nnoremap <silent> <Leader>m :messages<CR>
+nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
+nnoremap <silent> <Leader>= :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
+nnoremap <silent> <Leader>* :grep <cword><CR>
 
 nnoremap <silent> [a :previous<CR>
 nnoremap <silent> ]a :next<CR>
