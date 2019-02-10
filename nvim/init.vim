@@ -55,10 +55,10 @@ nnoremap <silent> ]os :set nospell<CR>
 
 " Currently testing out which of the two sets is better
 " Arrow keys are rebinded using karabiner to d+{hjkl}
-nnoremap <C-l> <C-w>l
-nnoremap <C-k> <C-w>k
-nnoremap <C-j> <C-w>j
-nnoremap <C-h> <C-w>h
+" nnoremap <C-l> <C-w>l
+" nnoremap <C-k> <C-w>k
+" nnoremap <C-j> <C-w>j
+" nnoremap <C-h> <C-w>h
 
 onoremap A :<C-u>normal! ggVG<CR>
 
@@ -82,8 +82,8 @@ endif
 set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
-" set number " Show current line number on left
-" set relativenumber " Show relative line numbers on left for jk jumping
+set number " Show current line number on left
+set relativenumber " Show relative line numbers on left for jk jumping
 set numberwidth=4 " Give the left bar of line numbers 4 cols to use
 set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
