@@ -23,8 +23,6 @@ function! s:fancy_inactive_statusline() abort
   setlocal statusline+=\ 
   setlocal statusline+=%y
   setlocal statusline+=\ 
-  setlocal statusline+=%{WebDevIconsGetFileTypeSymbol()}
-  setlocal statusline+=\ 
   setlocal statusline+=%t
   setlocal statusline+=\ 
   setlocal statusline+=%r
@@ -36,11 +34,6 @@ function! s:fancy_inactive_statusline() abort
   setlocal statusline+=%#RightPromptNC#
   setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
   setlocal statusline+=\ 
-  " setlocal statusline=%#SilentStatusline#
-  " setlocal statusline+=\ 
-  " setlocal statusline+=%{WebDevIconsGetFileTypeSymbol()}
-  " setlocal statusline+=\ 
-  " setlocal statusline+=%t
 endfunction
 
 fun! s:simple_inactive_statusline() abort
@@ -59,8 +52,6 @@ function! s:fancy_active_statusline() abort
   setlocal statusline+=%#LeftPrompt#
   setlocal statusline+=\ 
   setlocal statusline+=%y
-  setlocal statusline+=\ 
-  setlocal statusline+=%{WebDevIconsGetFileTypeSymbol()}
   setlocal statusline+=\ 
   setlocal statusline+=%t
   setlocal statusline+=\ 

@@ -7,4 +7,4 @@ inoremap KJ <Esc>
 inoremap Jk <Esc>
 inoremap Kj <Esc>
 
-tnoremap <Esc> <C-\><C-n>
+tnoremap <C-o> <C-\><C-n>

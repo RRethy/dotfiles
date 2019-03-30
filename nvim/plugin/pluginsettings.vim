@@ -26,9 +26,24 @@ call neomake#configure#automake('w')
 
 let g:netrw_banner = 0
 
+" let g:Hexokinase_virtualText = '██████'
+" let g:Hexokinase_ftAutoload = []
+let g:Hexokinase_highlighters = ['sign_column']
+" let g:Hexokinase_ftAutoload = ['css', 'sass']
+" let g:Hexokinase_refreshEvents = []
+
+fun! Foo(match) abort
+  echom a:match
+  return ''
+endf
+let g:Hexokinase_ft_patterns = { 'css': { 'AAA': function('Foo') } }
+
+
 delc SixpackUpgrade
 delc SixpackUninstall
 
 command! PU PackUpdate
 
 nnoremap <silent> <Leader>i :PackBrowse<CR>
+
+nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>

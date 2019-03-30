@@ -4,6 +4,8 @@ let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
+command! WS w|so %
+
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap g0 ^
@@ -53,12 +55,10 @@ nnoremap <silent> yos :set spell!<CR>
 nnoremap <silent> [os :set spell<CR>
 nnoremap <silent> ]os :set nospell<CR>
 
-" Currently testing out which of the two sets is better
-" Arrow keys are rebinded using karabiner to d+{hjkl}
-" nnoremap <C-l> <C-w>l
-" nnoremap <C-k> <C-w>k
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+nnoremap <C-j> <C-w>j
+nnoremap <C-h> <C-w>h
 
 onoremap A :<C-u>normal! ggVG<CR>
 
@@ -115,7 +115,7 @@ set spelllang=en_ca " Spell language for Canadian English
 " set undofile " Persist undo after file closes
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
-set shortmess+=c " Don't show annoying completion messages
+set shortmess+=cI " Don't show annoying completion messages
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
@@ -127,6 +127,7 @@ set lazyredraw
 " set path-=/usr/include
 set grepprg=rg\ -H\ --no-heading\ --smart-case\ --vimgrep
 set grepformat=%f:%l:%c:%m
+set cpoptions+=>
 
 if has('autocmd')
   augroup filetype_automcds
