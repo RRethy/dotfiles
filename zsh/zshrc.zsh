@@ -121,6 +121,10 @@ function updateGitIgnore() {
   git commit -m ".gitignore fix"
 }
 
+function cd {
+	builtin cd $1
+}
+
 # }}}
 
 # variable{{{
@@ -140,6 +144,7 @@ export PATH="$PATH":"~/.pub-cache/bin"
 export PATH="$PATH:~/depot_tools"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+export GOPATH=$HOME/go
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
@@ -149,6 +154,7 @@ export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="/usr/local/opt/openssl/bin:$PATH"
 export PATH=$PATH:~/.pub-cache/bin/
+export PATH=$PATH:$GOPATH/bin/
 export PATH=$PATH:~/Library/Android/sdk/tools/bin/
 export ANDROID_HOME=~/Library/Android/sdk/
 
@@ -199,12 +205,12 @@ alias vs="v -S"
 
 # echo '\n'
 
-cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1 # Prints out a cool daily fact
+cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1
+
+eval "$(rbenv init -)"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/rethy/.sdkman"
 [[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
 
 # vim: foldmethod=marker foldlevel=1
-
-eval "$(rbenv init -)"

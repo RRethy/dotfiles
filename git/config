@@ -4,6 +4,8 @@
 [core]
   editor = nvim
   excludesfile = ~/.gitignore_global
+[init]
+  templatedir = ~/.git_template
 [commit]
   verbose = true
 [push]
@@ -41,3 +43,5 @@
 [mergetool "nfugitive"]
   cmd = nvim -f -c "Gdiff" "$MERGED"
   trustExitCode = true
+[init]
+	templatedir = ~/.git_template

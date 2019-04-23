@@ -1,4 +1,5 @@
-set timeoutlen=250 ttimeoutlen=-1
+set timeoutlen=250
+set ttimeoutlen=-1
 
 inoremap jk <Esc>
 inoremap kj <Esc>
