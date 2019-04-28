@@ -6,6 +6,8 @@ call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
 command! WS w|so %
 
+nnoremap q <Nop>
+nnoremap <F1> q
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap g0 ^
@@ -16,6 +18,7 @@ nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
+nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>d :Dash<CR>
@@ -77,6 +80,8 @@ cnoremap <C-E> <End>
 cnoremap <C-N> <Down>
 cnoremap <C-P> <Up>
 cnoremap <expr> qq 'q!'
+
+tmap <expr> <F3> '<C-\><C-n><F3>'
 
 if isdirectory('/usr/local/opt/fzf')
    set runtimepath+=/usr/local/opt/fzf

@@ -28,7 +28,7 @@ let g:netrw_banner = 0
 
 " let g:Hexokinase_virtualText = '██████'
 " let g:Hexokinase_ftAutoload = []
-let g:Hexokinase_highlighters = ['foregroundfull']
+let g:Hexokinase_highlighters = ['sign_column']
 let g:Hexokinase_optInPatterns = [
 			\ 'full_hex',
 			\ 'triple_hex',
