@@ -1,4 +1,4 @@
-call sixpack#init()
+" call sixpack#init()
 
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
@@ -15,10 +15,10 @@ let g:fzf_colors = {
 			\ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['nerdtree', 'sixpack', '', 'qf']
-let g:Illuminate_ftHighlightGroups = {
-			\ 'cpp': ['', 'Function', 'Constant']
-			\ }
+let g:Illuminate_ftblacklist = ['sixpack', '', 'qf']
+" let g:Illuminate_ftHighlightGroups = {
+" 			\ 'cpp': ['', 'Function', 'Constant']
+" 			\ }
 let g:Illuminate_delay = 250
 " hi illuminatedWord guibg=#28293a
 
@@ -28,23 +28,21 @@ let g:netrw_banner = 0
 
 " let g:Hexokinase_virtualText = '██████'
 " let g:Hexokinase_ftAutoload = []
-let g:Hexokinase_highlighters = ['sign_column']
+" let g:Hexokinase_highlighters = ['sign_column']
 let g:Hexokinase_optInPatterns = [
 			\ 'full_hex',
-			\ 'triple_hex',
+         \ 'triple_hex',
 			\ 'rgb',
 			\ 'rgba'
 			\ ]
 " let g:Hexokinase_ftAutoload = ['css', 'sass']
 " let g:Hexokinase_refreshEvents = []
 
-delc SixpackUpgrade
-delc SixpackUninstall
+" delc SixpackUpgrade
+" delc SixpackUninstall
 
-command! PU PackUpdate
+" command! PU PackUpdate
 
-nnoremap <silent> <Leader>i :PackBrowse<CR>
+" nnoremap <silent> <Leader>i :PackBrowse<CR>
 
 nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>
-
-let g:go_def_mode='gopls'

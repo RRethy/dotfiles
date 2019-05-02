@@ -1,5 +1,6 @@
-" Toggle displaying a single terminal at the bottom of the screen
+" Toggle displaying a single terminal in a split
 " This maintains a single interactive terminal, even between sessions
+" TODO use floating window
 
 let s:singleterm_bufnr = -1
 if s:singleterm_bufnr == -1

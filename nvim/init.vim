@@ -4,10 +4,10 @@ let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
+call backpack#init()
+
 command! WS w|so %
 
-nnoremap q <Nop>
-nnoremap <F1> q
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap g0 ^

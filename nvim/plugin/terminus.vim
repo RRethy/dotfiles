@@ -1,7 +1,8 @@
-command! -bar -nargs=1 -complete=file
+command! -bang -bar -nargs=1 -complete=file
          \ Sh call s:execute(<bang>0, expand(<f-args>))
 
 fun! s:execute(bang, cmd) abort
+   echom a:cmd
    vert new
    let job_id = termopen(a:cmd, {
             \ 'cmd': a:cmd,
