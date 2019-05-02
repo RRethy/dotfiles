@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exit
+
 # Some utils functions {{{
 onInstallStarted() {
   echo "[Installing $1] Status: Started"

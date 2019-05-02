@@ -123,6 +123,7 @@ fun! s:pack_do(...) abort
 endf
 
 fun! s:pack_update() abort
+   " TODO use s:plugins
    for dir in split(glob('~/.local/share/nvim/site/pack/backpack/opt/*'))
       call jobstart('git pull', {
                \ 'name': fnamemodify(dir, ':t'),
