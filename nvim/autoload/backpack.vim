@@ -5,13 +5,14 @@
 "            'hook': String|Function
 "          }
 let s:plugins = []
-let s:manifest_path = expand('~/.config/nvim/packmanifest.vim')
 
 fun! backpack#init() abort
    if has('nvim')
       let s:plugs_path = expand('~/.local/share/nvim/site/pack/backpack/opt/')
+      let s:manifest_path = expand('~/.config/nvim/packmanifest.vim')
    else
       let s:plugs_path = expand('~/.local/share/vim/site/pack/backpack/opt/')
+      let s:manifest_path = expand('~/.vim/packmanifest.vim')
    endif
    call mkdir(s:plugs_path, 'p')
 
@@ -21,13 +22,15 @@ fun! backpack#init() abort
    endif
    delcommand Pack
 
-   command! -bang -nargs=+ PackAdd call s:pack_add(<bang>0, <f-args>)
-   command! -nargs=+ -complete=custom,s:complete_pack_delete
+   command! -bang -nargs=+ -complete=shellcmd
+            \ PackAdd call s:pack_add(<bang>0, <f-args>)
+   command! -nargs=+ -complete=custom,s:complete_plugin_names
             \ PackDelete call s:pack_delete(<f-args>)
-   command! -nargs=+ -complete=custom,s:complete_pack_delete
+   command! -nargs=+ -complete=custom,s:complete_plugin_names
             \ PackDo call s:pack_do(<f-args>)
    command! PackUpdate call s:pack_update()
    command! PackClean call s:pack_clean()
+   command! PackEdit exe 'vsplit '.s:manifest_path
 endf
 
 fun! s:pack(...) abort
@@ -40,11 +43,12 @@ fun! s:pack(...) abort
    let plugin = {
             \ 'git_url': url,
             \ 'name': name,
-            \ 'dir': s:plugs_path.name
+            \ 'dir': s:plugs_path.name,
+            \ 'hook': ''
             \ }
    call extend(plugin, a:0 > 1 && type(a:2) == 4 ? a:2 : {})
 
-   if !has_key(plugin, 'on') || empty(plugin['on'])
+   if empty(get(plugin, 'on', ''))
       try
          exe 'packadd '.name
       catch /E919/
@@ -67,6 +71,7 @@ fun! s:pack_add(no_load, ...) abort
 
    if isdirectory(s:plugs_path.plugin_name)
       echohl Error | echom plugin_name.' already exists' | echohl None
+      return
    endif
 
    call jobstart(printf('git clone %s', url), {
@@ -75,100 +80,130 @@ fun! s:pack_add(no_load, ...) abort
             \ 'hook': cmd,
             \ 'should_load': !a:no_load,
             \ 'cwd': s:plugs_path,
-            \ 'on_exit': function('s:on_pack_add_exit')
+            \ 'tag': 'cloning',
+            \ 'on_exit': function('s:on_exit_cb')
             \ })
-   let line = "Pack '".author."/".plugin_name."'"
+
+   let line = printf('Pack ''%s/%s''', author, plugin_name)
    if !empty(cmd)
-      let line .= ", { 'hook': '".cmd."' }"
+      let line .= printf(', { ''hook'': ''%s''}',
+               \ substitute(cmd, "'", "''", 'g'))
    endif
-   if bufexists(bufname(s:manifest_path))
-      exe bufnr(bufname(s:manifest_path)).'bufdo call append(line("$"), line)'
-   else
-      call writefile([line], s:manifest_path, 'a')
-   endif
+   call s:edit_packmanifest({-> append(line('$'), line)})
 endf
 
 fun! s:pack_delete(...) abort
    for plug in a:000
       silent exe '!rm -rf ~/.local/share/nvim/site/pack/backpack/opt/'.plug
-      if bufexists(bufname(s:manifest_path))
-         exe '%g/'.plug.'/d'
-      else
-         edit s:manifest_path
-         exe '%g/'.plug.'/d'
-         write
-         bd
-      endif
+      call s:edit_packmanifest({->
+               \ execute('%g/'.escape(plug, '/').'/d', 'silent!')})
+      call remove(s:plugins, s:index_of_plugin(plug['name']))
    endfor
 endf
 
 fun! s:pack_do(...) abort
-   let [url, plugin_name, author] = s:parse_repo(a:1)
+   let plugin = s:get_plugin(a:1)
    let cmd = join(a:000[1:])
 
-   if empty(url)
-      echohl Error | echom a:1.' is not a supported repo format' | echohl None
+   if empty(plugin)
+      echohl Error | echom a:1.' is not a valid repo' | echohl None
       return
    endif
 
-   if !isdirectory(s:plugs_path.plugin_name)
-      echohl Error | echom plugin_name.' does not exist' | echohl None
+   if !isdirectory(plugin['dir'])
+      echohl Error | echom plugin['name'].' does not exist' | echohl None
    endif
 
    call jobstart(cmd, {
-            \ 'name': plugin_name,
-            \ 'cwd': s:plugs_path.plugin_name,
-            \ 'on_exit': function('s:on_exit_generic')
+            \ 'name': plugin['name'],
+            \ 'cwd': plugin['dir'],
+            \ 'should_load': 1,
+            \ 'tag': cmd,
+            \ 'on_exit': function('s:on_exit_cb')
             \ })
 endf
 
 fun! s:pack_update() abort
-   " TODO use s:plugins
-   for dir in split(glob('~/.local/share/nvim/site/pack/backpack/opt/*'))
-      call jobstart('git pull', {
-               \ 'name': fnamemodify(dir, ':t'),
-               \ 'cwd': dir,
-               \ 'on_exit': function('s:on_exit_generic')
+   for plugin in s:plugins
+      if isdirectory(plugin['dir'])
+         let cmd = 'git pull'
+         let cwd = plugin['dir']
+         let tag = 'updating'
+      else
+         let cmd = printf('git clone %s', plugin['git_url'])
+         let cwd = s:plugs_path
+         let tag = 'cloning'
+      endif
+      call jobstart(cmd, {
+               \ 'name': fnamemodify(plugin['dir'], ':t'),
+               \ 'cwd': cwd,
+               \ 'hook': plugin['hook'],
+               \ 'should_load': 1,
+               \ 'tag': tag,
+               \ 'on_exit': function('s:on_exit_cb')
                \ })
    endfor
 endf
 
 fun! s:pack_clean() abort
+   let dirs = split(glob('~/.local/share/nvim/site/pack/backpack/opt/*'))
+   let invalid_dirs = []
+   for dir in dirs
+      let name = fnamemodify(dir, ':t')
+      if !s:plugin_exists(name)
+         call add(invalid_dirs, name)
+      endif
+   endfor
+   call call(function('s:pack_delete'), invalid_dirs)
 endf
 
-" job callbacks
-
-fun! s:on_pack_add_exit(job_id, data, event) abort dict
-   if a:data
-      echohl Error | echom '['.self['name'].'] finished cloning with exit status '.a:data | echohl None
-   else
+fun! s:on_exit_cb(job_id, data, event) abort dict
+   call s:echom(self['name'], self['tag'], a:data)
+   if !a:data
       let dir = self['cwd'].self['name']
-      call add(s:plugins, {
-               \ 'git_url': self['git_url'],
-               \ 'name': self['name'],
-               \ 'dir': dir,
-               \ 'hook': self['hook']
-               \ })
-      exe 'helptags '.dir.'/doc/'
-      if self['should_load'] && empty(self['hook'])
-         echohl MoreMsg | echom '['.self['name'].'] finished cloning successfully!' | echohl None
+      if !s:plugin_exists(self['name'])
+         call add(s:plugins, {
+                  \ 'git_url': self['git_url'],
+                  \ 'name': self['name'],
+                  \ 'dir': dir,
+                  \ 'hook': get(self, 'hook', '')
+                  \ })
+         exe 'helptags '.dir.'/doc/'
+      endif
+      let hook = get(self, 'hook', '')
+      if self['should_load'] && empty(hook)
          exe 'packadd '.self['name']
-      elseif !empty(self['hook'])
-         exe 'PackDo '.self['name'].' '.self['hook']
+      elseif !empty(hook)
+         call s:handle_hook({
+                  \ 'hook': hook,
+                  \ 'name': self['name'],
+                  \ 'should_load': self['should_load'],
+                  \ 'cwd': dir
+                  \ })
       endif
    endif
 endf
 
-" TODO add a key 'tag' to print additional info
-fun! s:on_exit_generic(job_id, data, event) abort dict
-   if a:data
-      echohl Error | echom '['.self['name'].'] finished with exit status '.a:data | echohl None
-   else
-      echohl MoreMsg | echom '['.self['name'].'] finished successfully!' | echohl None
+" info: {
+"         'hook': String|Function,
+"         'name': String,
+"         'cwd': String,
+"         'should_load': 0|1
+"       }
+fun! s:handle_hook(info) abort
+   let Hook = a:info['hook']
+   if type(Hook) == 2
+      call Hook()
+   elseif type(Hook) == 1
+      call remove(a:info, 'hook')
+      call jobstart(Hook, extend({
+               \ 'tag': Hook,
+               \ 'hook': '',
+               \ 'should_load': 1,
+               \ 'on_exit': function('s:on_exit_cb')
+               \ }, a:info))
    endif
 endf
-
-" Utility functions
 
 " plugin_tag is of the format 'author/plugin_name'
 fun! s:parse_repo(repo) abort
@@ -207,6 +242,65 @@ fun! s:setup_lazy(plugin_name, cmd) abort
             \.' | '.a:cmd.'<bang> <args>'
 endf
 
-fun! s:complete_pack_delete(A,L,P) abort
+fun! s:complete_plugin_names(A,L,P) abort
    return join(map(split(glob('~/.local/share/nvim/site/pack/backpack/opt/*')), 'fnamemodify(v:val, ":t")'), "\n")
+endf
+
+fun! s:echom(name, tag, exit_status) abort
+   if !a:exit_status
+      echohl MoreMsg
+      let msg = 'finished successfully!'
+   else
+      echohl Error
+      let msg = printf('finished unsuccessfully with exit status %s', a:exit_status)
+   endif
+
+   echom printf('[%s] - { %s } - %s', a:name, a:tag, msg)
+
+   echohl None
+endf
+
+fun! s:plugin_exists(name) abort
+   return s:index_of_plugin(a:name) != -1
+endf
+
+fun! s:get_plugin(name) abort
+   let i = s:index_of_plugin(a:name)
+   if i != -1
+      return s:plugins[i]
+   else
+      return {}
+   endif
+endf
+
+fun! s:index_of_plugin(name) abort
+   let i = 0
+   for plugin in s:plugins
+      if a:name ==# plugin['name']
+         return i
+      endif
+      let i += 1
+   endfor
+   return -1
+endf
+
+fun! s:edit_packmanifest(edit_func) abort
+   let should_close = 0
+   if !bufexists(bufname(s:manifest_path))
+      let should_close = 1
+      exe 'vsplit '.s:manifest_path
+   endif
+   let winnr = bufwinid(bufname(s:manifest_path))
+   if winnr == -1
+      vsplit
+      exe 'b '.bufname(s:manifest_path)
+   else
+      call win_gotoid(winnr)
+   endif
+   call a:edit_func()
+   %!uniq|sort
+   write
+   if should_close
+      bw!
+   endif
 endf
