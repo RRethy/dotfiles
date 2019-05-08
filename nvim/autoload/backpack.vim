@@ -205,7 +205,6 @@ fun! s:handle_hook(info) abort
    endif
 endf
 
-" plugin_tag is of the format 'author/plugin_name'
 fun! s:parse_repo(repo) abort
    let tag = '\(\[^ /]\+\)\/\(\[^ /]\+\)'
    let https_git_fmt = '\V\c\^https://github.com/'.tag.'.git\$'

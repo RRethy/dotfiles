@@ -1,4 +1,4 @@
-" call sixpack#init()
+scriptencoding utf-8
 
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
@@ -15,11 +15,11 @@ let g:fzf_colors = {
 			\ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['sixpack', '', 'qf']
+let g:Illuminate_ftblacklist = ['', 'qf']
 " let g:Illuminate_ftHighlightGroups = {
 " 			\ 'cpp': ['', 'Function', 'Constant']
 " 			\ }
-let g:Illuminate_delay = 250
+" let g:Illuminate_delay = 250
 " hi illuminatedWord guibg=#28293a
 
 " call neomake#configure#automake('w')
@@ -46,3 +46,8 @@ let g:Hexokinase_optInPatterns = [
 " nnoremap <silent> <Leader>i :PackBrowse<CR>
 
 nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>
+
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+
+call backpack#init()

@@ -4,8 +4,6 @@ let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
-call backpack#init()
-
 command! WS w|so %
 
 nnoremap cl 0D
@@ -14,6 +12,8 @@ nnoremap g0 ^
 nnoremap g4 $
 nnoremap g6 ^
 nnoremap g5 %
+nnoremap <A-l> 2zl
+nnoremap <A-h> 2zh
 nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
