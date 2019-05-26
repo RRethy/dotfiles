@@ -48,12 +48,21 @@ fun! s:pack(...) abort
             \ }
    call extend(plugin, a:0 > 1 && type(a:2) == 4 ? a:2 : {})
 
-   if empty(get(plugin, 'on', ''))
+   if empty(get(plugin, 'on', '')) && !has_key(plugin, 'for')
       try
          exe 'packadd '.name
       catch /E919/
       endtry
-   else
+   endif
+
+   if has_key(plugin, 'for')
+      exe 'augroup '.plugin['name'].'_backpack_autocmds'
+         autocmd!
+         exe 'autocmd FileType '.plugin['for'].' packadd '.name
+      augroup END
+   endif
+
+   if !empty(get(plugin, 'on', ''))
       call s:setup_lazy(name, plugin['on'])
    endif
 

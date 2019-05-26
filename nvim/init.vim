@@ -4,7 +4,7 @@ let mapleader=' '
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
-command! WS w|so %
+command! -bar WS w|so %
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -21,10 +21,10 @@ nnoremap <silent> - :Ex<CR>
 nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>//g<Left><Left>
 nnoremap <silent> <C-p>     :Files<CR>
-nnoremap <silent> <leader>d :Dash<CR>
+" nnoremap <silent> <leader>d :Dash<CR>
 nnoremap          <Leader>b :Buffers<CR>
 nnoremap          <Leader>h :Helptags<CR>
-nnoremap <silent> <Leader>l :set list!<CR>
+" nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
@@ -46,6 +46,11 @@ nnoremap <silent> [l :lprevious<CR>
 nnoremap <silent> ]l :lnext<CR>
 nnoremap <silent> [L :lfirst<CR>
 nnoremap <silent> ]L :llast<CR>
+
+nmap <silent> [w <Plug>(ale_previous)
+nmap <silent> ]w <Plug>(ale_next)
+nmap <silent> [W <Plug>(ale_first)
+nmap <silent> ]W <Plug>(ale_last)
 
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
@@ -104,7 +109,7 @@ set tabstop=3 " A tab is 3 spaces
 set softtabstop=3 " Backspace 3 spaces at a time at start of line
 set shiftround " Round shifts with << >> to shiftwidth
 set shiftwidth=3 " Round shifts to multiples of 3 spaces
-set expandtab " Spaces > tabs
+set noexpandtab " Spaces > tabs
 set nowrap " Don't wrap the text, it's annoying
 set mouse=a " Mouse support is nice for resizing splits
 set sidescroll=10 " Scroll horizontally when 10 cols from edge
@@ -126,9 +131,9 @@ set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
 set backupdir=~/.local/share/nvim/backup
-set pastetoggle=<F5> " Toggle paste from insert mode. Prefer "+p
+set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw
-set grepprg=rg\ -H\ --no-heading\ --smart-case\ --vimgrep
+set grepprg=rg\ -H\ --no-heading\ --smart-case\ --vimgrep\ \"$*\"
 set grepformat=%f:%l:%c:%m
 set cpoptions+=>
 set autowrite
@@ -138,9 +143,10 @@ if has('autocmd')
       autocmd!
       autocmd FileType vim setlocal foldmethod=marker
       autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
+      autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
    augroup END
 
-   augroup dim_inactive_windows
+   augroup dim_inactive_windows_autocmds
       autocmd!
       autocmd WinLeave * setlocal nocursorline
       autocmd WinEnter,BufEnter * setlocal cursorline

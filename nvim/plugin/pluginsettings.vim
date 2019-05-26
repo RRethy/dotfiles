@@ -15,7 +15,10 @@ let g:fzf_colors = {
 			\ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['', 'qf']
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
+let g:Illuminate_ftHighlightGroups = {
+         \ 'vim:blacklist': ['vimVar', 'vimLet'],
+			\ }
 " let g:Illuminate_ftHighlightGroups = {
 " 			\ 'cpp': ['', 'Function', 'Constant']
 " 			\ }
@@ -26,15 +29,23 @@ let g:Illuminate_ftblacklist = ['', 'qf']
 
 let g:netrw_banner = 0
 
-" let g:Hexokinase_virtualText = '██████'
-" let g:Hexokinase_ftAutoload = []
+let g:Hexokinase_virtualText = '██████'
+let g:Hexokinase_ftAutoload = ['css', 'text', 'md', 'erb']
+let g:Hexokinase_palettes = [expand($HOME.'/go/src/github.com/rrethy/hexokinase/sample_palette.json')]
 " let g:Hexokinase_highlighters = ['sign_column']
-let g:Hexokinase_optInPatterns = [
-			\ 'full_hex',
-         \ 'triple_hex',
-			\ 'rgb',
-			\ 'rgba'
-			\ ]
+" let g:Hexokinase_v2 = 0
+			" \   'virtual',
+			" \   'background',
+			" \   'foreground',
+			" \   'foregroundfull'
+" let g:Hexokinase_optOutPatterns = 'hex'
+" let g:Hexokinase_highlighters = ['']
+" let g:Hexokinase_optInPatterns = [
+" 			\ 'full_hex',
+"          \ 'triple_hex',
+" 			\ 'rgb',
+" 			\ 'rgba'
+" 			\ ]
 " let g:Hexokinase_ftAutoload = ['css', 'sass']
 " let g:Hexokinase_refreshEvents = []
 
@@ -47,7 +58,12 @@ let g:Hexokinase_optInPatterns = [
 
 nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>
 
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+nnoremap <silent> <leader>a :ALELint<CR>
+
+let g:tex_flavor = 'latex'
+let g:vimtex_view_method = 'skim'
+let g:vimtex_quickfix_mode = 0
 
 call backpack#init()
