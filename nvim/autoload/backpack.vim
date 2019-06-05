@@ -50,7 +50,7 @@ fun! s:pack(...) abort
 
    if empty(get(plugin, 'on', '')) && !has_key(plugin, 'for')
       try
-         exe 'packadd '.name
+         exe 'packadd! '.name
       catch /E919/
       endtry
    endif

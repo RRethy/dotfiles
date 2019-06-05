@@ -37,11 +37,13 @@ POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='yellow'
 
 CASE_SENSITIVE="false"
 HYPHEN_INSENSITIVE="true"
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 #DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="dd/mm/yyyy"
-plugins=(git autojump brew common-aliases gitfast git-extras sudo)
+plugins=(git brew common-aliases gitfast git-extras sudo)
 DISABLE_CORRECTION="true"
+unsetopt correct_all
+unsetopt correct
 # }}}
 
 # Functions{{{
@@ -121,10 +123,6 @@ function updateGitIgnore() {
   git commit -m ".gitignore fix"
 }
 
-function cd {
-	builtin cd $1
-}
-
 # }}}
 
 # variable{{{
@@ -140,6 +138,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 export PATH=$FLUTTER/bin:$PATH
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=$HOME/.cargo/bin/:$PATH
+export PATH=$HOME/.config/bin/:$PATH
 export PATH="$PATH":"~/.pub-cache/bin"
 export PATH="$PATH:~/depot_tools"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -183,7 +182,7 @@ alias now="date +%d-%m-%y"
 alias v="nvim"
 # alias vim="nvim"
 alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim' -S"
-alias h="cd ~"
+# alias h="cd ~"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="nvim ~/.todo/hometodo.md -c 'cd %:p:h'"
@@ -211,6 +210,8 @@ alias vs="v -S"
 # echo '\n'
 
 # cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1
+
+source $HOME/ruby/jumpdir/jd.zsh
 
 eval "$(rbenv init -)"
 

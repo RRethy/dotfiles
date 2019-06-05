@@ -51,7 +51,7 @@
     darkred     = ["#be5046", 1, "darkred"]
     darkgreen   = ["#008000", 2, "darkgreen"]
     darkyellow  = ["#d19965", 3, "darkyellow"]
-    darkblue    = ["#61afef", 4, "darkblue"]
+    darkblue    = ["#528bff", 4, "darkblue"]
     darkmagenta = ["#d55fde", 5, "darkmagenta"]
     darkcyan    = ["#00ACC1", 6, "darkcyan"]
     gray        = ["#515e77", 7, "gray"]
@@ -99,7 +99,7 @@
     # remove any if you want a working colorscheme.
     highlights = [
         [ "Normal", black, white, "NONE" ],
-        [ "NonText", white, darkgray, "bold" ],
+        [ "NonText", black, gray, "bold" ],
         [ "Comment", "NONE", gray, "italic" ],
         [ "Constant", "NONE", darkyellow, "NONE" ],
         [ "Error", darkred, "NONE", "bold" ],
@@ -107,11 +107,11 @@
         [ "Ignore", "Conceal" ],
         [ "PreProc", "NONE", yellow, "NONE" ],
         [ "Special", "NONE", darkcyan, "NONE" ],
-        [ "Statement", "NONE", purple, "NONE" ],
+        [ "Statement", "NONE", magenta, "NONE" ],
         [ "String", "NONE", green, "NONE" ],
         [ "Number", "Constant" ],
         [ "Todo", "NONE", cyan, "bold" ],
-        [ "Type", "NONE", purple, "NONE" ],
+        [ "Type", "NONE", magenta, "NONE" ],
         [ "Underlined", "NONE", "NONE", "bold,underline" ],
         [ "StatusLine", darkgray, "NONE", "NONE" ],
         [ "StatusLineNC", "NONE", darkgray, "NONE" ],
@@ -121,44 +121,44 @@
         [ "TabLine", darkgray, "NONE", "NONE" ],
         [ "TabLineFill", "NONE", "NONE", "NONE" ],
         [ "TabLineSel", white, black, "NONE" ],
-        [ "Title", "NONE", purple, "bold" ],
+        [ "Title", "NONE", magenta, "bold" ],
         [ "CursorLine", darkgray, "NONE", "NONE" ],
         [ "LineNr", "NONE", gray, "NONE" ],
-        [ "CursorLineNr", "NONE", cyan, "NONE" ],
+        [ "CursorLineNr", darkgray, darkblue, "bold" ],
         [ "helpLeadBlank", white, darkgray, "NONE" ],
         [ "helpNormal", white, darkgray, "NONE" ],
         [ "Visual", gray, "NONE", "NONE" ],
         [ "VisualNOS", "Visual" ],
-        [ "Pmenu", darkcyan, "NONE", "NONE" ],
+        [ "Pmenu", darkcyan, "bg", "NONE" ],
         [ "PmenuSbar", darkcyan, magenta, "NONE" ],
-        [ "PmenuSel", cyan, "NONE", "bold" ],
-        [ "PmenuThumb", darkred, darkgreen, "NONE" ],
+        [ "PmenuSel", cyan, "bg", "bold" ],
+        [ "PmenuThumb", darkred, "NONE", "NONE" ],
         [ "FoldColumn", "LineNr" ],
         [ "Folded", darkgray, white, "NONE" ],
         [ "WildMenu", white, darkgray, "NONE" ],
         [ "SpecialKey", white, darkgray, "NONE" ],
-        [ "DiffAdd", white, darkgray, "NONE" ],
-        [ "DiffChange", white, darkgray, "NONE" ],
-        [ "DiffDelete", white, darkgray, "NONE" ],
-        [ "DiffText", white, darkgray, "NONE" ],
-        [ "IncSearch", white, darkgray, "NONE" ],
-        [ "Search", white, darkgray, "NONE" ],
-        [ "Directory", white, darkgray, "NONE" ],
-        [ "MatchParen", white, darkgray, "NONE" ],
-        [ "SpellBad", white, darkgray, "NONE", red ],
-        [ "SpellCap", white, darkgray, "NONE", blue ],
-        [ "SpellLocal", white, darkgray, "NONE", magenta ],
-        [ "SpellRare", white, darkgray, "NONE", cyan ],
-        [ "ColorColumn", white, darkgray, "NONE" ],
-        [ "SignColumn", white, darkgray, "NONE" ],
-        [ "ErrorMsg", white, darkgray, "NONE" ],
-        [ "ModeMsg", white, darkgray, "NONE" ],
-        [ "MoreMsg", white, darkgray, "NONE" ],
-        [ "Question", white, darkgray, "NONE" ],
+        [ "DiffAdd", green, "NONE", "NONE" ],
+        [ "DiffChange", yellow, "NONE", "NONE" ],
+        [ "DiffDelete", red, "NONE", "NONE" ],
+        [ "DiffText", magenta, "NONE", "NONE" ],
+        [ "IncSearch", blue, "bg", "NONE" ],
+        [ "Search", cyan, "bg", "NONE" ],
+        [ "Directory", "NONE", cyan, "bold" ],
+        [ "MatchParen", "NONE", darkblue, "bold,underline" ],
+        [ "SpellBad", "NONE", darkred, "bold,underline" ],
+        [ "SpellCap", "NONE", red, "bold" ],
+        [ "SpellLocal", "NONE", "NONE", "NONE" ],
+        [ "SpellRare", "NONE", yellow, "NONE" ],
+        [ "ColorColumn", "CursorLine" ],
+        [ "SignColumn", "NONE", "bg", "NONE" ],
+        [ "ErrorMsg", darkred, black, "bold" ],
+        [ "ModeMsg", "NONE", cyan, "underline" ],
+        [ "MoreMsg", "NONE", darkblue, "bold" ],
+        [ "Question", "NONE", darkblue, "bold" ],
         [ "WarningMsg", "Error" ],
-        [ "Cursor", white, darkgray, "NONE" ],
-        [ "CursorColumn", white, darkgray, "NONE" ],
-        [ "QuickFixLine", white, darkgray, "NONE" ]
+        [ "Cursor", blue, "NONE", "NONE" ],
+        [ "CursorColumn", "CursorLine" ],
+        [ "QuickFixLine", blue, "bg", "NONE" ]
     ]
 
     # Define the color palette used by :terminal when in GUI Vim
@@ -264,13 +264,17 @@
 
 hi clear
 
-if exists("syntax_on")
+if exists('syntax_on')
   syntax reset
 endif
 
-let colors_name = "<%= information[:name].downcase %>"
+let colors_name = '<%= information[:name].downcase %>'
 
-if ($TERM =~ '256' || &t_Co >= 256) || has("gui_running")
+if has('termguicolors')
+	set termguicolors
+endif
+
+if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
 <% for highlight in highlights -%>
 <% if highlight.length == 4 -%>
     hi <%= highlight[0] %> ctermbg=<%= highlight[1].kind_of?(String) ? highlight[1] : highlight[1][1] %> ctermfg=<%= highlight[2].kind_of?(String) ? highlight[2] : highlight[2][1] %> cterm=<%= highlight[3] %> guibg=<%= highlight[1].kind_of?(String) ? highlight[1] : highlight[1][0] %> guifg=<%= highlight[2].kind_of?(String) ? highlight[2] : highlight[2][0] %> gui=<%= highlight[3] %>
@@ -309,11 +313,21 @@ hi link <%= link[0] %> <%= link[1] %>
 <% end -%>
 <% if terminal_ansi_colors.length == 16 -%>
 <%= '' %>
-let g:terminal_ansi_colors = [
-<% for color in terminal_ansi_colors -%>
+if has('nvim')
+<%= '' %>
+<% terminal_ansi_colors.each_with_index do |colour, index| -%>
+    let g:terminal_color_<%= index -%> = '<%= colour[0] -%>'
+<% end -%>
+<%= '' %>
+else
+<%= '' %>
+    let g:terminal_ansi_colors = [
+    <% for color in terminal_ansi_colors -%>
         \ '<%= color[0] %>',
-<% end -%>
+    <% end -%>
         \ ]
-<% end -%>
+    <% end -%>
+<%= '' %>
+endif
 
 " Generated with RNB (https://github.com/romainl/vim-rnb)
