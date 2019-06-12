@@ -186,6 +186,7 @@ alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim' -S"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="nvim ~/.todo/hometodo.md -c 'cd %:p:h'"
+alias words="nvim ~/.todo/words.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
 alias esrc="nvim ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
 alias startcleanstatusbar="adb shell settings put global sysui_demo_allowed 1"
@@ -211,7 +212,7 @@ alias vs="v -S"
 
 # cat ~/.config/wikidates/$(date +%B_%d) | gshuf -n 1
 
-source $HOME/ruby/jumpdir/jd.zsh
+source $HOME/ruby/jumpdir/jumpdir.zsh
 
 eval "$(rbenv init -)"
 

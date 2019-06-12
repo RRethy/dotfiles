@@ -7,6 +7,7 @@ call backpack#init()
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
 command! -bar WS w|so %
+command! -bar -nargs=+ DevDocs call system('open '.shellescape('https://devdocs.io/#q='.&filetype.'%20'.expand('<cword>')))
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -150,8 +151,8 @@ if has('autocmd')
 
    augroup dim_inactive_windows_autocmds
       autocmd!
-      autocmd WinLeave * setlocal nocursorline
-      autocmd WinEnter,BufEnter * setlocal cursorline
+      autocmd WinLeave * if &ft !~# 'qf' | setlocal nocursorline | endif
+      autocmd WinEnter,BufEnter * if &ft !~# 'qf' | setlocal cursorline | endif
    augroup END
 endif
 

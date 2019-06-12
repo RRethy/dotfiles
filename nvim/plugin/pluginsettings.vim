@@ -17,12 +17,13 @@ let g:fzf_colors = {
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
 let g:Illuminate_ftHighlightGroups = {
-         \ 'vim:blacklist': ['vimVar', 'vimLet'],
-			\ }
+            \ 'vim:blacklist': ['vimVar', 'vimLet'],
+            \ 'ruby:blacklist': ['Statement', 'PreProc']
+            \ }
 " let g:Illuminate_ftHighlightGroups = {
 " 			\ 'cpp': ['', 'Function', 'Constant']
 " 			\ }
-" let g:Illuminate_delay = 250
+let g:Illuminate_delay = 0
 " hi illuminatedWord guibg=#28293a
 
 " call neomake#configure#automake('w')
@@ -30,7 +31,7 @@ let g:Illuminate_ftHighlightGroups = {
 let g:netrw_banner = 0
 
 let g:Hexokinase_virtualText = '██████'
-let g:Hexokinase_ftAutoload = ['css', 'text', 'md', 'erb']
+" let g:Hexokinase_ftAutoload = ['css', 'md', 'erb']
 let g:Hexokinase_palettes = [expand($HOME.'/go/src/github.com/rrethy/hexokinase/sample_palette.json')]
 " let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_v2 = 0
@@ -65,3 +66,10 @@ nnoremap <silent> <leader>a :ALELint<CR>
 let g:tex_flavor = 'latex'
 let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_mode = 0
+
+let g:matchup_matchparen_status_offscreen = 0
+
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_classes_in_global = 1
+let g:rubycomplete_rails = 1
+let g:rubycomplete_load_gemfile = 1

@@ -70,7 +70,6 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi MoreMsg ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
     hi Question ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
     hi Cursor ctermbg=12 ctermfg=NONE cterm=NONE guibg=#61afef guifg=NONE gui=NONE
-    hi QuickFixLine ctermbg=12 ctermfg=bg cterm=NONE guibg=#61afef guifg=bg gui=NONE
 
 elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     set t_Co=16
@@ -129,18 +128,18 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi MoreMsg ctermbg=NONE ctermfg=darkblue cterm=bold
     hi Question ctermbg=NONE ctermfg=darkblue cterm=bold
     hi Cursor ctermbg=blue ctermfg=NONE cterm=NONE
-    hi QuickFixLine ctermbg=blue ctermfg=bg cterm=NONE
 endif
 
 hi link Ignore Conceal
 hi link Number Constant
 hi link StatusLineTerm StatusLine
 hi link StatusLineTermNC StatusLineNC
-hi link VisualNOS Visual
+hi link VisualNOS CursorLine
 hi link FoldColumn LineNr
 hi link ColorColumn CursorLine
 hi link WarningMsg Error
 hi link CursorColumn CursorLine
+hi link QuickFixLine CursorLine
 
 if has('nvim')
 

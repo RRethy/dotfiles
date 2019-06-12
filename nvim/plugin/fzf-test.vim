@@ -12,18 +12,26 @@
 " command!      -bang -nargs=? -complete=dir Banana       call <SID>bar()
 
 
-" fun! s:bar() abort
-" return fzf#run({
-"       \ 'prefix': '^.*$',
-"       \ 'source': 'find .',
-"       \ 'sink*': function('s:foo')
-"       \ })
-" endf
-
 " fun! s:foo(arg) abort
 "   echom string(a:arg)
 " endf
 
+" fun! s:spotlight_search(bg, app) abort
+"     if empty(a:app)
+"     else
+"         call system()
+"     endif
+" endf
+
+" command! -bang -bar -nargs=? Spotlight call s:spotlight_search(<bang>0, <q-args>)
+
+" fun! s:bar() abort
+" call fzf#run({
+"       \ 'prefix': '^.*$',
+"       \ 'source': 'mdfind kind:app',
+"       \ 'sink*': function('s:foo')
+"       \ })
+" endf
 
 " function! s:make_sentence(lines)
 "   return substitute(join(a:lines), '^.', '\=toupper(submatch(0))', '').'.'
