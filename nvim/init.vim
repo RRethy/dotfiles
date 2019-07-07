@@ -2,12 +2,15 @@ scriptencoding utf-8
 
 let mapleader=' '
 
+colorscheme schemer
+
 call backpack#init()
 
 call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
 
 command! -bar WS w|so %
-command! -bar -nargs=+ DevDocs call system('open '.shellescape('https://devdocs.io/#q='.&filetype.'%20'.expand('<cword>')))
+" Dash > DevDocs
+" command! -bar -nargs=+ DevDocs call system('open '.shellescape('https://devdocs.io/#q='.&filetype.'%20'.expand('<cword>')))
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -24,10 +27,7 @@ nnoremap <silent> - :Ex<CR>
 nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
-" nnoremap <silent> <leader>d :Dash<CR>
-nnoremap          <Leader>b :Buffers<CR>
-nnoremap          <Leader>h :Helptags<CR>
-" nnoremap <silent> <Leader>l :set list!<CR>
+nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
@@ -69,8 +69,6 @@ nnoremap <silent> yon :set number!<CR>
 nnoremap <silent> yor :set relativenumber!<CR>
 
 nnoremap <silent> yos :set spell!<CR>
-nnoremap <silent> [os :set spell<CR>
-nnoremap <silent> ]os :set nospell<CR>
 
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
@@ -124,11 +122,12 @@ set noruler " Don't show line info bottom right since I have a custom statusline
 set showmatch " Jump cursor to '(' when inputting the closing ')'
 set matchtime=5 " showmatch above operates for 50 millis
 set spelllang=en_ca " Spell language for Canadian English
+"
 " set undofile " Persist undo after file closes
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
 " set shortmess+=cI " Don't show annoying completion messages
-set shortmess+=I " Don't show annoying completion messages
+set shortmess+=I " Don't show intro msg (vim-illuminate messes it up anyway)
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
@@ -154,7 +153,9 @@ if has('autocmd')
       autocmd WinLeave * if &ft !~# 'qf' | setlocal nocursorline | endif
       autocmd WinEnter,BufEnter * if &ft !~# 'qf' | setlocal cursorline | endif
    augroup END
-endif
 
-" TODO Figure out what I want to do with this:
-" vim:set et sw=4 foldmethod=expr foldexpr=getline(v\:lnum)=~'^\"\ Section\:'?'>1'\:getline(v\:lnum)=~#'^fu'?'a1'\:getline(v\:lnum)=~#'^endf'?'s1'\:'=':
+   augroup hl_trailing_whitespace
+       autocmd!
+       autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
+   augroup END
+endif

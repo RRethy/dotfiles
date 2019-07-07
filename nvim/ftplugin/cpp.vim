@@ -1,4 +1,6 @@
-set foldmethod=syntax
-set foldlevel=9
+set keywordprg=:Dash
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 
 command! -buffer A exe 'edit '.expand('%:h').'.h'

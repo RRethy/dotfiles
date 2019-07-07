@@ -123,11 +123,14 @@
         [ "TabLineSel", white, black, "NONE" ],
         [ "Title", "NONE", magenta, "bold" ],
         [ "CursorLine", darkgray, "NONE", "NONE" ],
+        [ "ColorColumn", darkgray, "NONE", "NONE" ],
+        [ "CursorColumn", darkgray, "NONE", "NONE" ],
         [ "LineNr", "NONE", gray, "NONE" ],
         [ "CursorLineNr", darkgray, darkblue, "bold" ],
+        [ "Cursor", "NONE", "NONE", "NONE" ],
         [ "helpLeadBlank", white, darkgray, "NONE" ],
         [ "helpNormal", white, darkgray, "NONE" ],
-        [ "Visual", gray, "NONE", "NONE" ],
+        [ "Visual", darkgray, "NONE", "NONE" ],
         [ "VisualNOS", "CursorLine" ],
         [ "Pmenu", darkcyan, "bg", "NONE" ],
         [ "PmenuSbar", darkcyan, magenta, "NONE" ],
@@ -149,15 +152,12 @@
         [ "SpellCap", "NONE", red, "bold" ],
         [ "SpellLocal", "NONE", "NONE", "NONE" ],
         [ "SpellRare", "NONE", yellow, "NONE" ],
-        [ "ColorColumn", "CursorLine" ],
         [ "SignColumn", "NONE", "bg", "NONE" ],
         [ "ErrorMsg", darkred, black, "bold" ],
         [ "ModeMsg", "NONE", cyan, "underline" ],
         [ "MoreMsg", "NONE", darkblue, "bold" ],
         [ "Question", "NONE", darkblue, "bold" ],
         [ "WarningMsg", "Error" ],
-        [ "Cursor", blue, "NONE", "NONE" ],
-        [ "CursorColumn", "CursorLine" ],
         [ "QuickFixLine", "CursorLine" ]
     ]
 
@@ -329,5 +329,23 @@ else
     <% end -%>
 <%= '' %>
 endif
+
+hi SilentStatusline    guifg=#A9B7C6 guibg=#2c323c
+hi SpySl               guifg=#1e2127 guibg=#A9B7C6
+hi SpySlInv            guifg=#A9B7C6 guibg=#818E9C
+hi LeftPrompt          guifg=#1e2127 guibg=#818E9C
+hi LeftPromptInv       guifg=#818E9C guibg=#657281
+hi GitPrompt           guifg=#1e2127 guibg=#657281
+hi GitPromptInv        guifg=#657281 guibg=#2c323c
+hi RightPrompt         guifg=#1e2127 guibg=#A9B7C6
+hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
+
+hi SilentStatuslineNC  guifg=#A9B7C6 guibg=#2c323c
+hi SpySlNC             guifg=#1e2127 guibg=#818E9C
+hi SpySlInvNC          guifg=#818E9C guibg=#657281
+hi LeftPromptNC        guifg=#1e2127 guibg=#657281
+hi LeftPromptInvNC     guifg=#657281 guibg=#2c323c
+hi RightPromptNC       guifg=#1e2127 guibg=#818E9C
+hi RightPromptInvNC    guifg=#818E9C guibg=#2c323c
 
 " Generated with RNB (https://github.com/romainl/vim-rnb)

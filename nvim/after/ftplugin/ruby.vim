@@ -1,1 +1,1 @@
-set keywordprg=:DevDoc
+set keywordprg=:Dash

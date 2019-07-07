@@ -12,6 +12,8 @@
     helper = cache --timeout=3600
 [rerere]
     enabled = true
+[merge]
+    conflictStyle = diff3
 [alias]
     co = checkout
     st = status

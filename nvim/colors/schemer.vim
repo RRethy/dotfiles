@@ -40,11 +40,14 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi TabLineSel ctermbg=15 ctermfg=0 cterm=NONE guibg=#abb2bf guifg=#1e2127 gui=NONE
     hi Title ctermbg=NONE ctermfg=13 cterm=bold guibg=NONE guifg=#c578dd gui=bold
     hi CursorLine ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
+    hi ColorColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
+    hi CursorColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi LineNr ctermbg=NONE ctermfg=7 cterm=NONE guibg=NONE guifg=#515e77 gui=NONE
     hi CursorLineNr ctermbg=8 ctermfg=4 cterm=bold guibg=#2c313c guifg=#528bff gui=bold
+    hi Cursor ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi helpLeadBlank ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi helpNormal ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
-    hi Visual ctermbg=7 ctermfg=NONE cterm=NONE guibg=#515e77 guifg=NONE gui=NONE
+    hi Visual ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi Pmenu ctermbg=6 ctermfg=bg cterm=NONE guibg=#00ACC1 guifg=bg gui=NONE
     hi PmenuSbar ctermbg=6 ctermfg=13 cterm=NONE guibg=#00ACC1 guifg=#c578dd gui=NONE
     hi PmenuSel ctermbg=14 ctermfg=bg cterm=bold guibg=#56b5c2 guifg=bg gui=bold
@@ -69,7 +72,6 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi ModeMsg ctermbg=NONE ctermfg=14 cterm=underline guibg=NONE guifg=#56b5c2 gui=underline
     hi MoreMsg ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
     hi Question ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
-    hi Cursor ctermbg=12 ctermfg=NONE cterm=NONE guibg=#61afef guifg=NONE gui=NONE
 
 elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     set t_Co=16
@@ -98,11 +100,14 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi TabLineSel ctermbg=white ctermfg=black cterm=NONE
     hi Title ctermbg=NONE ctermfg=magenta cterm=bold
     hi CursorLine ctermbg=darkgray ctermfg=NONE cterm=NONE
+    hi ColorColumn ctermbg=darkgray ctermfg=NONE cterm=NONE
+    hi CursorColumn ctermbg=darkgray ctermfg=NONE cterm=NONE
     hi LineNr ctermbg=NONE ctermfg=gray cterm=NONE
     hi CursorLineNr ctermbg=darkgray ctermfg=darkblue cterm=bold
+    hi Cursor ctermbg=NONE ctermfg=NONE cterm=NONE
     hi helpLeadBlank ctermbg=white ctermfg=darkgray cterm=NONE
     hi helpNormal ctermbg=white ctermfg=darkgray cterm=NONE
-    hi Visual ctermbg=gray ctermfg=NONE cterm=NONE
+    hi Visual ctermbg=darkgray ctermfg=NONE cterm=NONE
     hi Pmenu ctermbg=darkcyan ctermfg=bg cterm=NONE
     hi PmenuSbar ctermbg=darkcyan ctermfg=magenta cterm=NONE
     hi PmenuSel ctermbg=cyan ctermfg=bg cterm=bold
@@ -127,7 +132,6 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi ModeMsg ctermbg=NONE ctermfg=cyan cterm=underline
     hi MoreMsg ctermbg=NONE ctermfg=darkblue cterm=bold
     hi Question ctermbg=NONE ctermfg=darkblue cterm=bold
-    hi Cursor ctermbg=blue ctermfg=NONE cterm=NONE
 endif
 
 hi link Ignore Conceal
@@ -136,9 +140,7 @@ hi link StatusLineTerm StatusLine
 hi link StatusLineTermNC StatusLineNC
 hi link VisualNOS CursorLine
 hi link FoldColumn LineNr
-hi link ColorColumn CursorLine
 hi link WarningMsg Error
-hi link CursorColumn CursorLine
 hi link QuickFixLine CursorLine
 
 if has('nvim')
@@ -182,5 +184,23 @@ else
             \ ]
     
 endif
+
+hi SilentStatusline    guifg=#A9B7C6 guibg=#2c323c
+hi SpySl               guifg=#1e2127 guibg=#A9B7C6
+hi SpySlInv            guifg=#A9B7C6 guibg=#818E9C
+hi LeftPrompt          guifg=#1e2127 guibg=#818E9C
+hi LeftPromptInv       guifg=#818E9C guibg=#657281
+hi GitPrompt           guifg=#1e2127 guibg=#657281
+hi GitPromptInv        guifg=#657281 guibg=#2c323c
+hi RightPrompt         guifg=#1e2127 guibg=#A9B7C6
+hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
+
+hi SilentStatuslineNC  guifg=#A9B7C6 guibg=#2c323c
+hi SpySlNC             guifg=#1e2127 guibg=#818E9C
+hi SpySlInvNC          guifg=#818E9C guibg=#657281
+hi LeftPromptNC        guifg=#1e2127 guibg=#657281
+hi LeftPromptInvNC     guifg=#657281 guibg=#2c323c
+hi RightPromptNC       guifg=#1e2127 guibg=#818E9C
+hi RightPromptInvNC    guifg=#818E9C guibg=#2c323c
 
 " Generated with RNB (https://github.com/romainl/vim-rnb)

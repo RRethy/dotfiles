@@ -15,15 +15,16 @@ let g:fzf_colors = {
 			\ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'cfg']
 let g:Illuminate_ftHighlightGroups = {
-            \ 'vim:blacklist': ['vimVar', 'vimLet'],
-            \ 'ruby:blacklist': ['Statement', 'PreProc']
+            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand'],
+            \ 'ruby:blacklist': ['Statement', 'PreProc'],
+            \ 'cpp:blacklist': ['cType',  'cppSTLnamespace']
             \ }
 " let g:Illuminate_ftHighlightGroups = {
 " 			\ 'cpp': ['', 'Function', 'Constant']
 " 			\ }
-let g:Illuminate_delay = 0
+" let g:Illuminate_delay = 0
 " hi illuminatedWord guibg=#28293a
 
 " call neomake#configure#automake('w')
@@ -33,7 +34,11 @@ let g:netrw_banner = 0
 let g:Hexokinase_virtualText = '██████'
 " let g:Hexokinase_ftAutoload = ['css', 'md', 'erb']
 let g:Hexokinase_palettes = [expand($HOME.'/go/src/github.com/rrethy/hexokinase/sample_palette.json')]
-" let g:Hexokinase_highlighters = ['sign_column']
+let g:Hexokinase_optOutPatterns = ['triple_hex', 'colour_names']
+" #ffffff
+" let g:Hexokinase_ftOptOutPatterns = {'text': 'full_hex'}
+" let g:Hexokinase_ftOptInPatterns
+" let g:Hexokinase_highlighters = ['backgroundfull']
 " let g:Hexokinase_v2 = 0
 			" \   'virtual',
 			" \   'background',
@@ -57,10 +62,12 @@ let g:Hexokinase_palettes = [expand($HOME.'/go/src/github.com/rrethy/hexokinase/
 
 " nnoremap <silent> <Leader>i :PackBrowse<CR>
 
-nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>
+" nnoremap <silent> <Leader><F2> :HexokinaseToggle<CR>
 
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
+let g:ale_lint_on_insert_leave = 0
+" let g:ale_lint_on_save = 0
 nnoremap <silent> <leader>a :ALELint<CR>
 
 let g:tex_flavor = 'latex'
@@ -68,6 +75,7 @@ let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_mode = 0
 
 let g:matchup_matchparen_status_offscreen = 0
+let g:matchup_matchparen_deferred = 50
 
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_classes_in_global = 1
