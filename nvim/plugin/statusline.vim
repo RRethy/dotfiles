@@ -42,6 +42,16 @@ endf
 fun! s:simple_active_statusline() abort
 endf
 
+fun! Ale_statusline_warnings() abort
+    let warnings = ale#statusline#Count(bufnr('%')).warning
+    return warnings == 0 ? '' : printf(' %d ', warnings)
+endf
+
+fun! Ale_statusline_errors() abort
+    let errors = ale#statusline#Count(bufnr('%')).error
+    return errors == 0 ? '' : printf(' %d ', errors)
+endf
+
 function! s:fancy_active_statusline() abort
   setlocal statusline=%#SpySl#
   setlocal statusline+=\ 
@@ -65,6 +75,14 @@ function! s:fancy_active_statusline() abort
   setlocal statusline+=%{ObsessionStatus()}
   setlocal statusline+=\ 
   setlocal statusline+=%#GitPromptInv#
+  setlocal statusline+=
+  setlocal statusline+=%#AlePromptErrors#
+  setlocal statusline+=%{Ale_statusline_errors()}
+  setlocal statusline+=%#AlePromptErrorsInv#
+  setlocal statusline+=
+  setlocal statusline+=%#AlePromptWarnings#
+  setlocal statusline+=%{Ale_statusline_warnings()}
+  setlocal statusline+=%#AlePromptWarningsInv#
   setlocal statusline+=
   setlocal statusline+=%=
   setlocal statusline+=%#RightPromptInv#

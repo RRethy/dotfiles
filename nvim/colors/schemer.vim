@@ -25,7 +25,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi Constant ctermbg=NONE ctermfg=3 cterm=NONE guibg=NONE guifg=#d19965 gui=NONE
     hi Error ctermbg=1 ctermfg=NONE cterm=bold guibg=#be5046 guifg=NONE gui=bold
     hi Identifier ctermbg=NONE ctermfg=9 cterm=NONE guibg=NONE guifg=#e06c75 gui=NONE
-    hi Conceal ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
+    hi Conceal ctermbg=bg ctermfg=fg cterm=NONE guibg=bg guifg=fg gui=NONE
     hi PreProc ctermbg=NONE ctermfg=11 cterm=NONE guibg=NONE guifg=#e4bf7a gui=NONE
     hi Special ctermbg=NONE ctermfg=6 cterm=NONE guibg=NONE guifg=#00ACC1 gui=NONE
     hi Statement ctermbg=NONE ctermfg=13 cterm=NONE guibg=NONE guifg=#c578dd gui=NONE
@@ -86,7 +86,7 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi Constant ctermbg=NONE ctermfg=darkyellow cterm=NONE
     hi Error ctermbg=darkred ctermfg=NONE cterm=bold
     hi Identifier ctermbg=NONE ctermfg=red cterm=NONE
-    hi Conceal ctermbg=NONE ctermfg=NONE cterm=NONE
+    hi Conceal ctermbg=bg ctermfg=fg cterm=NONE
     hi PreProc ctermbg=NONE ctermfg=yellow cterm=NONE
     hi Special ctermbg=NONE ctermfg=darkcyan cterm=NONE
     hi Statement ctermbg=NONE ctermfg=magenta cterm=NONE
@@ -187,15 +187,19 @@ else
     
 endif
 
-hi SilentStatusline    guifg=#A9B7C6 guibg=#2c323c
-hi SpySl               guifg=#1e2127 guibg=#A9B7C6
-hi SpySlInv            guifg=#A9B7C6 guibg=#818E9C
-hi LeftPrompt          guifg=#1e2127 guibg=#818E9C
-hi LeftPromptInv       guifg=#818E9C guibg=#657281
-hi GitPrompt           guifg=#1e2127 guibg=#657281
-hi GitPromptInv        guifg=#657281 guibg=#2c323c
-hi RightPrompt         guifg=#1e2127 guibg=#A9B7C6
-hi RightPromptInv      guifg=#A9B7C6 guibg=#2c323c
+hi SilentStatusline     guifg=#A9B7C6 guibg=#2c323c
+hi SpySl                guifg=#1e2127 guibg=#A9B7C6
+hi SpySlInv             guifg=#A9B7C6 guibg=#818E9C
+hi LeftPrompt           guifg=#1e2127 guibg=#818E9C
+hi LeftPromptInv        guifg=#818E9C guibg=#657281
+hi GitPrompt            guifg=#1e2127 guibg=#657281
+hi GitPromptInv         guifg=#657281 guibg=#e06c75
+hi RightPrompt          guifg=#1e2127 guibg=#A9B7C6
+hi RightPromptInv       guifg=#A9B7C6 guibg=#2c323c
+hi AlePromptErrors      guifg=#2c313c guibg=#e06c75
+hi AlePromptErrorsInv   guifg=#e06c75 guibg=#d19965
+hi AlePromptWarnings    guifg=#2c313c guibg=#d19965
+hi AlePromptWarningsInv guifg=#d19965 guibg=#2c323c
 
 hi SilentStatuslineNC  guifg=#A9B7C6 guibg=#2c323c
 hi SpySlNC             guifg=#1e2127 guibg=#818E9C

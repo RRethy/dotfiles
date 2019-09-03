@@ -76,6 +76,7 @@ let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
+let g:ale_disable_lsp = 1
 " let g:ale_lint_on_save = 0
 nnoremap <silent> <leader>a :ALELint<CR>
 
