@@ -62,6 +62,8 @@ function! s:fancy_active_statusline() abort
   setlocal statusline+=\ 
   setlocal statusline+=%{FugitiveStatusline()}
   setlocal statusline+=\ 
+  setlocal statusline+=%{ObsessionStatus()}
+  setlocal statusline+=\ 
   setlocal statusline+=%#GitPromptInv#
   setlocal statusline+=
   setlocal statusline+=%=

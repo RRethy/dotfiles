@@ -27,13 +27,14 @@ nnoremap <silent> - :Ex<CR>
 nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
+nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
+nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
-nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
-nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>* :grep <cword><CR>
+nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 
 nnoremap <silent> [a :previous<CR>
 nnoremap <silent> ]a :next<CR>
@@ -67,6 +68,7 @@ nnoremap <silent> [T :tfirst<CR>
 
 nnoremap <silent> yon :set number!<CR>
 nnoremap <silent> yor :set relativenumber!<CR>
+nnoremap yoh :set hlsearch!<CR>
 
 nnoremap <silent> yos :set spell!<CR>
 
@@ -99,7 +101,7 @@ set smartcase " Match lowercase to all, but only match upper case to upper case
 set number " Show current line number on left
 set relativenumber " Show relative line numbers on left for jk jumping
 set numberwidth=3 " Give the left bar of line numbers 4 cols to use
-set updatetime=250 " I use this used for CursorHold autocmd for deoplete
+" set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
 set iskeyword+=- " Add hyphen to be a keyword, bad for racket and python
 set hidden " Absolutely necessary. Allows hidden buffers
@@ -139,6 +141,7 @@ set grepformat=%f:%l:%c:%m
 set cpoptions+=> " add newline when appending to registers
 set autowrite " auto write on :make and various other commands
 set completeopt-=preview
+set nohlsearch
 
 if has('autocmd')
    augroup filetype_automcds

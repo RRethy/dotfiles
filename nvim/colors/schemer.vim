@@ -25,6 +25,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi Constant ctermbg=NONE ctermfg=3 cterm=NONE guibg=NONE guifg=#d19965 gui=NONE
     hi Error ctermbg=1 ctermfg=NONE cterm=bold guibg=#be5046 guifg=NONE gui=bold
     hi Identifier ctermbg=NONE ctermfg=9 cterm=NONE guibg=NONE guifg=#e06c75 gui=NONE
+    hi Conceal ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi PreProc ctermbg=NONE ctermfg=11 cterm=NONE guibg=NONE guifg=#e4bf7a gui=NONE
     hi Special ctermbg=NONE ctermfg=6 cterm=NONE guibg=NONE guifg=#00ACC1 gui=NONE
     hi Statement ctermbg=NONE ctermfg=13 cterm=NONE guibg=NONE guifg=#c578dd gui=NONE
@@ -59,8 +60,8 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi DiffChange ctermbg=11 ctermfg=NONE cterm=NONE guibg=#e4bf7a guifg=NONE gui=NONE
     hi DiffDelete ctermbg=9 ctermfg=NONE cterm=NONE guibg=#e06c75 guifg=NONE gui=NONE
     hi DiffText ctermbg=13 ctermfg=NONE cterm=NONE guibg=#c578dd guifg=NONE gui=NONE
-    hi IncSearch ctermbg=12 ctermfg=bg cterm=NONE guibg=#61afef guifg=bg gui=NONE
-    hi Search ctermbg=14 ctermfg=bg cterm=NONE guibg=#56b5c2 guifg=bg gui=NONE
+    hi IncSearch ctermbg=5 ctermfg=bg cterm=NONE guibg=#d55fde guifg=bg gui=NONE
+    hi Search ctermbg=12 ctermfg=bg cterm=NONE guibg=#61afef guifg=bg gui=NONE
     hi Directory ctermbg=NONE ctermfg=14 cterm=bold guibg=NONE guifg=#56b5c2 gui=bold
     hi MatchParen ctermbg=NONE ctermfg=4 cterm=bold,underline guibg=NONE guifg=#528bff gui=bold,underline
     hi SpellBad ctermbg=NONE ctermfg=1 cterm=bold,underline guibg=NONE guifg=#be5046 gui=bold,underline
@@ -85,6 +86,7 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi Constant ctermbg=NONE ctermfg=darkyellow cterm=NONE
     hi Error ctermbg=darkred ctermfg=NONE cterm=bold
     hi Identifier ctermbg=NONE ctermfg=red cterm=NONE
+    hi Conceal ctermbg=NONE ctermfg=NONE cterm=NONE
     hi PreProc ctermbg=NONE ctermfg=yellow cterm=NONE
     hi Special ctermbg=NONE ctermfg=darkcyan cterm=NONE
     hi Statement ctermbg=NONE ctermfg=magenta cterm=NONE
@@ -119,8 +121,8 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi DiffChange ctermbg=yellow ctermfg=NONE cterm=NONE
     hi DiffDelete ctermbg=red ctermfg=NONE cterm=NONE
     hi DiffText ctermbg=magenta ctermfg=NONE cterm=NONE
-    hi IncSearch ctermbg=blue ctermfg=bg cterm=NONE
-    hi Search ctermbg=cyan ctermfg=bg cterm=NONE
+    hi IncSearch ctermbg=darkmagenta ctermfg=bg cterm=NONE
+    hi Search ctermbg=blue ctermfg=bg cterm=NONE
     hi Directory ctermbg=NONE ctermfg=cyan cterm=bold
     hi MatchParen ctermbg=NONE ctermfg=darkblue cterm=bold,underline
     hi SpellBad ctermbg=NONE ctermfg=darkred cterm=bold,underline

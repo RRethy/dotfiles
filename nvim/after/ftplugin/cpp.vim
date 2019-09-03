@@ -2,7 +2,7 @@ fun! CppFoldExpr(lnum) abort
     let prevline = getline(a:lnum-1)
     let curline = getline(a:lnum)
     let shift = repeat(&expandtab ? ' ' : '	', &shiftwidth)
-    if prevline =~# '\v^\S+\s\S+\(.*\)\s\{$'
+    if prevline =~# '\v^\S+\s+\S+\s*\(.*\)\s+%(const)?\s*\{$'
                 \ && curline !~# '\v^\}$'
         return '>1'
     elseif prevline =~# '\v^%(class|struct)\s*\S*\s*\{$'
