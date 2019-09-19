@@ -1,0 +1,10 @@
+{
+    "coc.preferences.colorSupport": false,
+    "languageserver": {
+        "golang": {
+            "command": "gopls",
+            "rootPatterns": ["go.mod"],
+            "filetypes": ["go"]
+        }
+    }
+}

@@ -1,3 +1,5 @@
+finish
+
 scriptencoding utf-8
 
 " fzf stuff
@@ -87,7 +89,11 @@ let g:vimtex_quickfix_mode = 0
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
 
-let g:rubycomplete_buffer_loading = 1
-let g:rubycomplete_classes_in_global = 1
-let g:rubycomplete_rails = 1
-let g:rubycomplete_load_gemfile = 1
+" let g:rubycomplete_buffer_loading = 1
+" let g:rubycomplete_classes_in_global = 1
+" let g:rubycomplete_rails = 1
+" let g:rubycomplete_load_gemfile = 1
+
+" let g:LanguageClient_serverCommands = {
+"             \ 'go': ['gopls'],
+"             \ }

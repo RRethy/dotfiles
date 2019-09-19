@@ -157,12 +157,14 @@ export PATH=$PATH:$GOPATH/bin/
 export PATH=$PATH:~/Library/Android/sdk/tools/bin/
 export ANDROID_HOME=~/Library/Android/sdk/
 
-export VISUAL=nvim
+# export VISUAL='nvim'
+export VISUAL='nvim'
 export LANG=en_US.UTF-8
 export TERM="xterm-256color"
 export ZSH=~/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
+# export EDITOR='nvim'
 export MANPAGER="nvim -c 'set ft=man' -"
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/openssl/lib/pkgconfig:"
 export PGDATA=/usr/local/var/postgres/
@@ -180,16 +182,17 @@ alias vimhelp="nvim -c 'h help.txt|only'"
 alias nvm="nvim -c 'h vim_diff.txt|only'"
 alias ds="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 alias now="date +%d-%m-%y"
+# alias v="nvim"
 alias v="nvim"
 # alias vim="nvim"
-alias nrc="nvim ~/.config/nvim/init.vim -c 'cd ~/.config/nvim' -S"
+alias nrc="v ~/.config/nvim/init.vim -c 'cd ~/.config/nvim' -S"
 # alias h="cd ~"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
-alias todo="nvim ~/.todo/hometodo.md -c 'cd %:p:h'"
-alias words="nvim ~/.todo/words.md -c 'cd %:p:h'"
+alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
+alias words="v ~/.todo/words.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
-alias esrc="nvim ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
+alias esrc="v ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"
 alias startcleanstatusbar="adb shell settings put global sysui_demo_allowed 1"
 alias cleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200 | adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e level 4 -e datatype false | adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false | adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false -e level 100"
 alias endcleanstatusbar="adb shell am broadcast -a com.android.systemui.demo -e command exit"

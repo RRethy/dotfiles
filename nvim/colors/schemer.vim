@@ -49,10 +49,10 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi helpLeadBlank ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi helpNormal ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi Visual ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
-    hi Pmenu ctermbg=6 ctermfg=bg cterm=NONE guibg=#00ACC1 guifg=bg gui=NONE
-    hi PmenuSbar ctermbg=6 ctermfg=13 cterm=NONE guibg=#00ACC1 guifg=#c578dd gui=NONE
+    hi Pmenu ctermbg=7 ctermfg=fg cterm=NONE guibg=#515e77 guifg=fg gui=NONE
+    hi PmenuSbar ctermbg=7 ctermfg=NONE cterm=NONE guibg=#515e77 guifg=NONE gui=NONE
     hi PmenuSel ctermbg=14 ctermfg=bg cterm=bold guibg=#56b5c2 guifg=bg gui=bold
-    hi PmenuThumb ctermbg=1 ctermfg=NONE cterm=NONE guibg=#be5046 guifg=NONE gui=NONE
+    hi PmenuThumb ctermbg=13 ctermfg=NONE cterm=NONE guibg=#c578dd guifg=NONE gui=NONE
     hi Folded ctermbg=8 ctermfg=15 cterm=NONE guibg=#2c313c guifg=#abb2bf gui=NONE
     hi WildMenu ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi SpecialKey ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
@@ -110,10 +110,10 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi helpLeadBlank ctermbg=white ctermfg=darkgray cterm=NONE
     hi helpNormal ctermbg=white ctermfg=darkgray cterm=NONE
     hi Visual ctermbg=darkgray ctermfg=NONE cterm=NONE
-    hi Pmenu ctermbg=darkcyan ctermfg=bg cterm=NONE
-    hi PmenuSbar ctermbg=darkcyan ctermfg=magenta cterm=NONE
+    hi Pmenu ctermbg=gray ctermfg=fg cterm=NONE
+    hi PmenuSbar ctermbg=gray ctermfg=NONE cterm=NONE
     hi PmenuSel ctermbg=cyan ctermfg=bg cterm=bold
-    hi PmenuThumb ctermbg=darkred ctermfg=NONE cterm=NONE
+    hi PmenuThumb ctermbg=magenta ctermfg=NONE cterm=NONE
     hi Folded ctermbg=darkgray ctermfg=white cterm=NONE
     hi WildMenu ctermbg=white ctermfg=darkgray cterm=NONE
     hi SpecialKey ctermbg=white ctermfg=darkgray cterm=NONE

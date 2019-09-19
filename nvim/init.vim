@@ -21,6 +21,8 @@ nnoremap g5 %
 nnoremap <A-l> 2zl
 nnoremap <A-h> 2zh
 nnoremap <silent> g8 :norm! *N<CR>
+nnoremap <left> gT
+nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap <silent> - :Ex<CR>
@@ -124,7 +126,6 @@ set noruler " Don't show line info bottom right since I have a custom statusline
 set showmatch " Jump cursor to '(' when inputting the closing ')'
 set matchtime=5 " showmatch above operates for 50 millis
 set spelllang=en_ca " Spell language for Canadian English
-"
 " set undofile " Persist undo after file closes
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
@@ -142,6 +143,7 @@ set cpoptions+=> " add newline when appending to registers
 set autowrite " auto write on :make and various other commands
 set completeopt-=preview
 set nohlsearch
+set pumblend=10
 
 if has('autocmd')
    augroup filetype_automcds
@@ -162,3 +164,50 @@ if has('autocmd')
        autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
    augroup END
 endif
+
+" fzf stuff
+let g:fzf_layout = { 'down': '~30%' }
+if has('autocmd')
+	augroup fzf
+		autocmd! FileType fzf
+		autocmd  FileType fzf set laststatus=0 noshowmode noruler nonu nornu
+					\| autocmd BufLeave <buffer> set laststatus=2
+	augroup END
+endif
+let g:fzf_history_dir = '~/.local/share/nvim/fzf-history'
+let g:fzf_colors = {
+			\ 'bg+': ['bg', 'Normal', 'Normal'],
+			\ }
+
+" Illuminate stuff
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'cfg']
+let g:Illuminate_ftHighlightGroups = {
+            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimVar'],
+            \ 'ruby:blacklist': ['Statement', 'PreProc'],
+            \ 'cpp:blacklist': ['cType',  'cppSTLnamespace', 'Statement', 'Type'],
+            \ 'go:blacklist': ['goVar', 'goComment']
+            \ }
+
+let g:netrw_banner = 0
+
+let g:Hexokinase_virtualText = '██████'
+let g:Hexokinase_highlighters = ['foregroundfull']
+let g:Hexokinase_checkBoundary = 1
+let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
+
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_insert_leave = 0
+let g:ale_disable_lsp = 1
+" nnoremap <silent> <leader>a :ALELint<CR>
+
+let g:tex_flavor = 'latex'
+let g:vimtex_view_method = 'skim'
+let g:vimtex_quickfix_mode = 0
+
+let g:matchup_matchparen_status_offscreen = 0
+let g:matchup_matchparen_deferred = 50
+
+" let g:LanguageClient_serverCommands = {
+"             \ 'go': ['gopls'],
+"             \ }
