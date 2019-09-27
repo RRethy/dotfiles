@@ -4,13 +4,11 @@ let mapleader=' '
 
 colorscheme schemer
 
+call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
+
 call backpack#init()
 
-call mkdir($HOME . '/.local/share/nvim/backup/', 'p')
-
 command! -bar WS w|so %
-" Dash > DevDocs
-" command! -bar -nargs=+ DevDocs call system('open '.shellescape('https://devdocs.io/#q='.&filetype.'%20'.expand('<cword>')))
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -37,6 +35,7 @@ nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>* :grep <cword><CR>
 nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
+nnoremap <silent> <leader>m :mks!<CR>
 
 nnoremap <silent> [a :previous<CR>
 nnoremap <silent> ]a :next<CR>
@@ -109,6 +108,8 @@ set iskeyword+=- " Add hyphen to be a keyword, bad for racket and python
 set hidden " Absolutely necessary. Allows hidden buffers
 set nolist " Needed for listchars, kinda shit to have on always IMO, toggle with <Leader>l
 set listchars=tab:-,eol:¬,extends:>,precedes:< " Just some niceties for set list
+" set list
+" set listchars=trail:\  " highlight trailing whitespace
 set tabstop=4 " A tab is 4 spaces
 set softtabstop=4 " Backspace 4 spaces at a time at start of line
 set shiftround " Round shifts with << >> to shiftwidth
@@ -132,7 +133,7 @@ set spelllang=en_ca " Spell language for Canadian English
 " set shortmess+=cI " Don't show annoying completion messages
 set shortmess+=I " Don't show intro msg (vim-illuminate messes it up anyway)
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
-set sessionoptions+=resize " Remember lines/cols when saving a session
+" set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
 set backupdir=~/.local/share/nvim/backup
 set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
@@ -140,8 +141,8 @@ set lazyredraw " don't redraw when executing a macro
 set grepprg=rg\ --smart-case\ --vimgrep\ \"$*\"
 set grepformat=%f:%l:%c:%m
 set cpoptions+=> " add newline when appending to registers
-set autowrite " auto write on :make and various other commands
-set completeopt-=preview
+" set autowrite " auto write on :make and various other commands
+set completeopt=menu
 set nohlsearch
 set pumblend=10
 
@@ -153,7 +154,7 @@ if has('autocmd')
       autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
    augroup END
 
-   augroup dim_inactive_windows_autocmds
+   augroup hide_qf_cursor
       autocmd!
       autocmd WinLeave * if &ft !~# 'qf' | setlocal nocursorline | endif
       autocmd WinEnter,BufEnter * if &ft !~# 'qf' | setlocal cursorline | endif
@@ -168,16 +169,16 @@ endif
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
 if has('autocmd')
-	augroup fzf
-		autocmd! FileType fzf
-		autocmd  FileType fzf set laststatus=0 noshowmode noruler nonu nornu
-					\| autocmd BufLeave <buffer> set laststatus=2
-	augroup END
+    augroup fzf
+        autocmd! FileType fzf
+        autocmd  FileType fzf set laststatus=0 noshowmode noruler nonu nornu
+                    \| autocmd BufLeave <buffer> set laststatus=2
+    augroup END
 endif
 let g:fzf_history_dir = '~/.local/share/nvim/fzf-history'
 let g:fzf_colors = {
-			\ 'bg+': ['bg', 'Normal', 'Normal'],
-			\ }
+            \ 'bg+': ['bg', 'Normal', 'Normal'],
+            \ }
 
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'cfg']
@@ -185,14 +186,13 @@ let g:Illuminate_ftHighlightGroups = {
             \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimVar'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
             \ 'cpp:blacklist': ['cType',  'cppSTLnamespace', 'Statement', 'Type'],
-            \ 'go:blacklist': ['goVar', 'goComment']
+            \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat']
             \ }
 
 let g:netrw_banner = 0
 
 let g:Hexokinase_virtualText = '██████'
 let g:Hexokinase_highlighters = ['foregroundfull']
-let g:Hexokinase_checkBoundary = 1
 let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
 
 let g:ale_lint_on_text_changed = 'never'

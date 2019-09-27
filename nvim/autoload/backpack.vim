@@ -169,7 +169,7 @@ endf
 fun! s:on_exit_cb(job_id, data, event) abort dict
    call s:echom(self['name'], self['tag'], a:data)
    if !a:data
-      let dir = self['cwd'].self['name']
+      let dir = self['cwd']
       if !s:plugin_exists(self['name'])
          call add(s:plugins, {
                   \ 'git_url': self['git_url'],
@@ -205,6 +205,7 @@ fun! s:handle_hook(info) abort
       call Hook()
    elseif type(Hook) == 1
       call remove(a:info, 'hook')
+      echom string(a:info)
       call jobstart(Hook, extend({
                \ 'tag': Hook,
                \ 'hook': '',
