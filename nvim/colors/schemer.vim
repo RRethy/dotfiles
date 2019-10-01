@@ -144,6 +144,7 @@ hi link VisualNOS CursorLine
 hi link FoldColumn LineNr
 hi link WarningMsg Error
 hi link QuickFixLine CursorLine
+hi link Whitespace CursorLine
 
 if has('nvim')
 
@@ -191,7 +192,8 @@ hi SilentStatusline     guifg=#A9B7C6 guibg=#2c323c
 hi SpySl                guifg=#1e2127 guibg=#A9B7C6
 hi SpySlInv             guifg=#A9B7C6 guibg=#818E9C
 hi LeftPrompt           guifg=#1e2127 guibg=#818E9C
-hi LeftPromptInv        guifg=#818E9C guibg=#657281
+" hi LeftPromptInv        guifg=#818E9C guibg=#657281
+hi LeftPromptInv        guifg=#818E9C guibg=#e06c75
 hi GitPrompt            guifg=#1e2127 guibg=#657281
 hi GitPromptInv         guifg=#657281 guibg=#e06c75
 hi RightPrompt          guifg=#1e2127 guibg=#A9B7C6

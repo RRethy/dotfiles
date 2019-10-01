@@ -156,6 +156,7 @@ export PATH=$PATH:~/.pub-cache/bin/
 export PATH=$PATH:$GOPATH/bin/
 export PATH=$PATH:~/Library/Android/sdk/tools/bin/
 export ANDROID_HOME=~/Library/Android/sdk/
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # export VISUAL='nvim'
 export VISUAL='nvim'

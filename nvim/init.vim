@@ -15,7 +15,6 @@ nnoremap Y y$
 nnoremap g0 ^
 nnoremap g4 $
 nnoremap g6 ^
-nnoremap g5 %
 nnoremap <A-l> 2zl
 nnoremap <A-h> 2zh
 nnoremap <silent> g8 :norm! *N<CR>
@@ -36,6 +35,7 @@ nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>* :grep <cword><CR>
 nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 nnoremap <silent> <leader>m :mks!<CR>
+nmap              <leader>e :e %%
 
 nnoremap <silent> [a :previous<CR>
 nnoremap <silent> ]a :next<CR>
@@ -145,13 +145,14 @@ set cpoptions+=> " add newline when appending to registers
 set completeopt=menu
 set nohlsearch
 set pumblend=10
+set signcolumn=auto:3
 
 if has('autocmd')
    augroup filetype_automcds
       autocmd!
-      autocmd FileType vim setlocal foldmethod=marker
+      " autocmd FileType vim setlocal foldmethod=marker
       autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
-      autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
+      " autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
    augroup END
 
    augroup hide_qf_cursor
