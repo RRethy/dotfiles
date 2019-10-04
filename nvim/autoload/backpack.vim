@@ -106,7 +106,11 @@ fun! s:pack_delete(...) abort
       silent exe '!rm -rf ~/.local/share/nvim/site/pack/backpack/opt/'.plug
       call s:edit_packmanifest({->
                \ execute('%g/'.escape(plug, '/').'/d', 'silent!')})
-      call remove(s:plugins, s:index_of_plugin(plug['name']))
+      let index = s:index_of_plugin(plug['name'])
+      if index != -1
+          " TODO this shouldn't be needed
+          call remove(s:plugins, s:index_of_plugin(plug['name']))
+      endif
    endfor
 endf
 
@@ -169,7 +173,7 @@ endf
 fun! s:on_exit_cb(job_id, data, event) abort dict
    call s:echom(self['name'], self['tag'], a:data)
    if !a:data
-      let dir = self['cwd']
+      let dir = self['cwd'].self['name']
       if !s:plugin_exists(self['name'])
          call add(s:plugins, {
                   \ 'git_url': self['git_url'],

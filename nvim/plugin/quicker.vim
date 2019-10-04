@@ -1,3 +1,5 @@
+" cfilter replaces this
+finish
 command! -bar -nargs=+ Keep call s:keep(<f-args>)
 command! -bar -nargs=+ Discard call s:discard(<f-args>)
 
