@@ -219,7 +219,14 @@ alias vs="v -S"
 
 source $HOME/ruby/jumpdir/jumpdir.zsh
 
-eval "$(rbenv init -)"
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
+
+# load dev, but only if present and the shell is interactive
+if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
+    source /opt/dev/dev.sh
+else
+    eval "$(rbenv init -)"
+fi
 eval $(opam env)
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
