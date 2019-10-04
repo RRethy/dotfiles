@@ -35,6 +35,7 @@ nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>* :grep <cword><CR>
 nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 nnoremap <silent> <leader>m :mks!<CR>
+nnoremap <silent> <leader>r :redraw!<CR>
 nmap              <leader>e :e %%
 
 nnoremap <silent> [a :previous<CR>
