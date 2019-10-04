@@ -4,3 +4,9 @@ nvim/views/
 ranger/
 nvim/.netrwhist
 configstore/
+dev/
+gcloud/
+nix/
+nixpkgs/
+shadowenv/
+trust-key
