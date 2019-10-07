@@ -26,6 +26,8 @@ nnoremap <silent> - :Ex<CR>
 nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
+nnoremap <silent> <leader>a :argadd %<CR>
+nnoremap <silent> <leader>d :argdelete %<CR>
 nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
 nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>h :Helptags<CR>
