@@ -9,6 +9,7 @@ call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
 call backpack#init()
 
 command! -bar WS w|so %
+command! Yankfname let @* = expand('%:p')
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -145,10 +146,10 @@ set grepprg=rg\ --smart-case\ --vimgrep\ \"$*\"
 set grepformat=%f:%l:%c:%m
 set cpoptions+=> " add newline when appending to registers
 " set autowrite " auto write on :make and various other commands
-set completeopt=menu
-set nohlsearch
-set pumblend=10
-set signcolumn=auto:3
+set completeopt=menu " just use a pmenu to display completion
+set nohlsearch " feels nicer off since used mainly for nav, yoh to toggle
+set pumblend=10 " 10% transparency pmenu
+set signcolumn=auto:3 " max 3 width sign column
 
 if has('autocmd')
    augroup filetype_automcds
@@ -198,11 +199,16 @@ let g:netrw_banner = 0
 let g:Hexokinase_virtualText = '██████'
 let g:Hexokinase_highlighters = ['foregroundfull']
 let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
+" let g:Hexokinase_palettes = ['/Users/adam/go/src/github.com/rrethy/hexokinase/sample_palette.json']
 
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
 let g:ale_disable_lsp = 1
+let g:ale_fixers = {
+            \     'ruby': [ 'rubocop' ],
+            \     'json': [ 'jq' ]
+            \ }
 " nnoremap <silent> <leader>a :ALELint<CR>
 
 let g:tex_flavor = 'latex'
@@ -211,6 +217,8 @@ let g:vimtex_quickfix_mode = 0
 
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
+
+" let g:line_number_interval#enable_at_startup = 1
 
 " let g:LanguageClient_serverCommands = {
 "             \ 'go': ['gopls'],

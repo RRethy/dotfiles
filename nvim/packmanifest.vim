@@ -1,4 +1,6 @@
 " Pack 'autozimu/LanguageClient-neovim', { 'hook': 'bash install.sh' }
+" Pack 'bfredl/nvim-incnormal'
+" Pack 'ludovicchabant/vim-gutentags'
 " Pack 'mxw/vim-jsx'
 " Pack 'pangloss/vim-javascript'
 " Pack 'tpope/vim-bundler'
@@ -8,15 +10,14 @@
 " Pack 'vim-ruby/vim-ruby'
 " Pack 'wincent/vcs-jump'
 " packadd! coc.nvim
+" Pack 'IMOKURI/line-number-interval.nvim'
 Pack 'andymass/vim-matchup'
-" Pack 'bfredl/nvim-incnormal'
 Pack 'bfrg/vim-cpp-modern'
 Pack 'editorconfig/editorconfig-vim'
 Pack 'fatih/vim-go'
 Pack 'junegunn/fzf.vim'
 Pack 'junegunn/vim-easy-align'
 Pack 'lervag/vimtex'
-" Pack 'ludovicchabant/vim-gutentags'
 Pack 'rizzatti/dash.vim'
 Pack 'tpope/vim-commentary'
 Pack 'tpope/vim-fugitive'

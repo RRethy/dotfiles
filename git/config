@@ -14,6 +14,8 @@
     enabled = true
 [merge]
     conflictStyle = diff3
+[diff]
+    noprefix = true
 [alias]
     co = checkout
     st = status

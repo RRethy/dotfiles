@@ -1,78 +1,79 @@
 [user]
-  name = Adam P. Regasz-Rethy
-  email = rethy.spud@gmail.com
+    name = Adam P. Regasz-Rethy
+    email = rethy.spud@gmail.com
 [color]
-  ui = auto
+    ui = auto
 [color "branch"]
-  current = green reverse
-  local = yellow
-  remote = blue
+    current = green reverse
+    local = yellow
+    remote = blue
 [color "diff"]
-  meta = yellow bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
 [color "status"]
-  added = green bold
-  changed = green
-  untracked = red
+    added = green bold
+    changed = green
+    untracked = red
 [commit]
-  verbose = true
+    verbose = true
 [core]
-  editor = nvim
-  excludesfile = ~/.gitignore_global
+    editor = nvim
+    excludesfile = ~/.gitignore_global
 [push]
-  default = current
+    default = current
 ; [merge]
 ;   conflictstyle = diff3
 [credential]
-  helper = cache --timeout=3600
+    helper = cache --timeout=3600
 [alias]
-  l  = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --exclude=origin/build_* --remotes --branches
-  ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --branches --tags --remotes
-  lb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-  ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
-  co = checkout
-  st = status
-  sts = status -s
-  up = remote update -p
-  ff = merge --ff-only
-  b  = branch --sort=committerdate
-  ba = branch
-  bdd = branch --sort=-committerdate
-  pls = push --force-with-lease
-  please = push --force-with-lease
-  po = pull origin
-  ca = !git add -A && git commit -av
-  caa = !git add -A && git commit --amend -av
-  caaf = !git add -A && git commit --amend
-  caas = !git add -A && git commit --amend --no-edit
-  rn = "!f() { git branch -m $1; }; f"
-  d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
-  rh = reset --hard
-  done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
-  cp = cherry-pick
-  rwc = commit -v --amend
-  su = "submodule update"
-  grog = log --graph --abbrev-commit --decorate --all --format=format:\"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)\"
-  cob = !git checkout $(git branch --sort=committerdate | fzf)
-  cobr = !git checkout $(git branch -r | fzf)
-  sa = stash apply
-  si = stash
-  d = difftool --no-symlinks --dir-diff
+    l  = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --exclude=origin/build_* --remotes --branches
+    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --branches --tags --remotes
+    lb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    co = checkout
+    st = status
+    sts = status -s
+    up = remote update -p
+    ff = merge --ff-only
+    b  = branch --sort=committerdate
+    ba = branch
+    bdd = branch --sort=-committerdate
+    pls = push --force-with-lease
+    please = push --force-with-lease
+    po = pull origin
+    ca = !git add -A && git commit -av
+    caa = !git add -A && git commit --amend -av
+    caaf = !git add -A && git commit --amend
+    caas = !git add -A && git commit --amend --no-edit
+    rn = "!f() { git branch -m $1; }; f"
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+    rh = reset --hard
+    done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
+    cp = cherry-pick
+    rwc = commit -v --amend
+    su = "submodule update"
+    grog = log --graph --abbrev-commit --decorate --all --format=format:\"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)\"
+    cob = !git checkout $(git branch --sort=committerdate | fzf)
+    cobr = !git checkout $(git branch -r | fzf)
+    sa = stash apply
+    si = stash
+    d = difftool --no-symlinks --dir-diff
 [rerere]
-  enabled = true
+    enabled = true
 [diff]
-  tool = nvimdiff2
+    tool = nvimdiff2
+    noprefix = true
 [difftool "nvimdiff2"]
-  cmd = nvim -d $LOCAL $REMOTE
+    cmd = nvim -d $LOCAL $REMOTE
 [difftool]
-  trustExitCode = true
+    trustExitCode = true
 [merge]
-  tool = nvimdiff4
+    tool = nvimdiff4
 [mergetool "nvimdiff4"]
-  trustExitCode = true
-  cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    trustExitCode = true
+    cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [mergetool "nfugitive"]
-  trustExitCode = true
-  cmd = nvim -f -c "Gdiff" "$MERGED"
+    trustExitCode = true
+    cmd = nvim -f -c "Gdiff" "$MERGED"
