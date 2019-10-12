@@ -3,7 +3,7 @@
     email = rethy.spud@gmail.com
 [core]
     editor = nvim
-    excludesfile = ~/.gitignore_global
+    excludesfile = ~/.config/git/gitignore_global
 [commit]
     verbose = true
 [push]
@@ -13,22 +13,29 @@
 [rerere]
     enabled = true
 [merge]
+    ; tool = nvimMerge
     conflictStyle = diff3
 [diff]
     noprefix = true
+[difftool]
+    trustExitCode = true
+; [mergetool "nvimMerge"]
+;     trustExitCode = true
+;     cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+; [mergetool "nfugitive"]
+;     trustExitCode = true
+;     cmd = nvim -f -c "Gdiff" "$MERGED"
 [alias]
     co = checkout
     st = status
-    sst = status -s
     up = remote update -p
     b  = branch --sort=committerdate
     pls = push --force-with-lease
     ca = !git add -A && git commit -av
-    newca = commit -a
     caa = !git add -A && git commit --amend -av
     caas = !git add -A && git commit --amend --no-edit
     rn = "!f() { git branch -m $1; }; f"
     rh = reset --hard
     cp = cherry-pick
-    rwc = commit -v --amend
+    ; rwc = commit -v --amend
     cob = !git checkout $(git branch --sort=committerdate | fzf)

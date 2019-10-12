@@ -1,0 +1,12 @@
+*~
+*.swp
+.DS_Store
+*_sesh.vim
+.sourcerer.vim
+Session.vim
+doc/tags
+tags
+cscope.out
+.starscope.db
+.projections.json
+.todo.md

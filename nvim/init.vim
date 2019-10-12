@@ -23,6 +23,7 @@ nnoremap <left> gT
 nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap <silent> g9  :call utils#pad(' ')<CR>
+nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 nnoremap <silent> - :Ex<CR>
 nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
@@ -74,8 +75,8 @@ nnoremap <silent> [T :tfirst<CR>
 nnoremap <silent> yon :set number!<CR>
 nnoremap <silent> yor :set relativenumber!<CR>
 nnoremap yoh :set hlsearch!<CR>
-
-nnoremap <silent> yos :set spell!<CR>
+nnoremap yos :set spell!<CR>
+nnoremap yob :set scrollbind!<CR>
 
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
@@ -150,6 +151,8 @@ set completeopt=menu " just use a pmenu to display completion
 set nohlsearch " feels nicer off since used mainly for nav, yoh to toggle
 set pumblend=10 " 10% transparency pmenu
 set signcolumn=auto:3 " max 3 width sign column
+set dictionary+=/usr/share/dict/words
+set diffopt+=hiddenoff
 
 if has('autocmd')
    augroup filetype_automcds
@@ -196,9 +199,9 @@ let g:Illuminate_ftHighlightGroups = {
 
 let g:netrw_banner = 0
 
-let g:Hexokinase_virtualText = '██████'
+" let g:Hexokinase_virtualText = '██████'
 let g:Hexokinase_highlighters = ['foregroundfull']
-let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
+" let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
 " let g:Hexokinase_palettes = ['/Users/adam/go/src/github.com/rrethy/hexokinase/sample_palette.json']
 
 let g:ale_lint_on_text_changed = 'never'
@@ -217,9 +220,3 @@ let g:vimtex_quickfix_mode = 0
 
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
-
-" let g:line_number_interval#enable_at_startup = 1
-
-" let g:LanguageClient_serverCommands = {
-"             \ 'go': ['gopls'],
-"             \ }
