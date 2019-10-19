@@ -37,8 +37,13 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi StatusLineNC ctermbg=NONE ctermfg=8 cterm=NONE guibg=NONE guifg=#2c313c gui=NONE
     hi VertSplit ctermbg=NONE ctermfg=15 cterm=NONE guibg=NONE guifg=#abb2bf gui=NONE
     hi TabLine ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
+    hi TabLineNoOp ctermbg=8 ctermfg=8 cterm=NONE guibg=#2c313c guifg=#2c313c gui=NONE
+    hi TabLineInv ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
+    hi TabLineFillInv ctermbg=NONE ctermfg=8 cterm=NONE guibg=NONE guifg=#2c313c gui=NONE
     hi TabLineFill ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi TabLineSel ctermbg=15 ctermfg=0 cterm=NONE guibg=#abb2bf guifg=#1e2127 gui=NONE
+    hi TabLineSelInv ctermbg=8 ctermfg=15 cterm=NONE guibg=#2c313c guifg=#abb2bf gui=NONE
+    hi TabLineSelFillInv ctermbg=NONE ctermfg=15 cterm=NONE guibg=NONE guifg=#abb2bf gui=NONE
     hi Title ctermbg=NONE ctermfg=13 cterm=bold guibg=NONE guifg=#c578dd gui=bold
     hi CursorLine ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi ColorColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
@@ -98,8 +103,13 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi StatusLineNC ctermbg=NONE ctermfg=darkgray cterm=NONE
     hi VertSplit ctermbg=NONE ctermfg=white cterm=NONE
     hi TabLine ctermbg=darkgray ctermfg=NONE cterm=NONE
+    hi TabLineNoOp ctermbg=darkgray ctermfg=darkgray cterm=NONE
+    hi TabLineInv ctermbg=white ctermfg=darkgray cterm=NONE
+    hi TabLineFillInv ctermbg=NONE ctermfg=darkgray cterm=NONE
     hi TabLineFill ctermbg=NONE ctermfg=NONE cterm=NONE
     hi TabLineSel ctermbg=white ctermfg=black cterm=NONE
+    hi TabLineSelInv ctermbg=darkgray ctermfg=white cterm=NONE
+    hi TabLineSelFillInv ctermbg=NONE ctermfg=white cterm=NONE
     hi Title ctermbg=NONE ctermfg=magenta cterm=bold
     hi CursorLine ctermbg=darkgray ctermfg=NONE cterm=NONE
     hi ColorColumn ctermbg=darkgray ctermfg=NONE cterm=NONE

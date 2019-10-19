@@ -1,3 +1,4 @@
+finish
 scriptencoding utf-8
 
 if has('autocmd')

@@ -8,13 +8,14 @@ call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
 
 call backpack#init()
 
-command! -bar WS w|so %
+command! -bar WS write|source %
 command! Yankfname let @* = expand('%:p')
 
 nnoremap cl 0D
 nnoremap Y y$
 nnoremap g0 ^
 nnoremap g4 $
+nmap     g5 :e %%
 nnoremap g6 ^
 nnoremap <A-l> 2zl
 nnoremap <A-h> 2zh
@@ -36,11 +37,17 @@ nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
-nnoremap <silent> <Leader>* :grep <cword><CR>
+nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
-nmap              <leader>e :e %%
+
+nnoremap <silent> <leader>t    :tabnew<CR>
+nnoremap          <leader>1 1gt
+nnoremap          <leader>2 2gt
+nnoremap          <leader>3 3gt
+nnoremap          <leader>4 4gt
+nnoremap          <leader>5 5gt
 
 nnoremap <silent> [a :previous<CR>
 nnoremap <silent> ]a :next<CR>
@@ -143,7 +150,7 @@ set backup
 set backupdir=~/.local/share/nvim/backup
 set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw " don't redraw when executing a macro
-set grepprg=rg\ --smart-case\ --vimgrep\ \"$*\"
+set grepprg=rg\ --smart-case\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
 set cpoptions+=> " add newline when appending to registers
 " set autowrite " auto write on :make and various other commands
@@ -153,6 +160,8 @@ set pumblend=10 " 10% transparency pmenu
 set signcolumn=auto:3 " max 3 width sign column
 set dictionary+=/usr/share/dict/words
 set diffopt+=hiddenoff
+set showtabline=2
+set tabline=%!MakeTableLine()
 
 if has('autocmd')
    augroup filetype_automcds
@@ -174,6 +183,7 @@ if has('autocmd')
    augroup END
 endif
 
+" plugin settings {{{
 " fzf stuff
 let g:fzf_layout = { 'down': '~30%' }
 if has('autocmd')
@@ -202,7 +212,7 @@ let g:netrw_banner = 0
 " let g:Hexokinase_virtualText = '██████'
 let g:Hexokinase_highlighters = ['foregroundfull']
 " let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
-" let g:Hexokinase_palettes = ['/Users/adam/go/src/github.com/rrethy/hexokinase/sample_palette.json']
+" let g:Hexokinase_palettes = ['/Users/rethy/go/src/github.com/rrethy/hexokinase/sample_palette.json']
 
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
@@ -220,3 +230,131 @@ let g:vimtex_quickfix_mode = 0
 
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
+"}}}
+
+" statusline {{{
+augroup statusline_autocmd
+    autocmd!
+    autocmd WinEnter,VimEnter,BufEnter * call s:fancy_active_statusline()
+    autocmd WinLeave * call s:fancy_inactive_statusline()
+augroup END
+
+function! s:fancy_inactive_statusline() abort
+  setlocal statusline=%#SpySlNC#
+  setlocal statusline+=\ 
+  setlocal statusline+=%n
+  setlocal statusline+=\ 
+  setlocal statusline+=%#SpySlInvNC#
+  setlocal statusline+=
+  setlocal statusline+=%#LeftPromptNC#
+  setlocal statusline+=\ 
+  setlocal statusline+=%y
+  setlocal statusline+=\ 
+  setlocal statusline+=%t
+  setlocal statusline+=\ 
+  setlocal statusline+=%r
+  setlocal statusline+=%#LeftPromptInvNC#
+  setlocal statusline+=
+  setlocal statusline+=%=
+  setlocal statusline+=%#RightPromptInvNC#
+  setlocal statusline+=
+  setlocal statusline+=%#RightPromptNC#
+  setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+  setlocal statusline+=\ 
+endfunction
+
+fun! Ale_statusline_warnings() abort
+    let warnings = ale#statusline#Count(bufnr('%')).warning
+    return warnings == 0 ? '' : printf(' %d ', warnings)
+endf
+
+fun! Ale_statusline_errors() abort
+    let errors = ale#statusline#Count(bufnr('%')).error
+    return errors == 0 ? '' : printf(' %d ', errors)
+endf
+
+function! s:fancy_active_statusline() abort
+  setlocal statusline=%#SpySl#
+  setlocal statusline+=\ 
+  setlocal statusline+=%n
+  setlocal statusline+=\ 
+  setlocal statusline+=%#SpySlInv#
+  setlocal statusline+=
+  setlocal statusline+=%#LeftPrompt#
+  setlocal statusline+=\ 
+  setlocal statusline+=%y
+  setlocal statusline+=\ 
+  setlocal statusline+=%t
+  setlocal statusline+=\ 
+  setlocal statusline+=%r
+  setlocal statusline+=%#LeftPromptInv#
+  setlocal statusline+=
+  " setlocal statusline+=%#GitPrompt#
+  " setlocal statusline+=\ 
+  " setlocal statusline+=%{FugitiveStatusline()}
+  " setlocal statusline+=\ 
+  " setlocal statusline+=%{ObsessionStatus()}
+  " setlocal statusline+=\ 
+  " setlocal statusline+=%#GitPromptInv#
+  " setlocal statusline+=
+  setlocal statusline+=%#AlePromptErrors#
+  setlocal statusline+=%{Ale_statusline_errors()}
+  setlocal statusline+=%#AlePromptErrorsInv#
+  setlocal statusline+=
+  setlocal statusline+=%#AlePromptWarnings#
+  setlocal statusline+=%{Ale_statusline_warnings()}
+  setlocal statusline+=%#AlePromptWarningsInv#
+  setlocal statusline+=
+  setlocal statusline+=%=
+  setlocal statusline+=%#RightPromptInv#
+  setlocal statusline+=
+  setlocal statusline+=%#RightPrompt#
+  setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+  setlocal statusline+=\ 
+endfunction
+"}}}
+
+" tabline {{{
+fun! MakeTableLine() abort
+    let str = ''
+
+    let lasttab = tabpagenr('$')
+    let curtab = tabpagenr()
+    for i in range(lasttab)
+        if i + 1 == curtab
+            let hl = '%#TabLineSel#'
+            let hlinv = lasttab == i+1 ? '%#TabLineSelFillInv#' : '%#TabLineSelInv#'
+        else
+            let hl = '%#TabLine#'
+            if i+1 == lasttab
+                let hlinv = '%#TabLineFillInv#'
+            elseif i+2 == curtab
+                let hlinv = '%#TabLineInv#'
+            else
+                let hlinv = '%#TabLineNoOp#'
+            endif
+        endif
+
+        let str .= hl
+        let str .= '%'.(i+1).'T'
+        let str .= '  '.(i+1).'  '
+        let str .= hlinv
+        let str .= ''
+    endfor
+
+    let str .= '%#TabLineFill#%T'
+
+    if exists('*FugitiveStatusline')
+        let str .= '%='
+        let str .= ''
+        let str .= '%#SpySl#'
+        let str .= ' '
+        let str .= FugitiveStatusline() " bugged on empty files
+        let str .= ' '
+    endif
+
+    return str
+endf
+" }}}
+
+" set foldmethod=marker
