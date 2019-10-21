@@ -41,6 +41,7 @@ nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
+nnoremap <silent> <leader>f :ALEFix<CR>
 
 nnoremap <silent> <leader>t    :tabnew<CR>
 nnoremap          <leader>1 1gt
@@ -104,7 +105,7 @@ cnoremap <expr> qq 'q!'
 tmap <expr> <F3> '<C-\><C-n><F3>'
 
 if isdirectory('/usr/local/opt/fzf')
-   set runtimepath+=/usr/local/opt/fzf
+    set runtimepath+=/usr/local/opt/fzf
 endif
 
 set inccommand=nosplit " Show substitute command live
@@ -162,26 +163,30 @@ set dictionary+=/usr/share/dict/words
 set diffopt+=hiddenoff
 set showtabline=2
 set tabline=%!MakeTableLine()
+set omnifunc=ale#completion#OmniFunc
 
-if has('autocmd')
-   augroup filetype_automcds
-      autocmd!
-      " autocmd FileType vim setlocal foldmethod=marker
-      autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
-      " autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
-   augroup END
+augroup filetype_automcds
+    autocmd!
+    " autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType c,cpp,java setlocal commentstring=//\ %s " For vim commentary
+    " autocmd FileType asm setlocal commentstring=;\ %s " For vim commentary
+augroup END
 
-   augroup hide_qf_cursor
-      autocmd!
-      autocmd WinLeave * if &ft !~# 'qf' | setlocal nocursorline | endif
-      autocmd WinEnter,BufEnter * if &ft !~# 'qf' | setlocal cursorline | endif
-   augroup END
+augroup hide_qf_cursor
+    autocmd!
+    autocmd WinLeave * if &ft !~# 'qf' | setlocal nocursorline | endif
+    autocmd WinEnter,BufEnter * if &ft !~# 'qf' | setlocal cursorline | endif
+augroup END
 
-   augroup hl_trailing_whitespace
-       autocmd!
-       autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
-   augroup END
-endif
+augroup hl_trailing_whitespace
+    autocmd!
+    autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
+augroup END
+
+" augroup autofmt_autocmds
+"     autocmd!
+"     autocmd BufWritePre * silent ALEFix
+" augroup END
 
 " plugin settings {{{
 " fzf stuff
@@ -217,10 +222,18 @@ let g:Hexokinase_highlighters = ['foregroundfull']
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
-let g:ale_disable_lsp = 1
+let g:ale_fix_on_save = 1
+" let g:ale_completion_enabled = 1
+" let g:ale_disable_lsp = 1
+let g:ale_linters = {
+            \     'go': ['gopls'],
+            \     'rust': ['rls'],
+            \ }
 let g:ale_fixers = {
-            \     'ruby': [ 'rubocop' ],
-            \     'json': [ 'jq' ]
+            \     'ruby': ['rubocop'],
+            \     'json': ['jq'],
+            \     'go': ['gofmt'],
+            \     'rust': ['rustfmt'],
             \ }
 " nnoremap <silent> <leader>a :ALELint<CR>
 
@@ -240,27 +253,27 @@ augroup statusline_autocmd
 augroup END
 
 function! s:fancy_inactive_statusline() abort
-  setlocal statusline=%#SpySlNC#
-  setlocal statusline+=\ 
-  setlocal statusline+=%n
-  setlocal statusline+=\ 
-  setlocal statusline+=%#SpySlInvNC#
-  setlocal statusline+=
-  setlocal statusline+=%#LeftPromptNC#
-  setlocal statusline+=\ 
-  setlocal statusline+=%y
-  setlocal statusline+=\ 
-  setlocal statusline+=%t
-  setlocal statusline+=\ 
-  setlocal statusline+=%r
-  setlocal statusline+=%#LeftPromptInvNC#
-  setlocal statusline+=
-  setlocal statusline+=%=
-  setlocal statusline+=%#RightPromptInvNC#
-  setlocal statusline+=
-  setlocal statusline+=%#RightPromptNC#
-  setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
-  setlocal statusline+=\ 
+    setlocal statusline=%#SpySlNC#
+    setlocal statusline+=\ 
+    setlocal statusline+=%n
+    setlocal statusline+=\ 
+    setlocal statusline+=%#SpySlInvNC#
+    setlocal statusline+=
+    setlocal statusline+=%#LeftPromptNC#
+    setlocal statusline+=\ 
+    setlocal statusline+=%y
+    setlocal statusline+=\ 
+    setlocal statusline+=%t
+    setlocal statusline+=\ 
+    setlocal statusline+=%r
+    setlocal statusline+=%#LeftPromptInvNC#
+    setlocal statusline+=
+    setlocal statusline+=%=
+    setlocal statusline+=%#RightPromptInvNC#
+    setlocal statusline+=
+    setlocal statusline+=%#RightPromptNC#
+    setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+    setlocal statusline+=\ 
 endfunction
 
 fun! Ale_statusline_warnings() abort
@@ -273,45 +286,45 @@ fun! Ale_statusline_errors() abort
     return errors == 0 ? '' : printf(' %d ', errors)
 endf
 
-function! s:fancy_active_statusline() abort
-  setlocal statusline=%#SpySl#
-  setlocal statusline+=\ 
-  setlocal statusline+=%n
-  setlocal statusline+=\ 
-  setlocal statusline+=%#SpySlInv#
-  setlocal statusline+=
-  setlocal statusline+=%#LeftPrompt#
-  setlocal statusline+=\ 
-  setlocal statusline+=%y
-  setlocal statusline+=\ 
-  setlocal statusline+=%t
-  setlocal statusline+=\ 
-  setlocal statusline+=%r
-  setlocal statusline+=%#LeftPromptInv#
-  setlocal statusline+=
-  " setlocal statusline+=%#GitPrompt#
-  " setlocal statusline+=\ 
-  " setlocal statusline+=%{FugitiveStatusline()}
-  " setlocal statusline+=\ 
-  " setlocal statusline+=%{ObsessionStatus()}
-  " setlocal statusline+=\ 
-  " setlocal statusline+=%#GitPromptInv#
-  " setlocal statusline+=
-  setlocal statusline+=%#AlePromptErrors#
-  setlocal statusline+=%{Ale_statusline_errors()}
-  setlocal statusline+=%#AlePromptErrorsInv#
-  setlocal statusline+=
-  setlocal statusline+=%#AlePromptWarnings#
-  setlocal statusline+=%{Ale_statusline_warnings()}
-  setlocal statusline+=%#AlePromptWarningsInv#
-  setlocal statusline+=
-  setlocal statusline+=%=
-  setlocal statusline+=%#RightPromptInv#
-  setlocal statusline+=
-  setlocal statusline+=%#RightPrompt#
-  setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
-  setlocal statusline+=\ 
-endfunction
+fun! s:fancy_active_statusline() abort
+    setlocal statusline=%#SpySl#
+    setlocal statusline+=\ 
+    setlocal statusline+=%n
+    setlocal statusline+=\ 
+    setlocal statusline+=%#SpySlInv#
+    setlocal statusline+=
+    setlocal statusline+=%#LeftPrompt#
+    setlocal statusline+=\ 
+    setlocal statusline+=%y
+    setlocal statusline+=\ 
+    setlocal statusline+=%t
+    setlocal statusline+=\ 
+    setlocal statusline+=%r
+    setlocal statusline+=%#LeftPromptInv#
+    setlocal statusline+=
+    " setlocal statusline+=%#GitPrompt#
+    " setlocal statusline+=\ 
+    " setlocal statusline+=%{FugitiveStatusline()}
+    " setlocal statusline+=\ 
+    " setlocal statusline+=%{ObsessionStatus()}
+    " setlocal statusline+=\ 
+    " setlocal statusline+=%#GitPromptInv#
+    " setlocal statusline+=
+    setlocal statusline+=%#AlePromptErrors#
+    setlocal statusline+=%{Ale_statusline_errors()}
+    setlocal statusline+=%#AlePromptErrorsInv#
+    setlocal statusline+=
+    setlocal statusline+=%#AlePromptWarnings#
+    setlocal statusline+=%{Ale_statusline_warnings()}
+    setlocal statusline+=%#AlePromptWarningsInv#
+    setlocal statusline+=
+    setlocal statusline+=%=
+    setlocal statusline+=%#RightPromptInv#
+    setlocal statusline+=
+    setlocal statusline+=%#RightPrompt#
+    setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+    setlocal statusline+=\ 
+endf
 "}}}
 
 " tabline {{{
@@ -320,30 +333,31 @@ fun! MakeTableLine() abort
 
     let lasttab = tabpagenr('$')
     let curtab = tabpagenr()
-    for i in range(lasttab)
-        if i + 1 == curtab
-            let hl = '%#TabLineSel#'
-            let hlinv = lasttab == i+1 ? '%#TabLineSelFillInv#' : '%#TabLineSelInv#'
-        else
-            let hl = '%#TabLine#'
-            if i+1 == lasttab
-                let hlinv = '%#TabLineFillInv#'
-            elseif i+2 == curtab
-                let hlinv = '%#TabLineInv#'
+    " if lasttab != curtab
+        for i in range(lasttab)
+            if i + 1 == curtab
+                let hl = '%#TabLineSel#'
+                let hlinv = lasttab == i+1 ? '%#TabLineSelFillInv#' : '%#TabLineSelInv#'
             else
-                let hlinv = '%#TabLineNoOp#'
+                let hl = '%#TabLine#'
+                if i+1 == lasttab
+                    let hlinv = '%#TabLineFillInv#'
+                elseif i+2 == curtab
+                    let hlinv = '%#TabLineInv#'
+                else
+                    let hlinv = '%#TabLineNoOp#'
+                endif
             endif
-        endif
 
-        let str .= hl
-        let str .= '%'.(i+1).'T'
-        let str .= '  '.(i+1).'  '
-        let str .= hlinv
-        let str .= ''
-    endfor
+            let str .= hl
+            let str .= '%'.(i+1).'T'
+            let str .= '  '.(i+1).'  '
+            let str .= hlinv
+            let str .= ''
+        endfor
 
-    let str .= '%#TabLineFill#%T'
-
+        let str .= '%#TabLineFill#%T'
+    " endif
     if exists('*FugitiveStatusline')
         let str .= '%='
         let str .= ''

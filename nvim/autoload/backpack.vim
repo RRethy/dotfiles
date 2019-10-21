@@ -41,11 +41,11 @@ fun! s:pack(...) abort
    endif
 
    let plugin = {
-            \ 'git_url': url,
-            \ 'name': name,
-            \ 'dir': s:plugs_path.name,
-            \ 'hook': ''
-            \ }
+      \    'git_url': url,
+      \    'name': name,
+      \    'dir': s:plugs_path.name,
+      \    'hook': ''
+      \ }
    call extend(plugin, a:0 > 1 && type(a:2) == 4 ? a:2 : {})
 
    if empty(get(plugin, 'on', '')) && !has_key(plugin, 'for')
