@@ -10,6 +10,18 @@ call backpack#init()
 
 command! -bar WS write|source %
 command! Yankfname let @* = expand('%:p')
+fun! s:define_generic_command(cmd, executable) abort
+    exe 'command! '.a:cmd
+            \. " call jobstart('".a:executable."', {"
+            \.     "'on_exit': function('s:generic_on_exit'),"
+            \.     "'tag': '".a:executable."'"
+            \. "})"
+endf
+call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
+call s:define_generic_command('Tags', 'ctags -R')
+fun! s:generic_on_exit(id, data, event) abort dict
+    echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
+endf
 
 nnoremap cl 0D
 nnoremap Y y$
@@ -38,7 +50,6 @@ nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
 nnoremap <silent> <Leader>* :lgrep <cword><CR>
-nnoremap <silent> <leader>t :silent !ripper-tags -R --exclude=vendor<CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
 nnoremap <silent> <leader>f :ALEFix<CR>
@@ -204,9 +215,9 @@ let g:fzf_colors = {
             \ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'cfg']
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
 let g:Illuminate_ftHighlightGroups = {
-            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimVar'],
+            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimVar', 'vimMapModKey'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
             \ 'cpp:blacklist': ['cType',  'cppSTLnamespace', 'Statement', 'Type'],
             \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat']
@@ -214,10 +225,7 @@ let g:Illuminate_ftHighlightGroups = {
 
 let g:netrw_banner = 0
 
-" let g:Hexokinase_virtualText = '██████'
 let g:Hexokinase_highlighters = ['foregroundfull']
-" let g:Hexokinase_optInPatterns = ['full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla', 'colour_names']
-" let g:Hexokinase_palettes = ['/Users/rethy/go/src/github.com/rrethy/hexokinase/sample_palette.json']
 
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
