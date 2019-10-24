@@ -9,6 +9,7 @@ call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
 call backpack#init()
 
 command! -bar WS write|source %
+command! StripWhitespace  %s/\v\s+$//g
 command! Yankfname let @* = expand('%:p')
 fun! s:define_generic_command(cmd, executable) abort
     exe 'command! '.a:cmd
@@ -113,6 +114,14 @@ cnoremap <C-N> <Down>
 cnoremap <C-P> <Up>
 cnoremap <expr> qq 'q!'
 
+inoremap jk <Esc>
+inoremap kj <Esc>
+inoremap JK <Esc>
+inoremap KJ <Esc>
+inoremap Jk <Esc>
+inoremap Kj <Esc>
+
+tnoremap <Esc> <C-\><C-n>
 tmap <expr> <F3> '<C-\><C-n><F3>'
 
 if isdirectory('/usr/local/opt/fzf')
@@ -175,6 +184,9 @@ set diffopt+=hiddenoff
 set showtabline=2
 set tabline=%!MakeTableLine()
 set omnifunc=ale#completion#OmniFunc
+set guicursor=a:block-Cursor " Show block cursor for these modes
+set timeoutlen=250 " timeout used mainly for jk => <Esc>
+set ttimeoutlen=-1
 
 augroup filetype_automcds
     autocmd!
@@ -379,4 +391,83 @@ fun! MakeTableLine() abort
 endf
 " }}}
 
-" set foldmethod=marker
+" z[1-9] {{{
+for i in range(11)
+  exe 'nnoremap <silent> z' . i . ' :call <SID>centre_screen(' . i . ')<CR>'
+endfor
+
+fun! s:centre_screen(zone) abort
+  let percentage = a:zone * 0.1
+  let shift = float2nr(winheight(0) * percentage)
+  exe 'normal! zt' . shift . ''
+endf
+"}}}
+
+" clever tab {{{
+fun! CleverTab()
+  if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
+    return "\<Tab>"
+  else
+    return "\<C-N>"
+  endif
+endf
+
+inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
+"}}}
+
+" Delete {{{
+command! Delete call s:delete()
+
+fun! s:delete() abort
+   silent !rm -f %
+   silent bd!
+endf
+"}}}
+
+" reverse line {{{
+command! -range=% ReverseLines :<line1>,<line2>call s:reverse_lines()
+
+fun! s:reverse_lines() range
+  let i = 0
+  let mid = (a:lastline - a:firstline) / 2 + a:firstline
+  while (a:firstline + i) <= mid
+    let higher_line = getline(a:firstline + i)
+    call setline(a:firstline + i, getline(a:lastline - i))
+    call setline(a:lastline - i, higher_line)
+    let i += 1
+  endwhile
+endf
+"}}}
+
+" spotlight {{{
+command! -bang -bar -nargs=? -complete=custom,s:complete_apps Spotlight call s:spotlight_search(<bang>0, <q-args>)
+
+let s:list_apps_cmd = 'mdfind kind:app'
+
+fun! s:spotlight_search(bg, app) abort
+    let opener = {
+                \ 'sink*': function('s:open_app'),
+                \ 'bg': a:bg
+                \ }
+    if empty(a:app)
+        call fzf#run(extend({
+                    \ 'prefix': '^.*$',
+                    \ 'source': s:list_apps_cmd,
+                    \ 'down': '30%'
+                    \ }, opener))
+    else
+        call opener['sink*']([a:app])
+    endif
+endf
+
+fun! s:open_app(app) abort dict
+    let cmd = 'open '.(self.bg ? '-g ' : '').' -a '.shellescape(a:app[0])
+    call system(cmd)
+endf
+
+fun! s:complete_apps(arglead, cmdline, cursorpos) abort
+    return join(map(split(system(s:list_apps_cmd)), 'fnamemodify(v:val, ":t")'), "\n")
+endf
+"}}}
+
+" vim: foldmethod=marker
