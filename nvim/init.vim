@@ -36,10 +36,9 @@ nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <left> gT
 nnoremap <right> gt
 nnoremap <Backspace> <C-^>
-nnoremap <silent> g9  :call utils#pad(' ')<CR>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap <silent> <F3>      :<C-u>call singleterm#toggle()<CR>
+nnoremap <silent> <F3>      :<C-u>call <SID>singleterm_toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>a :argadd %<CR>
@@ -49,7 +48,7 @@ nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col(".")
 nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>m :messages<CR>
-nnoremap <silent> <Leader>' :call utils#togglewrapping()<CR>
+nnoremap <silent> <Leader>' :call <SID>togglewrapping()<CR>
 nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
@@ -470,4 +469,74 @@ fun! s:complete_apps(arglead, cmdline, cursorpos) abort
 endf
 "}}}
 
-" vim: foldmethod=marker
+" terminal helpers {{{
+" Toggle displaying a single terminal in a split
+" This maintains a single interactive terminal, even between sessions
+" TODO use floating window
+
+let s:singleterm_bufnr = -1
+if s:singleterm_bufnr == -1
+   " When starting from a session file try to use an available interactive
+   " terminal instead of making a new one.
+   " I naively look for any interactive zsh terminal
+   for bufnr in nvim_list_bufs()
+      let bufname = bufname(bufnr)
+      if bufname =~# '\v\C^term.*/bin/zsh$'
+         let s:singleterm_bufnr = bufnr
+         break
+      endif
+   endfor
+endif
+
+fun! s:singleterm_toggle() abort
+   if !s:try_to_close()
+      call s:open()
+   endif
+endf
+
+fun! s:open() abort
+   split
+   norm! J10_
+   if bufexists(s:singleterm_bufnr)
+      exe 'b '.s:singleterm_bufnr
+   else
+      term
+      let s:singleterm_bufnr = bufnr('%')
+   endif
+   startinsert
+endf
+
+fun! s:try_to_close() abort
+   if bufexists(s:singleterm_bufnr)
+      let winids = win_findbuf(s:singleterm_bufnr)
+      let curtabnr = tabpagenr()
+      for winid in winids
+         let [tabnr, winnr] = win_id2tabwin(winid)
+         if curtabnr == tabnr
+            exe winnr.'close'
+            return 1
+         endif
+      endfor
+   endif
+   return 0
+endf
+" }}}
+
+" toggle wrapper{{{
+fun! s:togglewrapping()
+  if &wrap
+    set nowrap
+    set nolinebreak
+    silent! nunmap j
+    silent! nunmap k
+  else
+    set wrap
+    set linebreak
+    set nolist
+    nnoremap j gj
+    nnoremap k gk
+  endif
+endf
+"}}}
+
+" vim: foldmethod=marker foldlevel=0
