@@ -109,8 +109,6 @@ vnoremap <C-g> "*y
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
-cnoremap <C-N> <Down>
-cnoremap <C-P> <Up>
 cnoremap <expr> qq 'q!'
 
 inoremap jk <Esc>
@@ -238,6 +236,7 @@ let g:netrw_banner = 0
 
 let g:Hexokinase_highlighters = ['foregroundfull']
 
+" ALE settings
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
