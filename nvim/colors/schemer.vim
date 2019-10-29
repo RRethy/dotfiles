@@ -54,7 +54,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi helpLeadBlank ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi helpNormal ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi Visual ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
-    hi Pmenu ctermbg=7 ctermfg=fg cterm=NONE guibg=#515e77 guifg=fg gui=NONE
+    hi Pmenu ctermbg=8 ctermfg=fg cterm=NONE guibg=#2c313c guifg=fg gui=NONE
     hi PmenuSbar ctermbg=7 ctermfg=NONE cterm=NONE guibg=#515e77 guifg=NONE gui=NONE
     hi PmenuSel ctermbg=14 ctermfg=bg cterm=bold guibg=#56b5c2 guifg=bg gui=bold
     hi PmenuThumb ctermbg=13 ctermfg=NONE cterm=NONE guibg=#c578dd guifg=NONE gui=NONE
@@ -120,7 +120,7 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi helpLeadBlank ctermbg=white ctermfg=darkgray cterm=NONE
     hi helpNormal ctermbg=white ctermfg=darkgray cterm=NONE
     hi Visual ctermbg=darkgray ctermfg=NONE cterm=NONE
-    hi Pmenu ctermbg=gray ctermfg=fg cterm=NONE
+    hi Pmenu ctermbg=darkgray ctermfg=fg cterm=NONE
     hi PmenuSbar ctermbg=gray ctermfg=NONE cterm=NONE
     hi PmenuSel ctermbg=cyan ctermfg=bg cterm=bold
     hi PmenuThumb ctermbg=magenta ctermfg=NONE cterm=NONE
@@ -155,6 +155,7 @@ hi link FoldColumn LineNr
 hi link WarningMsg Error
 hi link QuickFixLine CursorLine
 hi link Whitespace CursorLine
+hi link NormalFloat CursorLine
 
 if has('nvim')
 
