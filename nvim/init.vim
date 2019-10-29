@@ -184,7 +184,7 @@ set omnifunc=ale#completion#OmniFunc
 set guicursor=a:block-Cursor " Show block cursor for these modes
 set timeoutlen=250 " timeout used mainly for jk => <Esc>
 set ttimeoutlen=-1
-set winblend=10 " transparency for floating windows
+" set winblend=10 " transparency for floating windows
 
 augroup filetype_automcds
     autocmd!
@@ -213,8 +213,8 @@ augroup END
 
 " fzf settings
 fun! FloatingFZF()
-    let width = float2nr(&columns * 0.7)
-    let height = float2nr(&lines * 0.4)
+    let width = float2nr(&columns * 0.5)
+    let height = float2nr(&lines * 0.3)
     let opts = {
                 \     'relative': 'editor',
                 \     'row': (&lines - height) / 5,
@@ -227,7 +227,6 @@ fun! FloatingFZF()
 endf
 
 let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-let $FZF_DEFAULT_OPTS='--layout=reverse'
 " if has('autocmd')
 "     augroup fzf
 "         autocmd! FileType fzf
@@ -363,6 +362,7 @@ endf
 "}}}
 
 " tabline {{{
+let s:fugitive_statusline = ''
 fun! s:fugitive_branch_wrapper() abort
     let fugitive_statusline = FugitiveStatusline()
     if !empty(fugitive_statusline)
