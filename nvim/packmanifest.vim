@@ -32,5 +32,6 @@ Pack 'tpope/vim-fugitive'
 Pack 'tpope/vim-repeat'
 Pack 'tpope/vim-rhubarb'
 Pack 'tpope/vim-surround'
+" Pack 'udalov/kotlin-vim'
 Pack 'w0rp/ale'
 packadd! cfilter

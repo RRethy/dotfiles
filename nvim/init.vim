@@ -220,7 +220,8 @@ fun! FloatingFZF()
                 \     'row': (&lines - height) / 5,
                 \     'col': (&columns - width) / 2,
                 \     'width': width,
-                \     'height': height
+                \     'height': height,
+                \     'style': 'minimal'
                 \ }
 
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
@@ -470,7 +471,8 @@ let s:list_apps_cmd = 'mdfind kind:app'
 fun! s:spotlight_search(bg, app) abort
     let opener = {
                 \ 'sink*': function('s:open_app'),
-                \ 'bg': a:bg
+                \ 'bg': a:bg,
+                \ 'window': 'call FloatingFZF()',
                 \ }
     if empty(a:app)
         call fzf#run(extend({
