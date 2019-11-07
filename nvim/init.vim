@@ -252,6 +252,7 @@ let g:Illuminate_ftHighlightGroups = {
 let g:netrw_banner = 0
 
 let g:Hexokinase_highlighters = ['foregroundfull']
+" let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
 let g:ale_lint_on_text_changed = 'never'
@@ -265,7 +266,6 @@ let g:ale_linters = {
             \     'rust': ['rls'],
             \ }
 let g:ale_fixers = {
-            \     'ruby': ['rubocop'],
             \     'json': ['jq'],
             \     'go': ['gofmt'],
             \     'rust': ['rustfmt'],
