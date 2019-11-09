@@ -147,7 +147,7 @@ export GOPATH=$HOME/go
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
-export FLUTTER="~/Programming/flutter"
+# export FLUTTER="~/Programming/flutter"
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
@@ -157,6 +157,7 @@ export PATH=$PATH:$GOPATH/bin/
 export PATH=$PATH:~/Library/Android/sdk/tools/bin/
 export ANDROID_HOME=~/Library/Android/sdk/
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
 
 # export VISUAL='nvim'
 export VISUAL='nvim'
