@@ -35,10 +35,10 @@ nnoremap <A-h> 2zh
 nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <left> gT
 nnoremap <right> gt
+nnoremap <silent> gt      :<C-u>call <SID>singleterm_toggle()<CR>
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
 nnoremap <silent> - :Ex<CR>
-nnoremap <silent> <F3>      :<C-u>call <SID>singleterm_toggle()<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>a :argadd %<CR>
@@ -119,7 +119,7 @@ inoremap Jk <Esc>
 inoremap Kj <Esc>
 
 tnoremap <Esc> <C-\><C-n>
-tmap <expr> <F3> '<C-\><C-n><F3>'
+tmap <expr> gt '<C-\><C-n>gt'
 
 if isdirectory('/usr/local/opt/fzf')
     set runtimepath+=/usr/local/opt/fzf
@@ -522,8 +522,8 @@ fun! s:singleterm_toggle() abort
 endf
 
 fun! s:open() abort
-    let width = float2nr(&columns * 0.8)
-    let height = float2nr(&lines * 0.8)
+    let width = float2nr(&columns * 0.7)
+    let height = float2nr(&lines * 0.6)
     let opts = {
                 \     'relative': 'editor',
                 \     'row': (&lines - height) / 5,
@@ -532,6 +532,11 @@ fun! s:open() abort
                 \     'height': height,
                 \     'style': 'minimal'
                 \ }
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    let opts.height -= 2
+    let opts.width -= 2
+    let opts.row += 1
+    let opts.col += 2
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     if !bufexists(s:singleterm_bufnr)
         terminal
@@ -548,7 +553,8 @@ fun! s:try_to_close() abort
         for winid in winids
             let [tabnr, winnr] = win_id2tabwin(winid)
             if curtabnr == tabnr
-                call nvim_win_close(winid, v:false)
+                close
+                close
                 return 1
             endif
         endfor
