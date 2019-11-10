@@ -1,19 +1,34 @@
 cmdargs:
-  # Checking more strictly
   severity: style_problem
-
-  # Enable coloring
-  color: true
-
-  # Enable Neovim syntax
+  color: false
   env:
     neovim: true
-
 policies:
-  # Disable a violation
-  ProhibitSomethingEvil:
-    enabled: false
-
-  # Enable a violation
-  ProhibitSomethingBad:
-    enabled: true
+    ProhibitAutocmdWithNoGroup:
+        enabled: true
+    ProhibitCommandRelyOnUser:
+        enabled: true
+    ProhibitCommandWithUnintendedSideEffect:
+        enabled: true
+    ProhibitEncodingOptionAfterScriptEncoding:
+        enabled: true
+    ProhibitEqualTildeOperator:
+        enabled: true
+    ProhibitImplicitScopeBuiltinVariable:
+        enabled: false
+    ProhibitMissingScriptEncoding:
+        enabled: true
+    ProhibitNoAbortFunction:
+        enabled: true
+    ProhibitSetNoCompatible:
+        enabled: true
+    ProhibitUnnecessaryDoubleQuote:
+        enabled: true
+    ProhibitUnusedVariable:
+        enabled: true
+    ProhibitUsingUndeclaredVariable:
+        enabled: true
+    ProhibitAbbreviationOption:
+        enabled: true
+    ProhibitImplicitScopeVariable:
+        enabled: true

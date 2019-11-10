@@ -132,15 +132,16 @@ function updateGitIgnore() {
 # LS_COLORS=$LS_COLORS:'di=1;32:'
 # export LS_COLORS
 
-# export PATH=$ANDROIDNDK:$ANDROIDSDK/platform-tools:$ANDROIDSDK/tools:$PATH:$JAVA_HOME/bin
 export PATH=$JAVA_HOME/bin:$PATH
-#export PATH=$ANDROIDNDK:$ANDROIDSDK/platform-tools:$ANDROIDSDK/tools:$PATH
-export PATH=$FLUTTER/bin:$PATH
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cargo/bin/:$PATH
 export PATH=$HOME/.config/bin/:$PATH
-export PATH="$PATH":"~/.pub-cache/bin"
-export PATH="$PATH:~/depot_tools"
+export PATH=/usr/local/opt/openssl/bin:$PATH
+export PATH=$GOPATH/bin/:$PATH
+export PATH=~/Library/Android/sdk/tools/bin/:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
+export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
+
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
 export GOPATH=$HOME/go
@@ -150,14 +151,7 @@ export GOPATH=$HOME/go
 # export FLUTTER="~/Programming/flutter"
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export PATH="/usr/local/opt/openssl/bin:$PATH"
-export PATH=$PATH:~/.pub-cache/bin/
-export PATH=$PATH:$GOPATH/bin/
-export PATH=$PATH:~/Library/Android/sdk/tools/bin/
 export ANDROID_HOME=~/Library/Android/sdk/
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
 
 # export VISUAL='nvim'
 export VISUAL='nvim'
