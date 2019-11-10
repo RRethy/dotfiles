@@ -252,6 +252,7 @@ let g:Illuminate_ftHighlightGroups = {
 let g:netrw_banner = 0
 
 let g:Hexokinase_highlighters = ['foregroundfull']
+" let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
@@ -521,30 +522,38 @@ fun! s:singleterm_toggle() abort
 endf
 
 fun! s:open() abort
-   split
-   norm! J10_
-   if bufexists(s:singleterm_bufnr)
-      exe 'b '.s:singleterm_bufnr
-   else
-      term
-      let s:singleterm_bufnr = bufnr('%')
-   endif
-   startinsert
+    let width = float2nr(&columns * 0.8)
+    let height = float2nr(&lines * 0.8)
+    let opts = {
+                \     'relative': 'editor',
+                \     'row': (&lines - height) / 5,
+                \     'col': (&columns - width) / 2,
+                \     'width': width,
+                \     'height': height,
+                \     'style': 'minimal'
+                \ }
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    if !bufexists(s:singleterm_bufnr)
+        terminal
+        let s:singleterm_bufnr = bufnr('%')
+    endif
+    exe 'b '.s:singleterm_bufnr
+    startinsert
 endf
 
 fun! s:try_to_close() abort
-   if bufexists(s:singleterm_bufnr)
-      let winids = win_findbuf(s:singleterm_bufnr)
-      let curtabnr = tabpagenr()
-      for winid in winids
-         let [tabnr, winnr] = win_id2tabwin(winid)
-         if curtabnr == tabnr
-            exe winnr.'close'
-            return 1
-         endif
-      endfor
-   endif
-   return 0
+    if bufexists(s:singleterm_bufnr)
+        let winids = win_findbuf(s:singleterm_bufnr)
+        let curtabnr = tabpagenr()
+        for winid in winids
+            let [tabnr, winnr] = win_id2tabwin(winid)
+            if curtabnr == tabnr
+                call nvim_win_close(winid, v:false)
+                return 1
+            endif
+        endfor
+    endif
+    return 0
 endf
 " }}}
 

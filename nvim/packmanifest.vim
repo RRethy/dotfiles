@@ -16,6 +16,7 @@
 " Pack 'tpope/vim-projectionist'
 " Pack 'tpope/vim-rbenv'
 " Pack 'tpope/vim-sleuth'
+" Pack 'udalov/kotlin-vim'
 " Pack 'vim-ruby/vim-ruby'
 " Pack 'wincent/vcs-jump'
 " packadd! coc.nvim
@@ -32,6 +33,5 @@ Pack 'tpope/vim-fugitive'
 Pack 'tpope/vim-repeat'
 Pack 'tpope/vim-rhubarb'
 Pack 'tpope/vim-surround'
-" Pack 'udalov/kotlin-vim'
 Pack 'w0rp/ale'
 packadd! cfilter
