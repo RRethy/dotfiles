@@ -499,8 +499,6 @@ endf
 " terminal helpers {{{
 " Toggle displaying a single terminal in a split
 " This maintains a single interactive terminal, even between sessions
-" TODO use floating window
-
 let s:singleterm_bufnr = -1
 if s:singleterm_bufnr == -1
    " When starting from a session file try to use an available interactive
@@ -534,7 +532,7 @@ fun! s:open() abort
                 \ }
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
     let opts.height -= 2
-    let opts.width -= 2
+    let opts.width -= 4
     let opts.row += 1
     let opts.col += 2
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
@@ -543,6 +541,7 @@ fun! s:open() abort
         let s:singleterm_bufnr = bufnr('%')
     endif
     exe 'b '.s:singleterm_bufnr
+    " setlocal winhighlight=NormalFloat:Normal
     startinsert
 endf
 
