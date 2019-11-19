@@ -256,6 +256,7 @@ let g:Hexokinase_highlighters = ['foregroundfull']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
+let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
