@@ -132,14 +132,14 @@ function updateGitIgnore() {
 # LS_COLORS=$LS_COLORS:'di=1;32:'
 # export LS_COLORS
 
-export PATH=$JAVA_HOME/bin:$PATH
+export PATH="$JAVA_HOME/bin":$PATH
 export PATH=/usr/local/bin:$PATH
-export PATH=$HOME/.cargo/bin/:$PATH
-export PATH=$HOME/.config/bin/:$PATH
+export PATH="$HOME/.cargo/bin/":$PATH
+export PATH="$HOME/.config/bin/":$PATH
 export PATH=/usr/local/opt/openssl/bin:$PATH
-export PATH=$GOPATH/bin/:$PATH
+export PATH="$GOPATH/bin/":$PATH
 export PATH=~/Library/Android/sdk/tools/bin/:$PATH
-export PATH=$HOME/.cargo/bin:$PATH
+export PATH="$HOME/.cargo/bin":$PATH
 export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
 
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -203,6 +203,7 @@ alias showpng="kitty +kitten icat"
 alias sshto="kitty +kitten ssh"
 alias g++14="g++ -std=c++14"
 alias vs="v -S"
+alias bune="bundle"
 # }}}
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

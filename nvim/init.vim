@@ -251,8 +251,8 @@ let g:Illuminate_ftHighlightGroups = {
 
 let g:netrw_banner = 0
 
-let g:Hexokinase_highlighters = ['foregroundfull']
-" let g:Hexokinase_highlighters = ['sign_column']
+" let g:Hexokinase_highlighters = ['foregroundfull']
+let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
