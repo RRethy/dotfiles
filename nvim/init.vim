@@ -251,8 +251,8 @@ let g:Illuminate_ftHighlightGroups = {
 
 let g:netrw_banner = 0
 
-" let g:Hexokinase_highlighters = ['foregroundfull']
-let g:Hexokinase_highlighters = ['sign_column']
+let g:Hexokinase_highlighters = ['foregroundfull']
+" let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
@@ -266,6 +266,7 @@ let g:ale_fix_on_save = 1
 let g:ale_linters = {
             \     'go': ['gopls'],
             \     'rust': ['rls'],
+            \     'ruby': ['solargraph'],
             \ }
 let g:ale_fixers = {
             \     'json': ['jq'],
