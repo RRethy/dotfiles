@@ -13,12 +13,12 @@ command! StripWhitespace  %s/\v\s+$//g
 command! Yankfname let @* = expand('%:p')
 fun! s:define_generic_command(cmd, executable) abort
     exe 'command! '.a:cmd
-            \. " call jobstart('".a:executable."', {"
-            \.     "'on_exit': function('s:generic_on_exit'),"
-            \.     "'tag': '".a:executable."'"
-            \. "})"
+                \. " call jobstart('".a:executable."', {"
+                \.     "'on_exit': function('s:generic_on_exit'),"
+                \.     "'tag': '".a:executable."'"
+                \. "})"
 endf
-call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
+call s:define_generic_command('RubyTags', 'rtags -R --exclude=vendor')
 call s:define_generic_command('Tags', 'ctags -R')
 fun! s:generic_on_exit(id, data, event) abort dict
     echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
@@ -166,7 +166,7 @@ set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 " set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
 set backupdir=~/.local/share/nvim/backup
-set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
+" set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw " don't redraw when executing a macro
 set grepprg=rg\ --smart-case\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
@@ -204,11 +204,6 @@ augroup hl_trailing_whitespace
     autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
 augroup END
 
-" augroup autofmt_autocmds
-"     autocmd!
-"     autocmd BufWritePre * silent ALEFix
-" augroup END
-
 " plugin settings {{{
 
 " fzf settings
@@ -243,7 +238,7 @@ let g:fzf_colors = {
 " Illuminate stuff
 let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
 let g:Illuminate_ftHighlightGroups = {
-            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimVar', 'vimMapModKey'],
+            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimMapModKey'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
             \ 'cpp:blacklist': ['cType',  'cppSTLnamespace', 'Statement', 'Type'],
             \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat']
@@ -266,7 +261,7 @@ let g:ale_fix_on_save = 1
 let g:ale_linters = {
             \     'go': ['gopls'],
             \     'rust': ['rls'],
-            \     'ruby': ['solargraph'],
+            \     'ruby': ['solargraph', 'rubocop'],
             \ }
 let g:ale_fixers = {
             \     'json': ['jq'],
@@ -315,11 +310,17 @@ function! s:fancy_inactive_statusline() abort
 endfunction
 
 fun! Ale_statusline_warnings() abort
+    if !exists('*ale#statusline#Count')
+        return ''
+    endif
     let warnings = ale#statusline#Count(bufnr('%')).warning
     return warnings == 0 ? '' : printf(' %d ', warnings)
 endf
 
 fun! Ale_statusline_errors() abort
+    if !exists('*ale#statusline#Count')
+        return ''
+    endif
     let errors = ale#statusline#Count(bufnr('%')).error
     return errors == 0 ? '' : printf(' %d ', errors)
 endf
@@ -368,6 +369,10 @@ endf
 " tabline {{{
 let s:fugitive_statusline = ''
 fun! s:fugitive_branch_wrapper() abort
+    if !exists('*FugitiveStatusline')
+        return ''
+    endif
+
     let fugitive_statusline = FugitiveStatusline()
     if !empty(fugitive_statusline)
         let s:fugitive_statusline = fugitive_statusline
@@ -381,38 +386,36 @@ fun! MakeTableLine() abort
     let lasttab = tabpagenr('$')
     let curtab = tabpagenr()
     " if lasttab != curtab
-        for i in range(lasttab)
-            if i + 1 == curtab
-                let hl = '%#TabLineSel#'
-                let hlinv = lasttab == i+1 ? '%#TabLineSelFillInv#' : '%#TabLineSelInv#'
+    for i in range(lasttab)
+        if i + 1 == curtab
+            let hl = '%#TabLineSel#'
+            let hlinv = lasttab == i+1 ? '%#TabLineSelFillInv#' : '%#TabLineSelInv#'
+        else
+            let hl = '%#TabLine#'
+            if i+1 == lasttab
+                let hlinv = '%#TabLineFillInv#'
+            elseif i+2 == curtab
+                let hlinv = '%#TabLineInv#'
             else
-                let hl = '%#TabLine#'
-                if i+1 == lasttab
-                    let hlinv = '%#TabLineFillInv#'
-                elseif i+2 == curtab
-                    let hlinv = '%#TabLineInv#'
-                else
-                    let hlinv = '%#TabLineNoOp#'
-                endif
+                let hlinv = '%#TabLineNoOp#'
             endif
+        endif
 
-            let str .= hl
-            let str .= '%'.(i+1).'T'
-            let str .= '  '.(i+1).'  '
-            let str .= hlinv
-            let str .= ''
-        endfor
+        let str .= hl
+        let str .= '%'.(i+1).'T'
+        let str .= '  '.(i+1).'  '
+        let str .= hlinv
+        let str .= ''
+    endfor
 
-        let str .= '%#TabLineFill#%T'
+    let str .= '%#TabLineFill#%T'
     " endif
-    if exists('*FugitiveStatusline')
-        let str .= '%='
-        let str .= ''
-        let str .= '%#SpySl#'
-        let str .= ' '
-        let str .= s:fugitive_branch_wrapper() " bugged on empty files
-        let str .= ' '
-    endif
+    let str .= '%='
+    let str .= ''
+    let str .= '%#SpySl#'
+    let str .= ' '
+    let str .= s:fugitive_branch_wrapper() " bugged on empty files
+    let str .= ' '
 
     return str
 endf
@@ -420,23 +423,23 @@ endf
 
 " z[1-9] {{{
 for i in range(11)
-  exe 'nnoremap <silent> z' . i . ' :call <SID>centre_screen(' . i . ')<CR>'
+    exe 'nnoremap <silent> z' . i . ' :call <SID>centre_screen(' . i . ')<CR>'
 endfor
 
 fun! s:centre_screen(zone) abort
-  let percentage = a:zone * 0.1
-  let shift = float2nr(winheight(0) * percentage)
-  exe 'normal! zt' . shift . ''
+    let percentage = a:zone * 0.1
+    let shift = float2nr(winheight(0) * percentage)
+    exe 'normal! zt' . shift . ''
 endf
 "}}}
 
 " clever tab {{{
 fun! CleverTab()
-  if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
-    return "\<Tab>"
-  else
-    return "\<C-N>"
-  endif
+    if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
+        return "\<Tab>"
+    else
+        return "\<C-N>"
+    endif
 endf
 
 inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
@@ -446,8 +449,8 @@ inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
 command! Delete call s:delete()
 
 fun! s:delete() abort
-   silent !rm -f %
-   silent bd!
+    silent !rm -f %
+    silent bd!
 endf
 "}}}
 
@@ -455,14 +458,14 @@ endf
 command! -range=% ReverseLines :<line1>,<line2>call s:reverse_lines()
 
 fun! s:reverse_lines() range
-  let i = 0
-  let mid = (a:lastline - a:firstline) / 2 + a:firstline
-  while (a:firstline + i) <= mid
-    let higher_line = getline(a:firstline + i)
-    call setline(a:firstline + i, getline(a:lastline - i))
-    call setline(a:lastline - i, higher_line)
-    let i += 1
-  endwhile
+    let i = 0
+    let mid = (a:lastline - a:firstline) / 2 + a:firstline
+    while (a:firstline + i) <= mid
+        let higher_line = getline(a:firstline + i)
+        call setline(a:firstline + i, getline(a:lastline - i))
+        call setline(a:lastline - i, higher_line)
+        let i += 1
+    endwhile
 endf
 "}}}
 
@@ -503,22 +506,22 @@ endf
 " This maintains a single interactive terminal, even between sessions
 let s:singleterm_bufnr = -1
 if s:singleterm_bufnr == -1
-   " When starting from a session file try to use an available interactive
-   " terminal instead of making a new one.
-   " I naively look for any interactive zsh terminal
-   for bufnr in nvim_list_bufs()
-      let bufname = bufname(bufnr)
-      if bufname =~# '\v\C^term.*/bin/zsh$'
-         let s:singleterm_bufnr = bufnr
-         break
-      endif
-   endfor
+    " When starting from a session file try to use an available interactive
+    " terminal instead of making a new one.
+    " I naively look for any interactive zsh terminal
+    for bufnr in nvim_list_bufs()
+        let bufname = bufname(bufnr)
+        if bufname =~# '\v\C^term.*/bin/zsh$'
+            let s:singleterm_bufnr = bufnr
+            break
+        endif
+    endfor
 endif
 
 fun! s:singleterm_toggle() abort
-   if !s:try_to_close()
-      call s:open()
-   endif
+    if !s:try_to_close()
+        call s:open()
+    endif
 endf
 
 fun! s:open() abort
@@ -566,19 +569,19 @@ endf
 
 " toggle wrapper{{{
 fun! s:togglewrapping()
-  if &wrap
-    set nowrap
-    set nolinebreak
-    silent! nunmap j
-    silent! nunmap k
-  else
-    set wrap
-    set linebreak
-    set nolist
-    nnoremap j gj
-    nnoremap k gk
-  endif
+    if &wrap
+        set nowrap
+        set nolinebreak
+        silent! nunmap j
+        silent! nunmap k
+    else
+        set wrap
+        set linebreak
+        set nolist
+        nnoremap j gj
+        nnoremap k gk
+    endif
 endf
 "}}}
 
-" vim: foldmethod=marker foldlevel=0
+" vim: foldmethod=marker foldlevel=1
