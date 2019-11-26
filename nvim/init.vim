@@ -18,7 +18,7 @@ fun! s:define_generic_command(cmd, executable) abort
                 \.     "'tag': '".a:executable."'"
                 \. "})"
 endf
-call s:define_generic_command('RubyTags', 'rtags -R --exclude=vendor')
+call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
 call s:define_generic_command('Tags', 'ctags -R')
 fun! s:generic_on_exit(id, data, event) abort dict
     echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
