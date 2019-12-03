@@ -130,7 +130,7 @@ set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
 set number " Show current line number on left
-set relativenumber " Show relative line numbers on left for jk jumping
+set norelativenumber " Show relative line numbers on left for jk jumping
 set numberwidth=3 " Give the left bar of line numbers 4 cols to use
 " set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
@@ -180,11 +180,12 @@ set dictionary+=/usr/share/dict/words
 set diffopt+=hiddenoff
 set showtabline=2
 set tabline=%!MakeTableLine()
-set omnifunc=ale#completion#OmniFunc
+" set omnifunc=ale#completion#OmniFunc
 set guicursor=a:block-Cursor " Show block cursor for these modes
 set timeoutlen=250 " timeout used mainly for jk => <Esc>
 set ttimeoutlen=-1
 " set winblend=10 " transparency for floating windows
+set equalalways
 
 augroup filetype_automcds
     autocmd!
@@ -255,17 +256,15 @@ let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
-let g:ale_fix_on_save = 1
+" let g:ale_fix_on_save = 1
 " let g:ale_completion_enabled = 1
-" let g:ale_disable_lsp = 1
+let g:ale_disable_lsp = 1
 let g:ale_linters = {
-            \     'go': ['gopls'],
             \     'rust': ['rls'],
             \     'ruby': ['solargraph', 'rubocop'],
             \ }
 let g:ale_fixers = {
             \     'json': ['jq'],
-            \     'go': ['gofmt'],
             \     'rust': ['rustfmt'],
             \ }
 " nnoremap <silent> <leader>a :ALELint<CR>
