@@ -3,6 +3,7 @@
 " Pack 'autozimu/LanguageClient-neovim', { 'hook': 'bash install.sh' }
 " Pack 'bfredl/nvim-incnormal'
 " Pack 'cespare/vim-toml'
+Pack 'fatih/vim-go'
 " Pack 'janko/vim-test'
 " Pack 'junegunn/vim-easy-align'
 " Pack 'ludovicchabant/vim-gutentags'

@@ -16,7 +16,7 @@ fun! s:define_generic_command(cmd, executable) abort
                 \. " call jobstart('".a:executable."', {"
                 \.     "'on_exit': function('s:generic_on_exit'),"
                 \.     "'tag': '".a:executable."'"
-                \. "})"
+                \. '})'
 endf
 call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
 call s:define_generic_command('Tags', 'ctags -R')
@@ -37,7 +37,7 @@ nnoremap <left> gT
 nnoremap <right> gt
 nnoremap <silent> gt      :<C-u>call <SID>singleterm_toggle()<CR>
 nnoremap <Backspace> <C-^>
-nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>40messages<bar>set more<CR>
+nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
 nnoremap <silent> - :Ex<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
@@ -47,12 +47,12 @@ nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name
 nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
-nnoremap <silent> <Leader>m :messages<CR>
 nnoremap <silent> <Leader>' :call <SID>togglewrapping()<CR>
 nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
 nnoremap <silent> <leader>f :ALEFix<CR>
+nnoremap          <leader><leader> :%norma 
 
 nnoremap <silent> <leader>t    :tabnew<CR>
 nnoremap          <leader>1 1gt
@@ -105,6 +105,8 @@ nnoremap <C-h> <C-w>h
 onoremap A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
+
+xnoremap <leader><leader> :norma 
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
@@ -258,7 +260,9 @@ let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
 " let g:ale_fix_on_save = 1
 " let g:ale_completion_enabled = 1
+" let g:ale_completion_delay = 50
 let g:ale_disable_lsp = 1
+let g:ale_set_loclist = 0
 let g:ale_linters = {
             \     'rust': ['rls'],
             \     'ruby': ['solargraph', 'rubocop'],
@@ -309,17 +313,17 @@ function! s:fancy_inactive_statusline() abort
 endfunction
 
 fun! Ale_statusline_warnings() abort
-    if !exists('*ale#statusline#Count')
-        return ''
-    endif
+    " if !exists('*ale#statusline#Count')
+        " return ''
+    " endif
     let warnings = ale#statusline#Count(bufnr('%')).warning
     return warnings == 0 ? '' : printf(' %d ', warnings)
 endf
 
 fun! Ale_statusline_errors() abort
-    if !exists('*ale#statusline#Count')
-        return ''
-    endif
+    " if !exists('*ale#statusline#Count')
+        " return ''
+    " endif
     let errors = ale#statusline#Count(bufnr('%')).error
     return errors == 0 ? '' : printf(' %d ', errors)
 endf
@@ -432,18 +436,6 @@ fun! s:centre_screen(zone) abort
 endf
 "}}}
 
-" clever tab {{{
-fun! CleverTab()
-    if getline('.')[:col('.') - 1] =~# '\v(^\s*|\s+.)$'
-        return "\<Tab>"
-    else
-        return "\<C-N>"
-    endif
-endf
-
-inoremap <silent> <Tab> <C-R>=CleverTab()<CR>
-"}}}
-
 " Delete {{{
 command! Delete call s:delete()
 
@@ -524,11 +516,11 @@ fun! s:singleterm_toggle() abort
 endf
 
 fun! s:open() abort
-    let width = float2nr(&columns * 0.7)
-    let height = float2nr(&lines * 0.6)
+    let width = float2nr(&columns * 0.9)
+    let height = float2nr(&lines * 0.8)
     let opts = {
                 \     'relative': 'editor',
-                \     'row': (&lines - height) / 5,
+                \     'row': (&lines - height) / 2.5,
                 \     'col': (&columns - width) / 2,
                 \     'width': width,
                 \     'height': height,

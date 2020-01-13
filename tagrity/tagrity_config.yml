@@ -1,0 +1,8 @@
+extension_commands:
+  rb: ripper-tags
+default_command: ctags
+tagf: tags
+extensions_whitelist: [rb, c, h, vim, S]
+# extensions_blacklist: [erb, html, txt]
+# git_strategy: TRACKED
+excluded_paths: [vendor, node_modules]
