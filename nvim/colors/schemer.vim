@@ -20,8 +20,8 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
 
     set background=dark
 
-    hi NonText ctermbg=0 ctermfg=7 cterm=bold guibg=#1e2127 guifg=#515e77 gui=bold
-    hi Comment ctermbg=NONE ctermfg=7 cterm=italic guibg=NONE guifg=#515e77 gui=italic
+    hi NonText ctermbg=0 ctermfg=7 cterm=bold guibg=#1e2127 guifg=#6c7891 gui=bold
+    hi Comment ctermbg=NONE ctermfg=7 cterm=italic guibg=NONE guifg=#6c7891 gui=italic
     hi Constant ctermbg=NONE ctermfg=3 cterm=NONE guibg=NONE guifg=#d19965 gui=NONE
     hi Error ctermbg=1 ctermfg=NONE cterm=bold guibg=#be5046 guifg=NONE gui=bold
     hi Identifier ctermbg=NONE ctermfg=9 cterm=NONE guibg=NONE guifg=#e06c75 gui=NONE
@@ -48,14 +48,14 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi CursorLine ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi ColorColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi CursorColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
-    hi LineNr ctermbg=NONE ctermfg=7 cterm=NONE guibg=NONE guifg=#515e77 gui=NONE
+    hi LineNr ctermbg=NONE ctermfg=7 cterm=NONE guibg=NONE guifg=#6c7891 gui=NONE
     hi CursorLineNr ctermbg=8 ctermfg=4 cterm=bold guibg=#2c313c guifg=#528bff gui=bold
     hi Cursor ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi helpLeadBlank ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi helpNormal ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi Visual ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi Pmenu ctermbg=8 ctermfg=fg cterm=NONE guibg=#2c313c guifg=fg gui=NONE
-    hi PmenuSbar ctermbg=7 ctermfg=NONE cterm=NONE guibg=#515e77 guifg=NONE gui=NONE
+    hi PmenuSbar ctermbg=7 ctermfg=NONE cterm=NONE guibg=#6c7891 guifg=NONE gui=NONE
     hi PmenuSel ctermbg=14 ctermfg=bg cterm=bold guibg=#56b5c2 guifg=bg gui=bold
     hi PmenuThumb ctermbg=13 ctermfg=NONE cterm=NONE guibg=#c578dd guifg=NONE gui=NONE
     hi Folded ctermbg=8 ctermfg=15 cterm=NONE guibg=#2c313c guifg=#abb2bf gui=NONE
@@ -166,7 +166,7 @@ if has('nvim')
     let g:terminal_color_4 = '#528bff'
     let g:terminal_color_5 = '#d55fde'
     let g:terminal_color_6 = '#00ACC1'
-    let g:terminal_color_7 = '#515e77'
+    let g:terminal_color_7 = '#6c7891'
     let g:terminal_color_8 = '#2c313c'
     let g:terminal_color_9 = '#e06c75'
     let g:terminal_color_10 = '#89ca78'
@@ -186,7 +186,7 @@ else
             \ '#528bff',
             \ '#d55fde',
             \ '#00ACC1',
-            \ '#515e77',
+            \ '#6c7891',
             \ '#2c313c',
             \ '#e06c75',
             \ '#89ca78',

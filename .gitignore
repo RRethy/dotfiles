@@ -10,3 +10,4 @@ nix/
 nixpkgs/
 shadowenv/
 trust-key
+nvim/pack/

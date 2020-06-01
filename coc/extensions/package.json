@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "coc-rls": ">=1.1.5"
+  }
+}

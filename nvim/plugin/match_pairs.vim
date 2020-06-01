@@ -1,5 +1,4 @@
 finish
-
 let s:opening_chars = []
 let s:closing_chars = []
 

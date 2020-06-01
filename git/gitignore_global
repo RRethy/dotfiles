@@ -10,3 +10,4 @@ cscope.out
 .starscope.db
 .projections.json
 .todo.md
+.tagrity_config.yml

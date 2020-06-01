@@ -132,20 +132,9 @@ function updateGitIgnore() {
 # LS_COLORS=$LS_COLORS:'di=1;32:'
 # export LS_COLORS
 
-export PATH="$JAVA_HOME/bin":$PATH
-export PATH=/usr/local/bin:$PATH
-export PATH="$HOME/.cargo/bin/":$PATH
-export PATH="$HOME/.config/bin/":$PATH
-export PATH=/usr/local/opt/openssl/bin:$PATH
-export PATH="$GOPATH/bin/":$PATH
-export PATH=~/Library/Android/sdk/tools/bin/:$PATH
-export PATH="$HOME/.cargo/bin":$PATH
-export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
-export PATH=~/.rbenv/versions/2.6.3/bin:$PATH
-
+export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
-export GOPATH=$HOME/go
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
@@ -153,6 +142,16 @@ export GOPATH=$HOME/go
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 export ANDROID_HOME=~/Library/Android/sdk/
+export PATH="$JAVA_HOME/bin":$PATH
+export PATH=/usr/local/bin:$PATH
+export PATH="$HOME/.cargo/bin/":$PATH
+export PATH="$HOME/.config/bin/":$PATH
+export PATH=/usr/local/opt/openssl/bin:$PATH
+export PATH=$GOPATH/bin/:$PATH
+export PATH=~/Library/Android/sdk/tools/bin/:$PATH
+export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
+export PATH=~/.rbenv/versions/2.6.3/bin:$PATH
+
 
 # export VISUAL='nvim'
 export VISUAL='nvim'
@@ -226,6 +225,12 @@ else
     eval "$(rbenv init -)"
 fi
 eval $(opam env)
+
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+autoload -Uz compinit
+compinit
+# Completion for kitty
+kitty + complete setup zsh | source /dev/stdin
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 # export SDKMAN_DIR="/Users/rethy/.sdkman"

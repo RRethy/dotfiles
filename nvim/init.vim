@@ -8,34 +8,16 @@ call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
 
 call backpack#init()
 
-command! -bar WS write|source %
-command! StripWhitespace  %s/\v\s+$//g
-command! Yankfname let @* = expand('%:p')
-fun! s:define_generic_command(cmd, executable) abort
-    exe 'command! '.a:cmd
-                \. " call jobstart('".a:executable."', {"
-                \.     "'on_exit': function('s:generic_on_exit'),"
-                \.     "'tag': '".a:executable."'"
-                \. '})'
-endf
-call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
-call s:define_generic_command('Tags', 'ctags -R')
-fun! s:generic_on_exit(id, data, event) abort dict
-    echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
-endf
-
+" TODO figure out a mapping for <C-_> (control+/)
 nnoremap cl 0D
 nnoremap Y y$
-nnoremap g0 ^
-nnoremap g4 $
 nmap     g5 :e %%
-nnoremap g6 ^
+nnoremap ' `
 nnoremap <A-l> 2zl
 nnoremap <A-h> 2zh
 nnoremap <silent> g8 :norm! *N<CR>
 nnoremap <left> gT
 nnoremap <right> gt
-nnoremap <silent> gt      :<C-u>call <SID>singleterm_toggle()<CR>
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
 nnoremap <silent> - :Ex<CR>
@@ -47,12 +29,11 @@ nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name
 nnoremap <silent> <Leader>- :echo synIDattr(synIDtrans(synID(line("."), col("."), 1)), "name")<CR>
 nnoremap <silent> <Leader>h :Helptags<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
-nnoremap <silent> <Leader>' :call <SID>togglewrapping()<CR>
 nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
-nnoremap <silent> <leader>f :ALEFix<CR>
-nnoremap          <leader><leader> :%norma 
+" execute the current line as a shell script and replace it with the output
+nnoremap <silent> <leader>s :.!sh<CR>
 
 nnoremap <silent> <leader>t    :tabnew<CR>
 nnoremap          <leader>1 1gt
@@ -106,8 +87,6 @@ onoremap A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
 
-xnoremap <leader><leader> :norma 
-
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
@@ -131,10 +110,12 @@ set inccommand=nosplit " Show substitute command live
 set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
-set number " Show current line number on left
-set norelativenumber " Show relative line numbers on left for jk jumping
+if has('vim_starting')
+    set number " Show current line number on left
+    set norelativenumber " Show relative line numbers on left for jk jumping
+endif
 set numberwidth=3 " Give the left bar of line numbers 4 cols to use
-" set updatetime=250 " I use this used for CursorHold autocmd for deoplete
+set updatetime=250 " I use this used for CursorHold autocmd for deoplete
 set noshowcmd " Don't show the current cmd in bottom right
 set iskeyword+=- " Add hyphen to be a keyword, bad for racket and python
 set hidden " Absolutely necessary. Allows hidden buffers
@@ -163,10 +144,12 @@ set spelllang=en_ca " Spell language for Canadian English
 " set undolevels=1000         " How many undos
 " set undoreload=10000        " number of lines to save for undo
 " set shortmess+=cI " Don't show annoying completion messages
-set shortmess+=I " Don't show intro msg (vim-illuminate messes it up anyway)
+set shortmess+=Ic " Don't show intro msg (vim-illuminate messes it up anyway)
 set nostartofline " Don't move cursor for ctrl-(d,u,f,b) - unsure about this
 " set sessionoptions+=resize " Remember lines/cols when saving a session
 set backup
+" set nobackup
+" set nowritebackup
 set backupdir=~/.local/share/nvim/backup
 " set pastetoggle=<F2> " Toggle paste from insert mode. Prefer "+p
 set lazyredraw " don't redraw when executing a macro
@@ -182,12 +165,13 @@ set dictionary+=/usr/share/dict/words
 set diffopt+=hiddenoff
 set showtabline=2
 set tabline=%!MakeTableLine()
-" set omnifunc=ale#completion#OmniFunc
 set guicursor=a:block-Cursor " Show block cursor for these modes
 set timeoutlen=250 " timeout used mainly for jk => <Esc>
 set ttimeoutlen=-1
 " set winblend=10 " transparency for floating windows
 set equalalways
+" set nowrapscan
+set virtualedit=block
 
 augroup filetype_automcds
     autocmd!
@@ -207,12 +191,25 @@ augroup hl_trailing_whitespace
     autocmd BufNew,BufEnter * try | call matchdelete(1254) | catch /E80[23]/ | endtry | call matchadd('CursorLine', '\v\s+$', 1, 1254)
 augroup END
 
+augroup term_autocmds
+    autocmd!
+    autocmd TermEnter * set nocursorline
+    autocmd TermLeave * set cursorline
+augroup END
+
+augroup highlight_yank_autocmds
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("Substitute", 200)
+augroup END
+
 " plugin settings {{{
 
 " fzf settings
-fun! FloatingFZF()
-    let width = float2nr(&columns * 0.5)
-    let height = float2nr(&lines * 0.3)
+fun! FloatingFZF2()
+    " let width = float2nr(&columns * 0.5)
+    " let height = float2nr(&lines * 0.3)
+    let width = &columns
+    let height = &lines
     let opts = {
                 \     'relative': 'editor',
                 \     'row': (&lines - height) / 5,
@@ -225,7 +222,7 @@ fun! FloatingFZF()
     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
 endf
 
-let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+let g:fzf_layout = { 'window': 'call FloatingFZF2()' }
 " if has('autocmd')
 "     augroup fzf
 "         autocmd! FileType fzf
@@ -239,46 +236,95 @@ let g:fzf_colors = {
             \ }
 
 " Illuminate stuff
-let g:Illuminate_ftblacklist = ['', 'qf', 'tex']
+" let g:loaded_illuminate = 1
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex'] " TODO figure out why this doesn't work for my gt terminal
 let g:Illuminate_ftHighlightGroups = {
             \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimMapModKey'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
-            \ 'cpp:blacklist': ['cType',  'cppSTLnamespace', 'Statement', 'Type'],
-            \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat']
+            \ 'cpp:blacklist': ['cppSTLnamespace', 'Statement', 'Type'],
+            \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat', 'goConditional'],
+            \ 'c:blacklist': ['Type', 'cRepeat'],
+            \ 'rust:blacklist': ['Comment', 'rustConditional', 'rustKeyword']
             \ }
 
 let g:netrw_banner = 0
 
 let g:Hexokinase_highlighters = ['foregroundfull']
+" let g:Hexokinase_highlighters = [ 'background', 'backgroundfull', 'virtual']
+
+let g:Hexokinase_optInPatterns = [
+\     'full_hex',
+\     'triple_hex',
+\     'rgb',
+\     'rgba',
+\     'hsl',
+\     'hsla',
+\ ]
+
+" let g:Hexokinase_refreshEvents = ['BufWrite', 'BufRead', 'TextChanged', 'InsertLeave']
+" let g:Hexokinase_prioritizeHead = 0
 " let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
 " ALE settings
+set omnifunc=ale#completion#OmniFunc
 let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_insert_leave = 0
-" let g:ale_fix_on_save = 1
-" let g:ale_completion_enabled = 1
-" let g:ale_completion_delay = 50
-let g:ale_disable_lsp = 1
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 0
+let g:ale_disable_lsp = 0
 let g:ale_set_loclist = 0
 let g:ale_linters = {
             \     'rust': ['rls'],
             \     'ruby': ['solargraph', 'rubocop'],
+            \     'python': ['pyls'],
+            \     'markdown': [],
             \ }
 let g:ale_fixers = {
             \     'json': ['jq'],
             \     'rust': ['rustfmt'],
+            \     'go': ['gofmt'],
             \ }
-" nnoremap <silent> <leader>a :ALELint<CR>
+nnoremap <silent> <c-]> :ALEGoToDefinition<CR>
+nnoremap <silent> K :ALEHover<CR>
+cnoremap <silent> <leader>a :ALELint<CR>
 
+" vimtex settings
 let g:tex_flavor = 'latex'
 let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_mode = 0
 
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
+
+" lua << EOF
+" local nvim_lsp = require'nvim_lsp'
+" nvim_lsp.rls.setup {}
+" EOF
+" augroup rrethy_nvim_lsp_autocmds
+"     autocmd!
+"     autocmd Filetype rust setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"     autocmd BufWrite *.rs lua vim.lsp.buf.formatting()
+" augroup END
+" local nvim_lsp = require'nvim_lsp'
+" local gopls_root_pattern = require'nvim_lsp/util'.root_pattern('go.mod', '.git')
+" local abspath = vim.loop.fs_realpath
+" local gopath = abspath(vim.env.GOPATH)
+" local function find_go_project(bufpath)
+"   -- Make it an absolute path.
+"   bufpath = abspath(bufpath)
+"   if vim.startswith(bufpath, gopath) then
+"     return bufpath:match("(.*/go/src/[^/]+/[^/]+/[^/]+)")
+"   end
+" end
+
+" require'nvim_lsp'.gopls.setup {
+"   root_dir = function(bufpath, bufnr)
+"     return gopls_root_pattern(bufpath) or find_go_project(bufpath)
+"   end;
+" }
 "}}}
 
 " statusline {{{
@@ -313,19 +359,23 @@ function! s:fancy_inactive_statusline() abort
 endfunction
 
 fun! Ale_statusline_warnings() abort
+    " echom "hello"
     " if !exists('*ale#statusline#Count')
-        " return ''
+    "     return ''
     " endif
+    " echom "world"
     let warnings = ale#statusline#Count(bufnr('%')).warning
     return warnings == 0 ? '' : printf(' %d ', warnings)
+    " return ''
 endf
 
 fun! Ale_statusline_errors() abort
     " if !exists('*ale#statusline#Count')
-        " return ''
+    "     return ''
     " endif
     let errors = ale#statusline#Count(bufnr('%')).error
     return errors == 0 ? '' : printf(' %d ', errors)
+    " return ''
 endf
 
 fun! s:fancy_active_statusline() abort
@@ -424,141 +474,11 @@ fun! MakeTableLine() abort
 endf
 " }}}
 
-" z[1-9] {{{
-for i in range(11)
-    exe 'nnoremap <silent> z' . i . ' :call <SID>centre_screen(' . i . ')<CR>'
-endfor
+command! Delete exe 'silent !rm -f %' | bd!
 
-fun! s:centre_screen(zone) abort
-    let percentage = a:zone * 0.1
-    let shift = float2nr(winheight(0) * percentage)
-    exe 'normal! zt' . shift . ''
-endf
-"}}}
+command! -range=% ReverseLines call nvim_buf_set_lines(bufnr('%'), <line1>-1, <line2>, 1, reverse(nvim_buf_get_lines(bufnr('%'), <line1>-1, <line2>, 1)))
 
-" Delete {{{
-command! Delete call s:delete()
-
-fun! s:delete() abort
-    silent !rm -f %
-    silent bd!
-endf
-"}}}
-
-" reverse line {{{
-command! -range=% ReverseLines :<line1>,<line2>call s:reverse_lines()
-
-fun! s:reverse_lines() range
-    let i = 0
-    let mid = (a:lastline - a:firstline) / 2 + a:firstline
-    while (a:firstline + i) <= mid
-        let higher_line = getline(a:firstline + i)
-        call setline(a:firstline + i, getline(a:lastline - i))
-        call setline(a:lastline - i, higher_line)
-        let i += 1
-    endwhile
-endf
-"}}}
-
-" spotlight {{{
-command! -bang -bar -nargs=? -complete=custom,s:complete_apps Spotlight call s:spotlight_search(<bang>0, <q-args>)
-
-let s:list_apps_cmd = 'mdfind kind:app'
-
-fun! s:spotlight_search(bg, app) abort
-    let opener = {
-                \ 'sink*': function('s:open_app'),
-                \ 'bg': a:bg,
-                \ 'window': 'call FloatingFZF()',
-                \ }
-    if empty(a:app)
-        call fzf#run(extend({
-                    \ 'prefix': '^.*$',
-                    \ 'source': s:list_apps_cmd,
-                    \ 'down': '30%'
-                    \ }, opener))
-    else
-        call opener['sink*']([a:app])
-    endif
-endf
-
-fun! s:open_app(app) abort dict
-    let cmd = 'open '.(self.bg ? '-g ' : '').' -a '.shellescape(a:app[0])
-    call system(cmd)
-endf
-
-fun! s:complete_apps(arglead, cmdline, cursorpos) abort
-    return join(map(split(system(s:list_apps_cmd)), 'fnamemodify(v:val, ":t")'), "\n")
-endf
-"}}}
-
-" terminal helpers {{{
-" Toggle displaying a single terminal in a split
-" This maintains a single interactive terminal, even between sessions
-let s:singleterm_bufnr = -1
-if s:singleterm_bufnr == -1
-    " When starting from a session file try to use an available interactive
-    " terminal instead of making a new one.
-    " I naively look for any interactive zsh terminal
-    for bufnr in nvim_list_bufs()
-        let bufname = bufname(bufnr)
-        if bufname =~# '\v\C^term.*/bin/zsh$'
-            let s:singleterm_bufnr = bufnr
-            break
-        endif
-    endfor
-endif
-
-fun! s:singleterm_toggle() abort
-    if !s:try_to_close()
-        call s:open()
-    endif
-endf
-
-fun! s:open() abort
-    let width = float2nr(&columns * 0.9)
-    let height = float2nr(&lines * 0.8)
-    let opts = {
-                \     'relative': 'editor',
-                \     'row': (&lines - height) / 2.5,
-                \     'col': (&columns - width) / 2,
-                \     'width': width,
-                \     'height': height,
-                \     'style': 'minimal'
-                \ }
-    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    let opts.height -= 2
-    let opts.width -= 4
-    let opts.row += 1
-    let opts.col += 2
-    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-    if !bufexists(s:singleterm_bufnr)
-        terminal
-        let s:singleterm_bufnr = bufnr('%')
-    endif
-    exe 'b '.s:singleterm_bufnr
-    " setlocal winhighlight=NormalFloat:Normal
-    startinsert
-endf
-
-fun! s:try_to_close() abort
-    if bufexists(s:singleterm_bufnr)
-        let winids = win_findbuf(s:singleterm_bufnr)
-        let curtabnr = tabpagenr()
-        for winid in winids
-            let [tabnr, winnr] = win_id2tabwin(winid)
-            if curtabnr == tabnr
-                close
-                close
-                return 1
-            endif
-        endfor
-    endif
-    return 0
-endf
-" }}}
-
-" toggle wrapper{{{
+nnoremap <silent> yow :call <SID>togglewrapping()<CR>
 fun! s:togglewrapping()
     if &wrap
         set nowrap
@@ -568,11 +488,26 @@ fun! s:togglewrapping()
     else
         set wrap
         set linebreak
-        set nolist
         nnoremap j gj
         nnoremap k gk
     endif
 endf
-"}}}
+
+" TODO make this work with plugin files that have source guards on them
+command! -bar WS write|source %
+command! StripWhitespace  %s/\v\s+$//g
+command! Yankfname let @* = expand('%:p')
+fun! s:define_generic_command(cmd, executable) abort
+    exe 'command! '.a:cmd
+                \. " call jobstart('".a:executable."', {"
+                \.     "'on_exit': function('s:generic_on_exit'),"
+                \.     "'tag': '".a:executable."'"
+                \. '})'
+endf
+call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
+call s:define_generic_command('Tags', 'ctags -R')
+fun! s:generic_on_exit(id, data, event) abort dict
+    echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
+endf
 
 " vim: foldmethod=marker foldlevel=1
