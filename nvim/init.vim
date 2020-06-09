@@ -6,9 +6,11 @@ colorscheme schemer
 
 call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
 
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+
 call backpack#init()
 
-" TODO figure out a mapping for <C-_> (control+/)
 nnoremap cl 0D
 nnoremap Y y$
 nmap     g5 :e %%
@@ -20,7 +22,7 @@ nnoremap <left> gT
 nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
-nnoremap <silent> - :Ex<CR>
+" nnoremap <silent> - :Ex<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>a :argadd %<CR>
@@ -34,6 +36,8 @@ nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
 " execute the current line as a shell script and replace it with the output
 nnoremap <silent> <leader>s :.!sh<CR>
+nnoremap <expr> n 'Nn'[v:searchforward]
+nnoremap <expr> N 'nN'[v:searchforward]
 
 nnoremap <silent> <leader>t    :tabnew<CR>
 nnoremap          <leader>1 1gt
@@ -110,7 +114,7 @@ set inccommand=nosplit " Show substitute command live
 set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
-if has('vim_starting')
+if has('vim_starting') " fixes bugs caused by vim-sourcerer
     set number " Show current line number on left
     set norelativenumber " Show relative line numbers on left for jk jumping
 endif
@@ -237,19 +241,28 @@ let g:fzf_colors = {
 
 " Illuminate stuff
 " let g:loaded_illuminate = 1
-let g:Illuminate_ftblacklist = ['', 'qf', 'tex'] " TODO figure out why this doesn't work for my gt terminal
+let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'fzf'] " TODO figure out why this doesn't work for my gt terminal
 let g:Illuminate_ftHighlightGroups = {
-            \ 'vim:blacklist': ['vimLet', 'vimNotFunc', 'vimCommand', 'vimMap', 'vimMapModKey'],
+            \ 'vim:blacklist': ['Statement', 'vimNotFunc', 'vimCommand', 'vimMapModKey'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
             \ 'cpp:blacklist': ['cppSTLnamespace', 'Statement', 'Type'],
             \ 'go:blacklist': ['goVar', 'goComment', 'goRepeat', 'goConditional'],
             \ 'c:blacklist': ['Type', 'cRepeat'],
             \ 'rust:blacklist': ['Comment', 'rustConditional', 'rustKeyword']
             \ }
+" augroup illuminate_augroup
+"     autocmd!
+"     autocmd VimEnter * hi illuminatedWord cterm=italic gui=italic | hi illuminatedCurWord cterm=bold gui=bold
+" augroup END
+" let g:Illuminate_insert_mode_highlight = 1
 
+let g:netrw_banner = 0
+let g:netrw_banner = 0
+let g:netrw_banner = 0
 let g:netrw_banner = 0
 
 let g:Hexokinase_highlighters = ['foregroundfull']
+" let g:Hexokinase_highlighters = ['backgroundfull']
 " let g:Hexokinase_highlighters = [ 'background', 'backgroundfull', 'virtual']
 
 let g:Hexokinase_optInPatterns = [
@@ -278,6 +291,8 @@ let g:ale_disable_lsp = 0
 let g:ale_set_loclist = 0
 let g:ale_linters = {
             \     'rust': ['rls'],
+            \     'go': ['gopls'],
+            \     'dart': ['analysis_server'],
             \     'ruby': ['solargraph', 'rubocop'],
             \     'python': ['pyls'],
             \     'markdown': [],
@@ -285,11 +300,11 @@ let g:ale_linters = {
 let g:ale_fixers = {
             \     'json': ['jq'],
             \     'rust': ['rustfmt'],
+            \     'dart': ['dartfmt'],
             \     'go': ['gofmt'],
             \ }
 nnoremap <silent> <c-]> :ALEGoToDefinition<CR>
 nnoremap <silent> K :ALEHover<CR>
-cnoremap <silent> <leader>a :ALELint<CR>
 
 " vimtex settings
 let g:tex_flavor = 'latex'

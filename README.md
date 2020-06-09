@@ -2,9 +2,8 @@
 
 # Kitty (terminal) screenshots
 
-<img src="https://user-images.githubusercontent.com/21000943/44302149-18f2c880-a2d8-11e8-85f9-0816a268c193.png" title="terminal screenshots 2">
+<img src="https://user-images.githubusercontent.com/21000943/84114550-92523280-a9fa-11ea-8d82-aeb20257fde1.png" title="terminal screenshots 2">
 
 # Vim screenshots
 
-<img src="https://user-images.githubusercontent.com/21000943/44302148-18f2c880-a2d8-11e8-9f04-dbe8fcc427eb.png" title="vim_screenshot1">
-<img src="https://user-images.githubusercontent.com/21000943/44302147-18f2c880-a2d8-11e8-8664-a53135b44bbb.png" title="vim_screenshot2">
+<img src="https://user-images.githubusercontent.com/21000943/84114615-abf37a00-a9fa-11ea-8dc6-d45d8e4029cd.png" title="vim_screenshot1">
