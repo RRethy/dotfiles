@@ -64,6 +64,10 @@
     magenta     = ["#c578dd", 13, "magenta"]
     cyan        = ["#56b5c2", 14, "cyan"]
     white       = ["#abb2bf", 15, "white"]
+    diffgreen   = ["#28312f", 10, "green"]
+    diffred     = ["#31282e", 9, "red"]
+    diffyellow  = ["#31302f", 11, "yellow"]
+    diffmagenta = ["#2e2939", 13, "magenta"]
 
     # Step 4: highlights
     #
@@ -112,7 +116,7 @@
         [ "Statement", "NONE", magenta, "NONE" ],
         [ "String", "NONE", green, "NONE" ],
         [ "Number", "Constant" ],
-        [ "Todo", "NONE", cyan, "bold" ],
+        [ "Todo", "NONE", cyan, "bold,underline" ],
         [ "Type", "NONE", magenta, "NONE" ],
         [ "Underlined", "NONE", "NONE", "bold,underline" ],
         [ "StatusLine", darkgray, "NONE", "NONE" ],
@@ -147,10 +151,10 @@
         [ "Folded", darkgray, white, "NONE" ],
         [ "WildMenu", white, darkgray, "NONE" ],
         [ "SpecialKey", white, darkgray, "NONE" ],
-        [ "DiffAdd", green, "NONE", "NONE" ],
-        [ "DiffChange", yellow, "NONE", "NONE" ],
-        [ "DiffDelete", red, "NONE", "NONE" ],
-        [ "DiffText", magenta, "NONE", "NONE" ],
+        [ "DiffAdd", diffgreen, "NONE", "NONE" ],
+        [ "DiffChange", diffyellow, "NONE", "NONE" ],
+        [ "DiffDelete", diffred, "NONE", "NONE" ],
+        [ "DiffText", diffmagenta, "NONE", "NONE" ],
         [ "IncSearch", darkmagenta, "bg", "NONE" ],
         [ "Search", blue, "bg", "NONE" ],
         [ "Directory", "NONE", cyan, "bold" ],
@@ -159,7 +163,7 @@
         [ "SpellCap", "NONE", red, "bold" ],
         [ "SpellLocal", "NONE", "NONE", "NONE" ],
         [ "SpellRare", "NONE", yellow, "NONE" ],
-        [ "SignColumn", "NONE", "bg", "NONE" ],
+        [ "SignColumn", darkgray, "NONE", "NONE" ],
         [ "ErrorMsg", darkred, black, "bold" ],
         [ "ModeMsg", "NONE", cyan, "underline" ],
         [ "MoreMsg", "NONE", darkblue, "bold" ],

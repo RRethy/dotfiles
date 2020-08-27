@@ -3,11 +3,9 @@ scriptencoding utf-8
 let mapleader=' '
 
 colorscheme schemer
+" colorscheme highlite
 
 call mkdir($HOME.'/.local/share/nvim/backup/', 'p')
-
-let g:loaded_netrw = 1
-let g:loaded_netrwPlugin = 1
 
 call backpack#init()
 
@@ -22,7 +20,6 @@ nnoremap <left> gT
 nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
-" nnoremap <silent> - :Ex<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>a :argadd %<CR>
@@ -61,11 +58,6 @@ nnoremap <silent> ]l :lnext<CR>
 nnoremap <silent> [L :lfirst<CR>
 nnoremap <silent> ]L :llast<CR>
 
-nmap <silent> [w <Plug>(ale_previous)
-nmap <silent> ]w <Plug>(ale_next)
-nmap <silent> [W <Plug>(ale_first)
-nmap <silent> ]W <Plug>(ale_last)
-
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
 nnoremap <silent> [Q :cfirst<CR>
@@ -76,20 +68,15 @@ nnoremap <silent> [t :tprevious<CR>
 nnoremap <silent> ]T :tlast<CR>
 nnoremap <silent> [T :tfirst<CR>
 
-nnoremap <silent> yon :set number!<CR>
-nnoremap <silent> yor :set relativenumber!<CR>
-nnoremap yoh :set hlsearch!<CR>
-nnoremap yos :set spell!<CR>
-nnoremap yob :set scrollbind!<CR>
-
 nnoremap <C-l> <C-w>l
 nnoremap <C-k> <C-w>k
 nnoremap <C-j> <C-w>j
 nnoremap <C-h> <C-w>h
 
-onoremap A :<C-u>normal! ggVG<CR>
+onoremap <silent> A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
+vnoremap gn :norm! 
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
@@ -115,7 +102,7 @@ set cursorline " Changes colour of row that cursor is on
 set ignorecase " Need this on for smartcase to work
 set smartcase " Match lowercase to all, but only match upper case to upper case
 if has('vim_starting') " fixes bugs caused by vim-sourcerer
-    set number " Show current line number on left
+    set nonumber " Show current line number on left
     set norelativenumber " Show relative line numbers on left for jk jumping
 endif
 set numberwidth=3 " Give the left bar of line numbers 4 cols to use
@@ -175,7 +162,8 @@ set ttimeoutlen=-1
 " set winblend=10 " transparency for floating windows
 set equalalways
 " set nowrapscan
-set virtualedit=block
+" set virtualedit=block
+" set shada=!,'100,<50,s10,h
 
 augroup filetype_automcds
     autocmd!
@@ -206,14 +194,43 @@ augroup highlight_yank_autocmds
     autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("Substitute", 200)
 augroup END
 
-" plugin settings {{{
+augroup skel_autocmds
+    autocmd!
+    autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel
+augroup END
+
+" TAG: plugins {{{
+
+" TAG: config-treesitter
+
+" lua <<EOF
+" require'nvim-treesitter.configs'.setup {
+"     highlight = {
+"         enable = true,                    -- false will disable the whole extension
+"     },
+"     incremental_selection = {
+"         enable = true,
+"         disable = { 'cpp', 'lua' },
+"         keymaps = {                       -- mappings for incremental selection (visual mappings)
+"           init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
+"           node_incremental = "grn",       -- increment to the upper named parent
+"           scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
+"           node_decremental = "grm",      -- decrement to the previous node
+"         }
+"     },
+"     ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
+" }
+" EOF
+
+" TAG: config-eunuch
+let g:Eunuch_find_executable = 'fd'
 
 " fzf settings
 fun! FloatingFZF2()
-    " let width = float2nr(&columns * 0.5)
-    " let height = float2nr(&lines * 0.3)
-    let width = &columns
-    let height = &lines
+    let width = float2nr(&columns * 0.7)
+    let height = float2nr(&lines * 0.5)
+    " let width = &columns
+    " let height = &lines
     let opts = {
                 \     'relative': 'editor',
                 \     'row': (&lines - height) / 5,
@@ -239,9 +256,9 @@ let g:fzf_colors = {
             \ 'bg+': ['bg', 'Normal', 'Normal'],
             \ }
 
-" Illuminate stuff
-" let g:loaded_illuminate = 1
-let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'fzf'] " TODO figure out why this doesn't work for my gt terminal
+" TAG: config-illuminate
+" let g:Illuminate_ftwhitelist = ['todo']
+" let g:Illuminate_ftblacklist = ['', 'qf', 'tex', 'fzf', 'text'] " TODO figure out why this doesn't work for my gt terminal
 let g:Illuminate_ftHighlightGroups = {
             \ 'vim:blacklist': ['Statement', 'vimNotFunc', 'vimCommand', 'vimMapModKey'],
             \ 'ruby:blacklist': ['Statement', 'PreProc'],
@@ -257,12 +274,13 @@ let g:Illuminate_ftHighlightGroups = {
 " let g:Illuminate_insert_mode_highlight = 1
 
 let g:netrw_banner = 0
-let g:netrw_banner = 0
-let g:netrw_banner = 0
-let g:netrw_banner = 0
 
+
+" TAG: config-hexokinase
 let g:Hexokinase_highlighters = ['foregroundfull']
-" let g:Hexokinase_highlighters = ['backgroundfull']
+let g:Hexokinase_palettes = [expand($HOME).'/.config/nvim/sample_palette.json']
+let g:Hexokinase_checkBoundary = 1
+" let g:Hexokinase_highlighters = ['virtual']
 " let g:Hexokinase_highlighters = [ 'background', 'backgroundfull', 'virtual']
 
 let g:Hexokinase_optInPatterns = [
@@ -279,8 +297,48 @@ let g:Hexokinase_optInPatterns = [
 " let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
-" ALE settings
-set omnifunc=ale#completion#OmniFunc
+" TAG: config-ale
+let g:ale_completion_symbols = {
+            \ 'text': '',
+            \ 'method': '',
+            \ 'function': '',
+            \ 'constructor': '',
+            \ 'field': '',
+            \ 'variable': '',
+            \ 'class': '',
+            \ 'interface': '',
+            \ 'module': '',
+            \ 'property': '',
+            \ 'unit': 'unit',
+            \ 'value': 'val',
+            \ 'enum': '',
+            \ 'keyword': 'keyword',
+            \ 'snippet': '',
+            \ 'color': 'color',
+            \ 'file': '',
+            \ 'reference': 'ref',
+            \ 'folder': '',
+            \ 'enum member': '',
+            \ 'constant': '',
+            \ 'struct': '',
+            \ 'event': 'event',
+            \ 'operator': '',
+            \ 'type_parameter': 'type param',
+            \ '<default>': 'v'
+            \ }
+" nmap <silent> [w <Plug>(ale_previous)
+" nmap <silent> ]w <Plug>(ale_next)
+" nmap <silent> [W <Plug>(ale_first)
+" nmap <silent> ]W <Plug>(ale_last)
+fun! s:alef() abort
+    setl omnifunc=ale#completion#OmniFunc
+    nnoremap <buffer> <silent> <c-]> :ALEGoToDefinition<CR>
+    nnoremap <buffer> <silent> K :ALEHover<CR>
+endf
+" augroup ale_autocmds
+"     autocmd!
+"     autocmd FileType go,rust,python,ruby,dart call s:alef()
+" augroup END
 let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter = 0
@@ -296,6 +354,7 @@ let g:ale_linters = {
             \     'ruby': ['solargraph', 'rubocop'],
             \     'python': ['pyls'],
             \     'markdown': [],
+            \     'tex': [],
             \ }
 let g:ale_fixers = {
             \     'json': ['jq'],
@@ -303,10 +362,8 @@ let g:ale_fixers = {
             \     'dart': ['dartfmt'],
             \     'go': ['gofmt'],
             \ }
-nnoremap <silent> <c-]> :ALEGoToDefinition<CR>
-nnoremap <silent> K :ALEHover<CR>
 
-" vimtex settings
+" TAG: config-vimtex
 let g:tex_flavor = 'latex'
 let g:vimtex_view_method = 'skim'
 let g:vimtex_quickfix_mode = 0
@@ -314,34 +371,25 @@ let g:vimtex_quickfix_mode = 0
 let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
 
-" lua << EOF
-" local nvim_lsp = require'nvim_lsp'
-" nvim_lsp.rls.setup {}
-" EOF
-" augroup rrethy_nvim_lsp_autocmds
-"     autocmd!
-"     autocmd Filetype rust setlocal omnifunc=v:lua.vim.lsp.omnifunc
-"     autocmd BufWrite *.rs lua vim.lsp.buf.formatting()
-" augroup END
-" local nvim_lsp = require'nvim_lsp'
-" local gopls_root_pattern = require'nvim_lsp/util'.root_pattern('go.mod', '.git')
-" local abspath = vim.loop.fs_realpath
-" local gopath = abspath(vim.env.GOPATH)
-" local function find_go_project(bufpath)
-"   -- Make it an absolute path.
-"   bufpath = abspath(bufpath)
-"   if vim.startswith(bufpath, gopath) then
-"     return bufpath:match("(.*/go/src/[^/]+/[^/]+/[^/]+)")
-"   end
-" end
+" TAG: config-nvimlsp
+lua require 'lsp_setup'
+nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+augroup rrethy_nvim_lsp_autocmds
+    autocmd!
+    autocmd Filetype rust,go setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    autocmd BufWrite *.rs,*.go lua vim.lsp.buf.formatting()
+augroup END
+" }}}
 
-" require'nvim_lsp'.gopls.setup {
-"   root_dir = function(bufpath, bufnr)
-"     return gopls_root_pattern(bufpath) or find_go_project(bufpath)
-"   end;
-" }
-"}}}
-
+" TAG: config-statusline
 " statusline {{{
 augroup statusline_autocmd
     autocmd!
@@ -374,6 +422,7 @@ function! s:fancy_inactive_statusline() abort
 endfunction
 
 fun! Ale_statusline_warnings() abort
+    return ''
     " echom "hello"
     " if !exists('*ale#statusline#Count')
     "     return ''
@@ -385,6 +434,7 @@ fun! Ale_statusline_warnings() abort
 endf
 
 fun! Ale_statusline_errors() abort
+    return ''
     " if !exists('*ale#statusline#Count')
     "     return ''
     " endif
@@ -434,6 +484,7 @@ fun! s:fancy_active_statusline() abort
 endf
 "}}}
 
+" TAG: config-tabline
 " tabline {{{
 let s:fugitive_statusline = ''
 fun! s:fugitive_branch_wrapper() abort
@@ -489,7 +540,7 @@ fun! MakeTableLine() abort
 endf
 " }}}
 
-command! Delete exe 'silent !rm -f %' | bd!
+" command! Delete exe 'silent !rm -f %' | bd!
 
 command! -range=% ReverseLines call nvim_buf_set_lines(bufnr('%'), <line1>-1, <line2>, 1, reverse(nvim_buf_get_lines(bufnr('%'), <line1>-1, <line2>, 1)))
 
@@ -512,17 +563,34 @@ endf
 command! -bar WS write|source %
 command! StripWhitespace  %s/\v\s+$//g
 command! Yankfname let @* = expand('%:p')
-fun! s:define_generic_command(cmd, executable) abort
-    exe 'command! '.a:cmd
-                \. " call jobstart('".a:executable."', {"
-                \.     "'on_exit': function('s:generic_on_exit'),"
-                \.     "'tag': '".a:executable."'"
-                \. '})'
-endf
-call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
-call s:define_generic_command('Tags', 'ctags -R')
-fun! s:generic_on_exit(id, data, event) abort dict
-    echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
+" fun! s:define_generic_command(cmd, executable) abort
+"     exe 'command! '.a:cmd
+"                 \. " call jobstart('".a:executable."', {"
+"                 \.     "'on_exit': function('s:generic_on_exit'),"
+"                 \.     "'tag': '".a:executable."'"
+"                 \. '})'
+" endf
+" call s:define_generic_command('RubyTags', 'ripper-tags -R --exclude=vendor')
+" call s:define_generic_command('Tags', 'ctags -R')
+" fun! s:generic_on_exit(id, data, event) abort dict
+"     echohl MoreMsg | echom self.tag.' finished with exit status: '.string(a:data) | echohl None
+" endf
+
+nnoremap <silent> yon :set number!<CR>
+nnoremap <silent> yor :set relativenumber!<CR>
+nnoremap <silent> yoh :call ToggleOption('hlsearch')<CR>
+nnoremap <silent> yos :call ToggleOption('spell')<CR>
+nnoremap <silent> yob :call ToggleOption('scrollbind')<CR>
+fun! ToggleOption(option) abort
+    let on = str2nr(execute('echon &'.a:option))
+    if on
+        echohl Identifier
+    else
+        echohl String
+    endif
+    exe 'set '.a:option.'!'
+    echo "'".a:option."'"
+    echohl None
 endf
 
 " vim: foldmethod=marker foldlevel=1

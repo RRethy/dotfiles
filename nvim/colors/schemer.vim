@@ -30,7 +30,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi Special ctermbg=NONE ctermfg=6 cterm=NONE guibg=NONE guifg=#00ACC1 gui=NONE
     hi Statement ctermbg=NONE ctermfg=13 cterm=NONE guibg=NONE guifg=#c578dd gui=NONE
     hi String ctermbg=NONE ctermfg=10 cterm=NONE guibg=NONE guifg=#89ca78 gui=NONE
-    hi Todo ctermbg=NONE ctermfg=14 cterm=bold guibg=NONE guifg=#56b5c2 gui=bold
+    hi Todo ctermbg=NONE ctermfg=14 cterm=bold,underline guibg=NONE guifg=#56b5c2 gui=bold,underline
     hi Type ctermbg=NONE ctermfg=13 cterm=NONE guibg=NONE guifg=#c578dd gui=NONE
     hi Underlined ctermbg=NONE ctermfg=NONE cterm=bold,underline guibg=NONE guifg=NONE gui=bold,underline
     hi StatusLine ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
@@ -61,10 +61,10 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi Folded ctermbg=8 ctermfg=15 cterm=NONE guibg=#2c313c guifg=#abb2bf gui=NONE
     hi WildMenu ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi SpecialKey ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
-    hi DiffAdd ctermbg=10 ctermfg=NONE cterm=NONE guibg=#89ca78 guifg=NONE gui=NONE
-    hi DiffChange ctermbg=11 ctermfg=NONE cterm=NONE guibg=#e4bf7a guifg=NONE gui=NONE
-    hi DiffDelete ctermbg=9 ctermfg=NONE cterm=NONE guibg=#e06c75 guifg=NONE gui=NONE
-    hi DiffText ctermbg=13 ctermfg=NONE cterm=NONE guibg=#c578dd guifg=NONE gui=NONE
+    hi DiffAdd ctermbg=10 ctermfg=NONE cterm=NONE guibg=#28312f guifg=NONE gui=NONE
+    hi DiffChange ctermbg=11 ctermfg=NONE cterm=NONE guibg=#31302f guifg=NONE gui=NONE
+    hi DiffDelete ctermbg=9 ctermfg=NONE cterm=NONE guibg=#31282e guifg=NONE gui=NONE
+    hi DiffText ctermbg=13 ctermfg=NONE cterm=NONE guibg=#2e2939 guifg=NONE gui=NONE
     hi IncSearch ctermbg=5 ctermfg=bg cterm=NONE guibg=#d55fde guifg=bg gui=NONE
     hi Search ctermbg=12 ctermfg=bg cterm=NONE guibg=#61afef guifg=bg gui=NONE
     hi Directory ctermbg=NONE ctermfg=14 cterm=bold guibg=NONE guifg=#56b5c2 gui=bold
@@ -73,7 +73,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi SpellCap ctermbg=NONE ctermfg=9 cterm=bold guibg=NONE guifg=#e06c75 gui=bold
     hi SpellLocal ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi SpellRare ctermbg=NONE ctermfg=11 cterm=NONE guibg=NONE guifg=#e4bf7a gui=NONE
-    hi SignColumn ctermbg=NONE ctermfg=bg cterm=NONE guibg=NONE guifg=bg gui=NONE
+    hi SignColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
     hi ErrorMsg ctermbg=1 ctermfg=0 cterm=bold guibg=#be5046 guifg=#1e2127 gui=bold
     hi ModeMsg ctermbg=NONE ctermfg=14 cterm=underline guibg=NONE guifg=#56b5c2 gui=underline
     hi MoreMsg ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
@@ -96,7 +96,7 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi Special ctermbg=NONE ctermfg=darkcyan cterm=NONE
     hi Statement ctermbg=NONE ctermfg=magenta cterm=NONE
     hi String ctermbg=NONE ctermfg=green cterm=NONE
-    hi Todo ctermbg=NONE ctermfg=cyan cterm=bold
+    hi Todo ctermbg=NONE ctermfg=cyan cterm=bold,underline
     hi Type ctermbg=NONE ctermfg=magenta cterm=NONE
     hi Underlined ctermbg=NONE ctermfg=NONE cterm=bold,underline
     hi StatusLine ctermbg=darkgray ctermfg=NONE cterm=NONE
@@ -139,7 +139,7 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi SpellCap ctermbg=NONE ctermfg=red cterm=bold
     hi SpellLocal ctermbg=NONE ctermfg=NONE cterm=NONE
     hi SpellRare ctermbg=NONE ctermfg=yellow cterm=NONE
-    hi SignColumn ctermbg=NONE ctermfg=bg cterm=NONE
+    hi SignColumn ctermbg=darkgray ctermfg=NONE cterm=NONE
     hi ErrorMsg ctermbg=darkred ctermfg=black cterm=bold
     hi ModeMsg ctermbg=NONE ctermfg=cyan cterm=underline
     hi MoreMsg ctermbg=NONE ctermfg=darkblue cterm=bold

@@ -1,0 +1,9 @@
+{
+  "colour_table": {
+    "foo1bar1baz1": "#eb00ff",
+    "foo2bar2baz2": "#ffeb00",
+    "foo3bar3baz3": "#00ffeb",
+    "\\e[00;32m2020-07-22 22:46:19.260": "#98c379",
+    "\\e[00;34m TEST": "#61afef"
+  }
+}
