@@ -1,4 +1,5 @@
 # Styling{{{
+# source /usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme
 POWERLEVEL9K_MODE="nerdfont-complete"
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
@@ -40,7 +41,7 @@ HYPHEN_INSENSITIVE="true"
 # ENABLE_CORRECTION="true"
 #DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="dd/mm/yyyy"
-plugins=(git brew common-aliases gitfast git-extras sudo)
+plugins=(git brew common-aliases gitfast git-extras sudo zsh-syntax-highlighting)
 DISABLE_CORRECTION="true"
 unsetopt correct_all
 unsetopt correct
@@ -224,15 +225,17 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgco
 if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
     source /opt/dev/dev.sh
 else
-    eval "$(rbenv init -)"
+    if [ -x "$(command -v rbenv)" ]; then
+        eval "$(rbenv init -)"
+    fi
 fi
 eval $(opam env)
 
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 autoload -Uz compinit
 compinit
 # Completion for kitty
-kitty + complete setup zsh | source /dev/stdin
+# kitty + complete setup zsh | source /dev/stdin
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 # export SDKMAN_DIR="/Users/rethy/.sdkman"
