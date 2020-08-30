@@ -62,8 +62,11 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi WildMenu ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi SpecialKey ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi DiffAdd ctermbg=10 ctermfg=NONE cterm=NONE guibg=#28312f guifg=NONE gui=NONE
+    hi diffAdded ctermbg=10 ctermfg=NONE cterm=NONE guibg=#28312f guifg=NONE gui=NONE
     hi DiffChange ctermbg=11 ctermfg=NONE cterm=NONE guibg=#31302f guifg=NONE gui=NONE
+    hi diffChanged ctermbg=11 ctermfg=NONE cterm=NONE guibg=#31302f guifg=NONE gui=NONE
     hi DiffDelete ctermbg=9 ctermfg=NONE cterm=NONE guibg=#31282e guifg=NONE gui=NONE
+    hi diffRemoved ctermbg=9 ctermfg=NONE cterm=NONE guibg=#31282e guifg=NONE gui=NONE
     hi DiffText ctermbg=13 ctermfg=NONE cterm=NONE guibg=#2e2939 guifg=NONE gui=NONE
     hi IncSearch ctermbg=5 ctermfg=bg cterm=NONE guibg=#d55fde guifg=bg gui=NONE
     hi Search ctermbg=12 ctermfg=bg cterm=NONE guibg=#61afef guifg=bg gui=NONE
@@ -128,8 +131,11 @@ elseif &t_Co == 8 || $TERM !~# '^linux' || &t_Co == 16
     hi WildMenu ctermbg=white ctermfg=darkgray cterm=NONE
     hi SpecialKey ctermbg=white ctermfg=darkgray cterm=NONE
     hi DiffAdd ctermbg=green ctermfg=NONE cterm=NONE
+    hi diffAdded ctermbg=green ctermfg=NONE cterm=NONE
     hi DiffChange ctermbg=yellow ctermfg=NONE cterm=NONE
+    hi diffChanged ctermbg=yellow ctermfg=NONE cterm=NONE
     hi DiffDelete ctermbg=red ctermfg=NONE cterm=NONE
+    hi diffRemoved ctermbg=red ctermfg=NONE cterm=NONE
     hi DiffText ctermbg=magenta ctermfg=NONE cterm=NONE
     hi IncSearch ctermbg=darkmagenta ctermfg=bg cterm=NONE
     hi Search ctermbg=blue ctermfg=bg cterm=NONE

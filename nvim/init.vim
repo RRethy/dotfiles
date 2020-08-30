@@ -201,6 +201,24 @@ augroup END
 
 " TAG: plugins {{{
 
+" TAG: config-firenvim
+au BufEnter github.com_*.txt set filetype=markdown
+augroup firenvim_autocmds
+    autocmd!
+    autocmd BufEnter colab.research.google.com_*.txt set filetype=python
+augroup END
+
+let g:firenvim_config = {
+    \ 'localSettings': {
+        \ '.*': {
+            \ 'cmdline': 'firenvim',
+            \ 'priority': 0,
+            \ 'selector': 'textarea',
+            \ 'takeover': 'never',
+        \ },
+    \ }
+\ }
+
 " TAG: config-treesitter
 
 " lua <<EOF
@@ -372,21 +390,25 @@ let g:matchup_matchparen_status_offscreen = 0
 let g:matchup_matchparen_deferred = 50
 
 " TAG: config-nvimlsp
+" let g:diagnostic_insert_delay = 1
 lua require 'lsp_setup'
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-" nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 augroup rrethy_nvim_lsp_autocmds
     autocmd!
-    autocmd Filetype rust,go setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    autocmd Filetype rust,go call s:nvim_lsp_mapping()
     autocmd BufWrite *.rs,*.go lua vim.lsp.buf.formatting()
 augroup END
+fun s:nvim_lsp_mapping() abort
+    setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    nnoremap <buffer> <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+    nnoremap <buffer> <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+    nnoremap <buffer> <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+    nnoremap <buffer> <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+    " nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+    nnoremap <buffer> <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+    nnoremap <buffer> <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+    nnoremap <buffer> <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+    nnoremap <buffer> <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+endfun
 " }}}
 
 " TAG: config-statusline
@@ -398,27 +420,48 @@ augroup statusline_autocmd
 augroup END
 
 function! s:fancy_inactive_statusline() abort
-    setlocal statusline=%#SpySlNC#
-    setlocal statusline+=\ 
-    setlocal statusline+=%n
-    setlocal statusline+=\ 
-    setlocal statusline+=%#SpySlInvNC#
-    setlocal statusline+=
-    setlocal statusline+=%#LeftPromptNC#
-    setlocal statusline+=\ 
-    setlocal statusline+=%y
-    setlocal statusline+=\ 
-    setlocal statusline+=%t
-    setlocal statusline+=\ 
-    setlocal statusline+=%r
-    setlocal statusline+=%#LeftPromptInvNC#
-    setlocal statusline+=
-    setlocal statusline+=%=
-    setlocal statusline+=%#RightPromptInvNC#
-    setlocal statusline+=
-    setlocal statusline+=%#RightPromptNC#
-    setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
-    setlocal statusline+=\ 
+    if exists('g:started_by_firenvim')
+        setlocal statusline=%#SpySlNC#
+        setlocal statusline+=\ 
+        setlocal statusline+=%n
+        setlocal statusline+=\ 
+        setlocal statusline+=%#SpySlInvNC#
+        setlocal statusline+=%#LeftPromptNC#
+        setlocal statusline+=\ 
+        setlocal statusline+=%y
+        setlocal statusline+=\ 
+        setlocal statusline+=%t
+        setlocal statusline+=\ 
+        setlocal statusline+=%r
+        setlocal statusline+=%#LeftPromptInvNC#
+        setlocal statusline+=%=
+        setlocal statusline+=%#RightPromptInvNC#
+        setlocal statusline+=%#RightPromptNC#
+        setlocal statusline+=\ %20(%-9(ln%4l/%-4L%)\ %5(cn\ %-3c%)\ %-4(%3p%%%)%)
+        setlocal statusline+=\ 
+    else
+        setlocal statusline=%#SpySlNC#
+        setlocal statusline+=\ 
+        setlocal statusline+=%n
+        setlocal statusline+=\ 
+        setlocal statusline+=%#SpySlInvNC#
+        setlocal statusline+=
+        setlocal statusline+=%#LeftPromptNC#
+        setlocal statusline+=\ 
+        setlocal statusline+=%y
+        setlocal statusline+=\ 
+        setlocal statusline+=%t
+        setlocal statusline+=\ 
+        setlocal statusline+=%r
+        setlocal statusline+=%#LeftPromptInvNC#
+        setlocal statusline+=
+        setlocal statusline+=%=
+        setlocal statusline+=%#RightPromptInvNC#
+        setlocal statusline+=
+        setlocal statusline+=%#RightPromptNC#
+        setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+        setlocal statusline+=\ 
+    endif
 endfunction
 
 fun! Ale_statusline_warnings() abort
@@ -444,43 +487,70 @@ fun! Ale_statusline_errors() abort
 endf
 
 fun! s:fancy_active_statusline() abort
-    setlocal statusline=%#SpySl#
-    setlocal statusline+=\ 
-    setlocal statusline+=%n
-    setlocal statusline+=\ 
-    setlocal statusline+=%#SpySlInv#
-    setlocal statusline+=
-    setlocal statusline+=%#LeftPrompt#
-    setlocal statusline+=\ 
-    setlocal statusline+=%y
-    setlocal statusline+=\ 
-    setlocal statusline+=%t
-    setlocal statusline+=\ 
-    setlocal statusline+=%r
-    setlocal statusline+=%#LeftPromptInv#
-    setlocal statusline+=
-    " setlocal statusline+=%#GitPrompt#
-    " setlocal statusline+=\ 
-    " setlocal statusline+=%{FugitiveStatusline()}
-    " setlocal statusline+=\ 
-    " setlocal statusline+=%{ObsessionStatus()}
-    " setlocal statusline+=\ 
-    " setlocal statusline+=%#GitPromptInv#
-    " setlocal statusline+=
-    setlocal statusline+=%#AlePromptErrors#
-    setlocal statusline+=%{Ale_statusline_errors()}
-    setlocal statusline+=%#AlePromptErrorsInv#
-    setlocal statusline+=
-    setlocal statusline+=%#AlePromptWarnings#
-    setlocal statusline+=%{Ale_statusline_warnings()}
-    setlocal statusline+=%#AlePromptWarningsInv#
-    setlocal statusline+=
-    setlocal statusline+=%=
-    setlocal statusline+=%#RightPromptInv#
-    setlocal statusline+=
-    setlocal statusline+=%#RightPrompt#
-    setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
-    setlocal statusline+=\ 
+    if exists('g:started_by_firenvim')
+        setlocal statusline=%#SpySl#
+        setlocal statusline+=\ 
+        setlocal statusline+=%n
+        setlocal statusline+=\ 
+        setlocal statusline+=%#SpySlInv#
+        setlocal statusline+=%#LeftPrompt#
+        setlocal statusline+=\ 
+        setlocal statusline+=%y
+        setlocal statusline+=\ 
+        " setlocal statusline+=%t
+        setlocal statusline+=\ 
+        setlocal statusline+=%r
+        setlocal statusline+=%#LeftPromptInv#
+        setlocal statusline+=%#AlePromptErrors#
+        setlocal statusline+=%{Ale_statusline_errors()}
+        setlocal statusline+=%#AlePromptErrorsInv#
+        setlocal statusline+=%#AlePromptWarnings#
+        setlocal statusline+=%{Ale_statusline_warnings()}
+        setlocal statusline+=%#AlePromptWarningsInv#
+        setlocal statusline+=%=
+        setlocal statusline+=%#RightPromptInv#
+        setlocal statusline+=%#RightPrompt#
+        setlocal statusline+=\ %20(%-9(line:%4l/%-4L%)\ %5(col:\ %-3c%)\ %-4(%3p%%%)%)
+        setlocal statusline+=\ 
+    else
+        setlocal statusline=%#SpySl#
+        setlocal statusline+=\ 
+        setlocal statusline+=%n
+        setlocal statusline+=\ 
+        setlocal statusline+=%#SpySlInv#
+        setlocal statusline+=
+        setlocal statusline+=%#LeftPrompt#
+        setlocal statusline+=\ 
+        setlocal statusline+=%y
+        setlocal statusline+=\ 
+        setlocal statusline+=%t
+        setlocal statusline+=\ 
+        setlocal statusline+=%r
+        setlocal statusline+=%#LeftPromptInv#
+        setlocal statusline+=
+        " setlocal statusline+=%#GitPrompt#
+        " setlocal statusline+=\ 
+        " setlocal statusline+=%{FugitiveStatusline()}
+        " setlocal statusline+=\ 
+        " setlocal statusline+=%{ObsessionStatus()}
+        " setlocal statusline+=\ 
+        " setlocal statusline+=%#GitPromptInv#
+        " setlocal statusline+=
+        setlocal statusline+=%#AlePromptErrors#
+        setlocal statusline+=%{Ale_statusline_errors()}
+        setlocal statusline+=%#AlePromptErrorsInv#
+        setlocal statusline+=
+        setlocal statusline+=%#AlePromptWarnings#
+        setlocal statusline+=%{Ale_statusline_warnings()}
+        setlocal statusline+=%#AlePromptWarningsInv#
+        setlocal statusline+=
+        setlocal statusline+=%=
+        setlocal statusline+=%#RightPromptInv#
+        setlocal statusline+=
+        setlocal statusline+=%#RightPrompt#
+        setlocal statusline+=\ %20(%-9(%4l/%-4L%)\ %5(\ %-3c%)\ %-4(%3p%%%)%)
+        setlocal statusline+=\ 
+    endif
 endf
 "}}}
 
@@ -524,17 +594,21 @@ fun! MakeTableLine() abort
         let str .= '%'.(i+1).'T'
         let str .= '  '.(i+1).'  '
         let str .= hlinv
-        let str .= ''
+        if !exists('g:started_by_firenvim')
+            let str .= ''
+        endif
     endfor
 
     let str .= '%#TabLineFill#%T'
     " endif
     let str .= '%='
-    let str .= ''
-    let str .= '%#SpySl#'
-    let str .= ' '
-    let str .= s:fugitive_branch_wrapper() " bugged on empty files
-    let str .= ' '
+    if !exists('g:started_by_firenvim')
+        let str .= ''
+        let str .= '%#SpySl#'
+        let str .= ' '
+        let str .= s:fugitive_branch_wrapper() " bugged on empty files
+        let str .= ' '
+    endif
 
     return str
 endf

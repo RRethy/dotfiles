@@ -219,6 +219,8 @@ alias myip="curl ipinfo.io"
 
 source $HOME/ruby/jumpdir/jumpdir.zsh
 
+(tagrity revive &) &> /dev/null
+
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
 
 # load dev, but only if present and the shell is interactive
