@@ -1,5 +1,8 @@
 scriptencoding utf-8
 
+" nvim-buttermilk   nvim-flutter      vim-cs350         vim-illuminate    vim-indexor       vim-quickscope    vim-sourcerer     vim-tranquille
+" nvim-carom        vim-cs241         vim-hexokinase    vim-impiared      vim-lacklustertab vim-sixpack       vim-spotlight
+
 let mapleader=' '
 
 colorscheme schemer
