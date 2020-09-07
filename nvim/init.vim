@@ -208,13 +208,13 @@ augroup END
 au BufEnter github.com_*.txt set filetype=markdown
 augroup firenvim_autocmds
     autocmd!
-    autocmd BufEnter colab.research.google.com_*.txt set filetype=python
+    autocmd BufEnter localhost_lab*.txt, colab.research.google.com_*.txt set filetype=python
 augroup END
 
 let g:firenvim_config = {
     \ 'localSettings': {
         \ '.*': {
-            \ 'cmdline': 'firenvim',
+            \ 'cmdline': 'neovim',
             \ 'priority': 0,
             \ 'selector': 'textarea',
             \ 'takeover': 'never',

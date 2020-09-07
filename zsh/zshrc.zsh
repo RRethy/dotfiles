@@ -153,6 +153,7 @@ export PATH=~/Library/Android/sdk/tools/bin/:$PATH
 export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
 # export PATH=~/.rbenv/versions/2.6.3/bin:$PATH
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
+export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
 
 # export VISUAL='nvim'
