@@ -11,3 +11,4 @@ nixpkgs/
 shadowenv/
 trust-key
 nvim/pack/
+oni2/store/
