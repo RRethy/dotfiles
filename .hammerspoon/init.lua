@@ -4,10 +4,18 @@ spoon.ReloadConfiguration:start()
 hs.loadSpoon("AllBrightness")
 spoon.AllBrightness:start()
 
+hs.loadSpoon("KSheet")
+spoon.KSheet:init()
+hs.hotkey.bind({"alt", "ctrl"}, "1", function()
+    spoon.KSheet:toggle()
+end)
+
 hs.loadSpoon("Emojis")
 spoon.Emojis:bindHotkeys({toggle = {{"alt", "ctrl"}, "e"}})
 
-hs.hotkey.bind({"cmd", "ctrl"}, "v", function() hs.eventtap.keyStrokes(hs.pasteboard.getContents()) end)
+hs.hotkey.bind({"alt", "ctrl"}, "v", function()
+    hs.eventtap.keyStrokes(hs.pasteboard.getContents())
+end)
 
 function resizeWindow(setSizes)
     local win = hs.window.focusedWindow()
