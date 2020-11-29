@@ -12,3 +12,10 @@ shadowenv/
 trust-key
 nvim/pack/
 oni2/store/
+dev/
+gcloud/
+jgit/
+configstore/
+nix/
+nixpkgs/
+shadowenv/
