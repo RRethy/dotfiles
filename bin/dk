@@ -1,3 +1,9 @@
-#! /bin/bash
+#! /bin/zsh
 
-echo 'TODO: Unimplemented'
+# cmd=$(fc -ln -1)
+cmd=$(ls)
+reg=".*"
+if [[ $(history -1) =~ $reg ]]; do
+
+done
+echo $cmd

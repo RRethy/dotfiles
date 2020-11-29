@@ -135,7 +135,10 @@ function updateGitIgnore() {
 
 export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+# export PATH="$JAVA_HOME/bin":$PATH
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin":$PATH
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
@@ -143,7 +146,6 @@ export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Ho
 # export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
 export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
 export ANDROID_HOME=~/Library/Android/sdk/
-export PATH="$JAVA_HOME/bin":$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH="$HOME/.cargo/bin/":$PATH
 export PATH="$HOME/.config/bin/":$PATH
@@ -245,3 +247,4 @@ compinit
 # [[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
 
 # vim: foldmethod=marker foldlevel=1
+if [ -e /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

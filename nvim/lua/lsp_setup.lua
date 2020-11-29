@@ -1,6 +1,7 @@
 local nvim_lsp = require 'nvim_lsp'
 nvim_lsp.rls.setup {}
 nvim_lsp.gopls.setup {}
+nvim_lsp.pyls.setup {}
 -- nvim_lsp.solargraph.setup{}
 -- local gopls_root_pattern = require'nvim_lsp/util'.root_pattern('go.mod', '.git')
 -- local abspath = vim.loop.fs_realpath

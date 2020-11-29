@@ -1,8 +1,5 @@
 scriptencoding utf-8
 
-" nvim-buttermilk   nvim-flutter      vim-cs350         vim-illuminate    vim-indexor       vim-quickscope    vim-sourcerer     vim-tranquille
-" nvim-carom        vim-cs241         vim-hexokinase    vim-impiared      vim-lacklustertab vim-sixpack       vim-spotlight
-
 let mapleader=' '
 
 colorscheme schemer
@@ -24,6 +21,7 @@ nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
+" nnoremap <silent> <C-p>     :Clap files<CR>
 nnoremap <silent> <C-p>     :Files<CR>
 nnoremap <silent> <leader>a :argadd %<CR>
 nnoremap <silent> <leader>d :argdelete %<CR>
@@ -39,7 +37,7 @@ nnoremap <silent> <leader>s :.!sh<CR>
 nnoremap <expr> n 'Nn'[v:searchforward]
 nnoremap <expr> N 'nN'[v:searchforward]
 
-nnoremap <silent> <leader>t    :tabnew<CR>
+" nnoremap <silent> <leader>t    :tabnew<CR>
 nnoremap          <leader>1 1gt
 nnoremap          <leader>2 2gt
 nnoremap          <leader>3 3gt
@@ -79,7 +77,7 @@ nnoremap <C-h> <C-w>h
 onoremap <silent> A :<C-u>normal! ggVG<CR>
 
 vnoremap <C-g> "*y
-vnoremap gn :norm! 
+vnoremap gn :norma 
 
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-A> <Home>
@@ -194,7 +192,7 @@ augroup END
 
 augroup highlight_yank_autocmds
     autocmd!
-    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank("Substitute", 200)
+    autocmd TextYankPost * silent lua require'vim.highlight'.on_yank({higroup='Substitute', timeout=200})
 augroup END
 
 augroup skel_autocmds
@@ -250,8 +248,6 @@ let g:Eunuch_find_executable = 'fd'
 fun! FloatingFZF2()
     let width = float2nr(&columns * 0.7)
     let height = float2nr(&lines * 0.5)
-    " let width = &columns
-    " let height = &lines
     let opts = {
                 \     'relative': 'editor',
                 \     'row': (&lines - height) / 5,
@@ -265,17 +261,12 @@ fun! FloatingFZF2()
 endf
 
 let g:fzf_layout = { 'window': 'call FloatingFZF2()' }
-" if has('autocmd')
-"     augroup fzf
-"         autocmd! FileType fzf
-"         autocmd  FileType fzf set laststatus=0 noshowmode noruler nonu nornu
-"                     \| autocmd BufLeave <buffer> set laststatus=2
-"     augroup END
-" endif
 let g:fzf_history_dir = '~/.local/share/nvim/fzf-history'
 let g:fzf_colors = {
             \ 'bg+': ['bg', 'Normal', 'Normal'],
             \ }
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 
 " TAG: config-illuminate
 " let g:Illuminate_ftwhitelist = ['todo']
@@ -318,6 +309,9 @@ let g:Hexokinase_optInPatterns = [
 " let g:Hexokinase_highlighters = ['sign_column']
 " let g:Hexokinase_refreshEvents = ['TextChangedI', 'TextChanged']
 
+" TAG: config-devilish
+let g:Devilish_repoWhitelist = ['starscream', 'shopify']
+
 " TAG: config-ale
 let g:ale_completion_symbols = {
             \ 'text': '',
@@ -347,42 +341,45 @@ let g:ale_completion_symbols = {
             \ 'type_parameter': 'type param',
             \ '<default>': 'v'
             \ }
-" nmap <silent> [w <Plug>(ale_previous)
-" nmap <silent> ]w <Plug>(ale_next)
-" nmap <silent> [W <Plug>(ale_first)
-" nmap <silent> ]W <Plug>(ale_last)
+nmap <silent> [w <Plug>(ale_previous)
+nmap <silent> ]w <Plug>(ale_next)
+nmap <silent> [W <Plug>(ale_first)
+nmap <silent> ]W <Plug>(ale_last)
 fun! s:alef() abort
     setl omnifunc=ale#completion#OmniFunc
     nnoremap <buffer> <silent> <c-]> :ALEGoToDefinition<CR>
     nnoremap <buffer> <silent> K :ALEHover<CR>
 endf
-" augroup ale_autocmds
-"     autocmd!
-"     autocmd FileType go,rust,python,ruby,dart call s:alef()
-" augroup END
+augroup ale_autocmds
+    autocmd!
+    autocmd FileType go,rust,dart call s:alef()
+augroup END
 let g:ale_ruby_rubocop_executable = 'bundle'
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_insert_leave = 1
 let g:ale_fix_on_save = 1
 let g:ale_completion_enabled = 0
-let g:ale_disable_lsp = 0
+" let g:ale_disable_lsp = 0
 let g:ale_set_loclist = 0
+" let g:ale_python_autopep8_options = '--aggressive --ignore E226,E24,W50,E501,E731,W690,E721,E402,W605'
+" let g:ale_python_pylint_options = '--rcfile=pylintrc'
 let g:ale_linters = {
             \     'rust': ['rls'],
             \     'go': ['gopls'],
             \     'dart': ['analysis_server'],
-            \     'ruby': ['solargraph', 'rubocop'],
-            \     'python': ['pyls'],
             \     'markdown': [],
             \     'tex': [],
+            \     'ruby': ['rubocop'],
             \ }
+            " \     'python': ['flake8', 'pylint', 'pyls'],
 let g:ale_fixers = {
             \     'json': ['jq'],
             \     'rust': ['rustfmt'],
             \     'dart': ['dartfmt'],
             \     'go': ['gofmt'],
             \ }
+            " \     'python': ['autopep8', 'isort'],
 
 " TAG: config-vimtex
 let g:tex_flavor = 'latex'
@@ -394,24 +391,24 @@ let g:matchup_matchparen_deferred = 50
 
 " TAG: config-nvimlsp
 " let g:diagnostic_insert_delay = 1
-lua require 'lsp_setup'
-augroup rrethy_nvim_lsp_autocmds
-    autocmd!
-    autocmd Filetype rust,go call s:nvim_lsp_mapping()
-    autocmd BufWrite *.rs,*.go lua vim.lsp.buf.formatting()
-augroup END
-fun s:nvim_lsp_mapping() abort
-    setlocal omnifunc=v:lua.vim.lsp.omnifunc
-    nnoremap <buffer> <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-    nnoremap <buffer> <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
-    nnoremap <buffer> <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-    nnoremap <buffer> <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
-    " nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-    nnoremap <buffer> <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-    nnoremap <buffer> <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-    nnoremap <buffer> <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-    nnoremap <buffer> <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-endfun
+" lua require 'lsp_setup'
+" augroup rrethy_nvim_lsp_autocmds
+"     autocmd!
+"     autocmd Filetype rust,go,python call s:nvim_lsp_mapping()
+"     autocmd BufWrite *.rs,*.go lua vim.lsp.buf.formatting()
+" augroup END
+" fun s:nvim_lsp_mapping() abort
+"     setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"     nnoremap <buffer> <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+"     nnoremap <buffer> <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+"     nnoremap <buffer> <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+"     nnoremap <buffer> <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+"     " nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+"     nnoremap <buffer> <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+"     nnoremap <buffer> <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+"     nnoremap <buffer> <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+"     nnoremap <buffer> <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+" endfun
 " }}}
 
 " TAG: config-statusline
@@ -557,6 +554,15 @@ fun! s:fancy_active_statusline() abort
 endf
 "}}}
 
+" TAG: config-test
+nnoremap <silent> <leader>t :TestNearest<CR>
+nnoremap <silent> <leader>T :TestFile<CR>
+nnoremap <silent> <leader>g :TestVisit<CR>
+nnoremap <silent> <leader>l :TestLast<CR>
+" nnoremap <silent> <leader>a :TestSuite<CR>
+let g:test#strategy = 'neovim'
+
+
 " TAG: config-tabline
 " tabline {{{
 let s:fugitive_statusline = ''
@@ -640,6 +646,7 @@ endf
 command! -bar WS write|source %
 command! StripWhitespace  %s/\v\s+$//g
 command! Yankfname let @* = expand('%:p')
+command! LTC call setqflist(getloclist(winnr()))
 " fun! s:define_generic_command(cmd, executable) abort
 "     exe 'command! '.a:cmd
 "                 \. " call jobstart('".a:executable."', {"
@@ -655,6 +662,7 @@ command! Yankfname let @* = expand('%:p')
 
 nnoremap <silent> yon :set number!<CR>
 nnoremap <silent> yor :set relativenumber!<CR>
+nnoremap <silent> yoc :set cursorcolumn!<CR>
 nnoremap <silent> yoh :call ToggleOption('hlsearch')<CR>
 nnoremap <silent> yos :call ToggleOption('spell')<CR>
 nnoremap <silent> yob :call ToggleOption('scrollbind')<CR>
