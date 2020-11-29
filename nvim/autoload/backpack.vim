@@ -102,7 +102,7 @@ fun! s:on_exit(job_id, data, event) abort dict
     if !a:data " job succeeded
         let docsdir = self.dir..'/doc/'
         if isdirectory(docsdir)
-            exe 'helptags '..docsdir
+            silent! exe 'helptags '..docsdir
         endif
         if !s:plugin_exists(self.name)
             call add(s:plugins, {
