@@ -11,7 +11,6 @@ call backpack#init()
 
 nnoremap cl 0D
 nnoremap Y y$
-nmap     g5 :e %%
 nnoremap ' `
 nnoremap <A-l> 2zl
 nnoremap <A-h> 2zh
@@ -21,8 +20,8 @@ nnoremap <right> gt
 nnoremap <Backspace> <C-^>
 nnoremap          g> :set nomore<bar>echo repeat("\n",&cmdheight)<bar>10messages<bar>set more<CR>
 nnoremap          <C-s>     :<C-U>%s/\C\<<C-r><C-w>\>/
-" nnoremap <silent> <C-p>     :Clap files<CR>
 nnoremap <silent> <C-p>     :Files<CR>
+nmap              <leader>e :e %%
 nnoremap <silent> <leader>a :argadd %<CR>
 nnoremap <silent> <leader>d :argdelete %<CR>
 nnoremap <silent> <Leader>= :echo synIDattr(synID(line("."), col("."), 1), "name")<CR>
@@ -32,8 +31,8 @@ nnoremap <silent> <Leader>n :nohls<CR>
 nnoremap <silent> <Leader>* :lgrep <cword><CR>
 nnoremap <silent> <leader>m :mks!<CR>
 nnoremap <silent> <leader>r :redraw!<CR>
-" execute the current line as a shell script and replace it with the output
 nnoremap <silent> <leader>s :.!sh<CR>
+xnoremap <silent> <leader>s :!sh<CR>
 nnoremap <expr> n 'Nn'[v:searchforward]
 nnoremap <expr> N 'nN'[v:searchforward]
 

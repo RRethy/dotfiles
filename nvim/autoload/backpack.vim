@@ -20,6 +20,7 @@ fun! backpack#init() abort
                 \ PackAdd call s:pack_add(<f-args>)
     command! PackUpdate call s:pack_update()
     command! PackEdit exe 'vsplit '.s:manifest_path
+    command! PackInfo echom string(s:plugins)
 endfun
 
 fun! s:pack(...) abort
@@ -39,8 +40,8 @@ fun! s:pack(...) abort
                 \ 'dir': s:opt_path..name,
                 \ }
     try
-        exe 'packadd! '..name
         call add(s:plugins, plugin)
+        exe 'packadd! '..name
     catch /E919/
     endtry
 endfun
@@ -64,6 +65,7 @@ fun! s:pack_add(repo) abort
                     \ })
     else
         call utils#infom(name..'...installing...')
+        " TODO handle my own plugins
         call jobstart(printf('git clone %s', url), {
                     \ 'git_url': url,
                     \ 'name': name,
@@ -82,18 +84,26 @@ fun! s:pack_update() abort
         if isdirectory(plugin.dir)
             let cmd = 'git pull origin master'
             let tag = 'updating'
+            call jobstart(cmd, {
+                        \ 'git_url': plugin.git_url,
+                        \ 'name': plugin.name,
+                        \ 'dir': plugin.dir,
+                        \ 'cwd': plugin.dir,
+                        \ 'tag': tag,
+                        \ 'on_exit': function('s:on_exit'),
+                        \ })
         else
             let cmd = 'git clone '..plugin.git_url
             let tag = 'cloning'
+            call jobstart(cmd, {
+                        \ 'git_url': plugin.git_url,
+                        \ 'name': plugin.name,
+                        \ 'dir': plugin.dir,
+                        \ 'cwd': s:opt_path,
+                        \ 'tag': tag,
+                        \ 'on_exit': function('s:on_exit'),
+                        \ })
         endif
-        call jobstart(cmd, {
-                    \ 'git_url': plugin.git_url,
-                    \ 'name': plugin.name,
-                    \ 'dir': plugin.dir,
-                    \ 'cwd': plugin.dir,
-                    \ 'tag': tag,
-                    \ 'on_exit': function('s:on_exit'),
-                    \ })
     endfor
 endfun
 
@@ -133,7 +143,7 @@ fun! s:parse_repo(repo) abort
         let pat = ssh_git_fmt
     elseif a:repo =~# author_name_fmt
         if a:repo =~# '\v^RRethy.*'
-            let url = printf('git@github.com/%s.git', a:repo)
+            let url = printf('git@github.com:%s.git', a:repo)
         else
             let url = printf('https://github.com/%s.git', a:repo)
         endif
