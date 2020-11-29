@@ -1,6 +1,9 @@
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
 
+hs.loadSpoon("AllBrightness")
+spoon.AllBrightness:start()
+
 hs.loadSpoon("Emojis")
 spoon.Emojis:bindHotkeys({toggle = {{"alt", "ctrl"}, "e"}})
 
