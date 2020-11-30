@@ -135,9 +135,9 @@ function updateGitIgnore() {
 
 export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
-# export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
 # export PATH="$JAVA_HOME/bin":$PATH
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
 export PATH="$JAVA_HOME/bin":$PATH
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"

@@ -370,6 +370,7 @@ let g:ale_linters = {
             \     'markdown': [],
             \     'tex': [],
             \     'ruby': ['rubocop'],
+            \     'javascript': [],
             \ }
             " \     'python': ['flake8', 'pylint', 'pyls'],
 let g:ale_fixers = {

@@ -16,11 +16,11 @@ if has('termguicolors')
 endif
 
 if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
-    hi Normal ctermbg=0 ctermfg=15 cterm=NONE guibg=#1e2127 guifg=#abb2bf gui=NONE
+    hi Normal ctermbg=0 ctermfg=15 cterm=NONE guibg=#212226 guifg=#abb2bf gui=NONE
 
     set background=dark
 
-    hi NonText ctermbg=0 ctermfg=7 cterm=bold guibg=#1e2127 guifg=#6c7891 gui=bold
+    hi NonText ctermbg=0 ctermfg=7 cterm=bold guibg=#212226 guifg=#6c7891 gui=bold
     hi Comment ctermbg=NONE ctermfg=7 cterm=italic guibg=NONE guifg=#6c7891 gui=italic
     hi Constant ctermbg=NONE ctermfg=3 cterm=NONE guibg=NONE guifg=#d19965 gui=NONE
     hi Error ctermbg=1 ctermfg=NONE cterm=bold guibg=#be5046 guifg=NONE gui=bold
@@ -41,7 +41,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi TabLineInv ctermbg=15 ctermfg=8 cterm=NONE guibg=#abb2bf guifg=#2c313c gui=NONE
     hi TabLineFillInv ctermbg=NONE ctermfg=8 cterm=NONE guibg=NONE guifg=#2c313c gui=NONE
     hi TabLineFill ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
-    hi TabLineSel ctermbg=15 ctermfg=0 cterm=NONE guibg=#abb2bf guifg=#1e2127 gui=NONE
+    hi TabLineSel ctermbg=15 ctermfg=0 cterm=NONE guibg=#abb2bf guifg=#212226 gui=NONE
     hi TabLineSelInv ctermbg=8 ctermfg=15 cterm=NONE guibg=#2c313c guifg=#abb2bf gui=NONE
     hi TabLineSelFillInv ctermbg=NONE ctermfg=15 cterm=NONE guibg=NONE guifg=#abb2bf gui=NONE
     hi Title ctermbg=NONE ctermfg=13 cterm=bold guibg=NONE guifg=#c578dd gui=bold
@@ -77,7 +77,7 @@ if ($TERM =~# '256' || &t_Co >= 256) || has('gui_running')
     hi SpellLocal ctermbg=NONE ctermfg=NONE cterm=NONE guibg=NONE guifg=NONE gui=NONE
     hi SpellRare ctermbg=NONE ctermfg=11 cterm=NONE guibg=NONE guifg=#e4bf7a gui=NONE
     hi SignColumn ctermbg=8 ctermfg=NONE cterm=NONE guibg=#2c313c guifg=NONE gui=NONE
-    hi ErrorMsg ctermbg=1 ctermfg=0 cterm=bold guibg=#be5046 guifg=#1e2127 gui=bold
+    hi ErrorMsg ctermbg=1 ctermfg=0 cterm=bold guibg=#be5046 guifg=#212226 gui=bold
     hi ModeMsg ctermbg=NONE ctermfg=14 cterm=underline guibg=NONE guifg=#56b5c2 gui=underline
     hi MoreMsg ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
     hi Question ctermbg=NONE ctermfg=4 cterm=bold guibg=NONE guifg=#528bff gui=bold
@@ -165,7 +165,7 @@ hi link NormalFloat CursorLine
 
 if has('nvim')
 
-    let g:terminal_color_0 = '#1e2127'
+    let g:terminal_color_0 = '#212226'
     let g:terminal_color_1 = '#be5046'
     let g:terminal_color_2 = '#008000'
     let g:terminal_color_3 = '#d19965'
@@ -185,7 +185,7 @@ if has('nvim')
 else
 
     let g:terminal_ansi_colors = [
-            \ '#1e2127',
+            \ '#212226',
             \ '#be5046',
             \ '#008000',
             \ '#d19965',
