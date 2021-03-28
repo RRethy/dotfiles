@@ -1,1 +1,0 @@
-../../nvim-highlite/colors/highlite.vim

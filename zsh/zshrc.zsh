@@ -132,6 +132,7 @@ function updateGitIgnore() {
 # alias ls='ls --color'
 # LS_COLORS=$LS_COLORS:'di=1;32:'
 # export LS_COLORS
+export LS_COLORS="$(vivid generate ~/.config/vivid/one-dark.yml)"
 
 export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -139,6 +140,12 @@ export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Ho
 # export PATH="$JAVA_HOME/bin":$PATH
 # export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
 export PATH="$JAVA_HOME/bin":$PATH
+export PATH="$HOME/bin":$PATH
+export PATH="$PATH:/Users/rethy/Library/Application Support/Coursier/bin"
+export PATH="$PATH:$HOME/flutter/flutter/bin"
+export PATH="$PATH:$HOME/Downloads/hadoop-3.1.4/bin/"
+export PATH="$PATH:$HOME/Downloads/spark-2.4.7-bin-without-hadoop/bin/"
+export PATH="$PATH:$HOME/Downloads/apache-maven-3.6.3/bin/"
 # export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
 # export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
 # export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
@@ -161,7 +168,8 @@ export PATH=$HOME/Library/Python/3.7/bin:$PATH
 # export VISUAL='nvim'
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
-export TERM="xterm-256color"
+# export TERM="xterm-256color"
+# export TERM="xterm-kitty"
 export ZSH=~/.oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
@@ -187,11 +195,12 @@ alias now="date +%d-%m-%y"
 # alias v="nvim"
 alias v="nvim"
 # alias vim="nvim"
-alias nrc="v ~/.config/nvim/init.vim -c 'cd ~/.config/nvim' -S"
+alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 # alias h="cd ~"
 alias python="python3"
 alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
+alias wc="gwc"
 alias words="v ~/.todo/words.md -c 'cd %:p:h'"
 alias src="source ~/.zshrc"
 alias esrc="v ~/.config/zsh/zshrc.zsh -c 'cd %:p:h'"

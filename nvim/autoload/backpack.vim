@@ -5,6 +5,7 @@
 "          }
 let s:plugins = []
 
+" TODO rewrite this in Lua
 fun! backpack#init() abort
     let s:opt_path = expand('~/.local/share/nvim/site/pack/backpack/opt/')
     let s:manifest_path = expand('~/.config/nvim/packmanifest.vim')

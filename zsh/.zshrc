@@ -1,0 +1,121 @@
+setopt no_auto_cd
+setopt no_case_glob
+setopt extended_history
+setopt share_history
+setopt append_history
+setopt inc_append_history
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
+setopt hist_verify
+setopt no_correct
+setopt no_correct_all
+
+HISTFILE=$XDG_DATA_HOME/.zsh_history
+SAVEHIST=5000
+HISTSIZE=5000
+
+autoload -Uz compinit
+compinit
+# case insensitive completion
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+# expand /u/lo/b to /usr/local/bin
+zstyle ':completion:*' list-suffixes zstyle ':completion:*' expand prefix suffix
+# show the currently selected completion candidate
+zstyle ':completion:*' menu select
+
+source $ZDOTDIR/gitprompt.sh
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUPSTREAM="verbose"
+GIT_PS1_SHOWCOLORHINTS=1
+setopt prompt_subst
+PROMPT='%F{magenta}%? %F{blue}%~%F{white} $(__git_ps1 "%s") \$ '
+precmd () {
+    print -Pn "\e]0;%1~\a"
+}
+
+bindkey -e
+bindkey "[A" up-line-or-search
+bindkey "[B" down-line-or-search
+
+export GOPATH=$HOME/go
+export SSH_KEY_PATH="~/.ssh/id_rsa"
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin":$PATH
+export PATH="$HOME/bin":$PATH
+export PATH="$PATH:/Users/rethy/Library/Application Support/Coursier/bin"
+export PATH="$PATH:$HOME/flutter/flutter/bin"
+export PATH="$PATH:$HOME/Downloads/hadoop-3.1.4/bin/"
+export PATH="$PATH:$HOME/Downloads/spark-2.4.7-bin-without-hadoop/bin/"
+export PATH="$PATH:$HOME/Downloads/apache-maven-3.6.3/bin/"
+# export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
+# export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
+# export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
+# export FLUTTER="~/Programming/flutter"
+# export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
+export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
+export ANDROID_HOME=~/Library/Android/sdk/
+export PATH=/usr/local/bin:$PATH
+export PATH="$HOME/.cargo/bin/":$PATH
+export PATH="$HOME/.config/bin/":$PATH
+export PATH=/usr/local/opt/openssl/bin:$PATH
+export PATH=$GOPATH/bin/:$PATH
+export PATH=~/Library/Android/sdk/tools/bin/:$PATH
+export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/share/git-core/contrib/git-jump/:$PATH"
+# export PATH=~/.rbenv/versions/2.6.3/bin:$PATH
+export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
+export PATH=$HOME/Library/Python/3.7/bin:$PATH
+
+
+# export VISUAL='nvim'
+export VISUAL='nvim'
+export LANG=en_US.UTF-8
+export EDITOR='nvim'
+export MANPAGER="nvim -c 'set ft=man' -"
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/openssl/lib/pkgconfig:"
+export PGDATA=/usr/local/var/postgres/
+
+alias v="nvim"
+alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
+alias python="python3"
+alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
+alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
+alias wc="gwc"
+alias ls="gls --hyperlink=auto --color -p"
+alias words="v ~/.todo/words.md -c 'cd %:p:h'"
+alias src="source ~/.config/zsh/.zshrc"
+alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
+alias showpng="kitty +kitten icat"
+alias ssh="kitty +kitten ssh"
+alias vs="v -S"
+alias bune="bundle"
+alias myip="curl ipinfo.io;echo ''"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source $HOME/ruby/jumpdir/jumpdir.zsh
+(tagrity revive &) &> /dev/null
+
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
+
+# load dev, but only if present and the shell is interactive
+if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
+    source /opt/dev/dev.sh
+else
+    if [ -x "$(command -v rbenv)" ]; then
+        eval "$(rbenv init -)"
+    fi
+fi
+eval $(opam env)
+
+# source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Completion for kitty
+# kitty + complete setup zsh | source /dev/stdin
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# export SDKMAN_DIR="/Users/rethy/.sdkman"
+# [[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
+
+# vim: foldmethod=marker foldlevel=1
+if [ -e /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
