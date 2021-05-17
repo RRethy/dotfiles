@@ -1,15 +1,12 @@
-local M = {}
+local profiler = require('rrethy.profiler')
 
-function M.foo()
-    return '%!luaeval("require([[rrethy.sandbox]]).bar()")'
+local function foo(x)
+    if x == 1 then
+        return 1
+    end
+    return foo(x - 1)
 end
 
-function M.bar()
-    return '%{luaeval("require([[rrethy.sandbox]]).baz()")}'
-end
-
-function M.baz()
-    return tostring(vim.fn.winbufnr(vim.g.statusline_winid))
-end
-
-return M
+profiler.start()
+local x = foo(2)
+profiler.stop()

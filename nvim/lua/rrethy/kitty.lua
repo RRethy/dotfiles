@@ -7,8 +7,8 @@ function M.set_colors(name)
             '--to',
             vim.env.KITTY_LISTEN_ON,
             'set-colors',
-            '-a',
-            '-c',
+            -- '-a', -- update for all windows
+            '-c', -- update for new windows
             string.format('~/.config/kitty/base16-kitty/colors/base16-%s.conf', name)
         }
     }, nil)

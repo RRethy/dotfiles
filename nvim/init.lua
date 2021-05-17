@@ -1,35 +1,32 @@
+_G.nvim = require('rrethy.nvim')
+
 vim.call('backpack#init')
 
-local tsconfigs   = require('nvim-treesitter.configs')
-local colorscheme = require('colorscheme')         -- base16 colorscheme library
-local hotline     = require('hotline')             -- minimal statusline/tabline lua wrapper
-local illuminate  = require('illuminate')          -- improved textDocument/documentHighlight for lsp
-local sourcerer   = require('sourcerer')           -- sources my init.lua across Neovim instances
-local kitty       = require('rrethy.kitty')        -- controls for kitty terminal
-local lsp         = require('rrethy.lsp')          -- my lsp configurations
-local notif       = require('rrethy.notification') -- publish notifications in floats
-local nvim        = require('rrethy.nvim')         -- mapping and option wrappers
+local tsconfigs         = require('nvim-treesitter.configs')
+local colorscheme       = require('rrethy.colorscheme') -- base16 colorscheme library
+local hotline           = require('hotline')            -- minimal statusline/tabline lua wrapper
+local illuminate        = require('illuminate')         -- improved textDocument/documentHighlight for lsp
+local sourcerer         = require('sourcerer')          -- sources my init.lua across Neovim instances
+local lsp               = require('rrethy.lsp')         -- my lsp configurations
+local telescope         = require('telescope')
+local telescope_sorters = require('telescope.sorters')
+local telescope_builtin = require('telescope.builtin')
+local telescope_themes  = require('telescope.themes')
+local join_lines        = require('rrethy.join_lines')
 
 vim.g.mapleader = ' '
 
-local themes = vim.tbl_keys(colorscheme.colorschemes)
-table.sort(themes)
-vim.tbl_add_reverse_lookup(themes)
-local theme_index = themes['gruvbox-dark-pale']
-colorscheme.setup(themes[theme_index])
-kitty.set_colors(themes[theme_index])
-nvim.nnoremap('<c-f>', function()
-    theme_index = (theme_index % #themes) + 1
-    colorscheme.setup(themes[theme_index])
-    kitty.set_colors(themes[theme_index])
-    notif.notify(themes[theme_index])
-end)
-nvim.nnoremap('<c-b>', function()
-    theme_index = ((theme_index - 2) % #themes) + 1
-    colorscheme.setup(themes[theme_index])
-    kitty.set_colors(themes[theme_index])
-    notif.notify(themes[theme_index])
-end)
+colorscheme.setup({
+    initial_theme = 'gruvbox-dark-hard',
+    themes = {
+        'gruvbox-dark-pale',
+        'gruvbox-dark-soft',
+        'gruvbox-dark-medium',
+        'gruvbox-dark-hard',
+        'schemer-dark',
+        'schemer-medium'
+    }
+})
 
 lsp.setup {
     'sumneko_lua',
@@ -37,18 +34,57 @@ lsp.setup {
     'gopls',
     'dartls',
     'cssls',
-    'jsonls',
     'vimls',
 }
+
+vim.lsp.util.close_preview_autocmd = function(events, winnr)
+    events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' end, events)
+    vim.api.nvim_command("autocmd "..table.concat(events, ',').." <buffer> ++once lua pcall(vim.api.nvim_win_close, "..winnr..", true)")
+end
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+    vim.lsp.handlers.signature_help, {
+        border = 'single',
+    }
+)
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+    vim.lsp.handlers.hover, {
+        border = 'single',
+    }
+)
+vim.lsp.handlers['experimental/joinLines'] = join_lines.handler
 
 tsconfigs.setup {
     ensure_installed = "all",
     highlight = {
         enable = true,
     },
+    playground = {
+        enable = true,
+    },
+    indent = {
+        enable = true
+    }
 }
 
 sourcerer.setup()
+
+telescope.setup {
+    defaults = {
+        file_sorter    = telescope_sorters.get_fzy_sorter,
+        generic_sorter = telescope_sorters.get_fzy_sorter,
+        mappings = {
+            i = {
+                ['<C-u>'] = false,
+                ['<C-a>'] = false,
+                ['<C-e>'] = false,
+                ['<C-w>'] = false,
+            }
+        }
+    },
+}
+nvim.nnoremap('<c-p>', function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
+nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
+nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep(telescope_themes.get_dropdown()) end)
 
 if vim.fn.isdirectory('/usr/local/opt/fzf') then
     nvim.set('runtimepath+=/usr/local/opt/fzf')
@@ -98,6 +134,8 @@ nvim.set('timeoutlen=250')
 nvim.set('ttimeoutlen=-1')
 nvim.set('equalalways')
 nvim.set('termguicolors')
+nvim.set('foldnestmax=4')
+nvim.set('breakindent')
 
 vim.o.statusline = hotline.format {
     ' ',
@@ -124,6 +162,7 @@ vim.o.statusline = hotline.format {
 vim.cmd [[ augroup rrethy ]]
 vim.cmd [[ autocmd! ]]
 vim.cmd [[     autocmd FileType c,cpp,java setlocal commentstring=//\ %s ]]
+vim.cmd [[     autocmd FileType toml setlocal commentstring=#\ %s ]]
 vim.cmd [[     autocmd TextYankPost * lua require'vim.highlight'.on_yank({timeout=250}) ]]
 vim.cmd [[     autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel ]]
 vim.cmd [[ augroup END ]]
@@ -166,7 +205,6 @@ nvim.nnoremap('<left>', 'gT')
 nvim.nnoremap('<right>', 'gt')
 nvim.nnoremap('<backspace>', '<c-^>')
 nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
-nvim.nnoremap('<c-p>', '<cmd>Files<cr>')
 nvim.nnoremap('g>', '<cmd>20messages<cr>')
 nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
@@ -175,7 +213,6 @@ nvim.nnoremap('<leader>t', '<cmd>TestNearest<cr>')
 nvim.nnoremap('<leader>T', '<cmd>TestFile<cr>')
 nvim.nnoremap('<leader>g', '<cmd>TestVisit<cr>')
 nvim.nnoremap('<leader>l', '<cmd>TestLast<cr>')
-nvim.nnoremap('<leader>h', '<cmd>Helptags<cr>')
 nvim.nnoremap('<leader>n', '<cmd>nohlsearch<cr>')
 nvim.nnoremap('<leader>*', '<cmd>lgrep <cword><cr>')
 nvim.nnoremap('<leader>m', '<cmd>mksession!<cr>')
@@ -235,6 +272,8 @@ nvim.inoremap('Jk', '<esc>')
 nvim.inoremap('jK', '<esc>')
 nvim.inoremap('Kj', '<esc>')
 nvim.inoremap('kJ', '<esc>')
+nvim.inoremap('90', '()')
+nvim.inoremap('<c-a>', '<esc>gI')
 
 nvim.onoremap('A', '<cmd>normal! ggVG<cr>')
 
@@ -261,10 +300,14 @@ vim.g.Illuminate_ftblacklist = {'.*'} -- Only use lsp highlighting from the plug
 vim.g.netrw_banner = false
 vim.g.Hexokinase_highlighters = {'backgroundfull'}
 vim.g.Hexokinase_optInPatterns = {'full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla'}
+vim.g.Hexokinase_refreshEvents = {'BufRead', 'BufWrite'}
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_view_method = 'skim'
 vim.g.vimtex_quickfix_mode = true
 vim.g['test#strategy'] = 'neovim'
 vim.g.tex_flavor = 'latex'
+vim.g.indent_blankline_char = '│'
+vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
+vim.g.indent_blankline_use_treesitter = true
 
 vim.cmd [[ command! -range=% -nargs=1 Align lua require'align'.align(<f-args>) ]]

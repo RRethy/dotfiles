@@ -1,2 +1,1 @@
-set foldmethod=syntax
-set foldlevel=999
+compiler cargo
