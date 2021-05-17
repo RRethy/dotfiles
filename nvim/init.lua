@@ -2,12 +2,12 @@ _G.nvim = require('rrethy.nvim')
 
 vim.call('backpack#init')
 
-local tsconfigs         = require('nvim-treesitter.configs')
+local treesitter        = require('nvim-treesitter.configs')
 local colorscheme       = require('rrethy.colorscheme') -- base16 colorscheme library
 local hotline           = require('hotline')            -- minimal statusline/tabline lua wrapper
 local illuminate        = require('illuminate')         -- improved textDocument/documentHighlight for lsp
 local sourcerer         = require('sourcerer')          -- sources my init.lua across Neovim instances
-local lsp               = require('rrethy.lsp')         -- my lsp configurations
+local lsp               = require('lspconfig')         -- my lsp configurations
 local telescope         = require('telescope')
 local telescope_sorters = require('telescope.sorters')
 local telescope_builtin = require('telescope.builtin')
@@ -15,6 +15,8 @@ local telescope_themes  = require('telescope.themes')
 local join_lines        = require('rrethy.join_lines')
 
 vim.g.mapleader = ' '
+
+sourcerer.setup()
 
 colorscheme.setup({
     initial_theme = 'gruvbox-dark-hard',
@@ -27,15 +29,6 @@ colorscheme.setup({
         'schemer-medium'
     }
 })
-
-lsp.setup {
-    'sumneko_lua',
-    'rust_analyzer',
-    'gopls',
-    'dartls',
-    'cssls',
-    'vimls',
-}
 
 vim.lsp.util.close_preview_autocmd = function(events, winnr)
     events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' end, events)
@@ -53,8 +46,93 @@ vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
 )
 vim.lsp.handlers['experimental/joinLines'] = join_lines.handler
 
-tsconfigs.setup {
-    ensure_installed = "all",
+local function lsp_on_attach(client, _)
+    if client.supports_method('textDocument/hover') then
+        nvim.nnoremap('K', '<cmd>lua vim.lsp.buf.hover()<cr>')
+    end
+    if client.supports_method('textDocument/definition') then
+        nvim.nnoremap('<c-]>', '<cmd>lua vim.lsp.buf.definition()<cr>')
+    end
+    if client.supports_method('textDocument/formatting') then
+        nvim.api.nvim_command [[ autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000) ]]
+    end
+    if client.supports_method('textDocument/documentHighlight') then
+        -- TODO move this into vim-illuminate
+        illuminate.on_attach(client)
+    end
+    if client.supports_method('textDocument/completion') then
+        nvim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
+    end
+    if client.supports_method('textDocument/signatureHelp') then
+        nvim.inoremap('<c-s>', function()
+            vim.lsp.buf.signature_help()
+        end)
+    end
+    if client.supports_method('textDocument/rename') then
+        nvim.nnoremap('<leader>r', function()
+            vim.lsp.buf.rename()
+        end)
+    end
+    if client.supports_method('experimental/joinLines') then
+        nvim.nnoremap('J', function()
+            join_lines.join_lines()
+        end)
+    end
+end
+
+lsp.rust_analyzer.setup {
+    settings = {
+        ["rust-analyzer"] = {
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        },
+    },
+    on_attach = lsp_on_attach
+}
+
+lsp.vimls.setup {
+    on_attach = lsp_on_attach
+}
+
+lsp.dartls.setup {
+    init_options = {
+        closingLabels = true,
+    },
+    on_attach = lsp_on_attach
+}
+
+lsp.gopls.setup {
+    on_attach = lsp_on_attach
+}
+
+local sumneko_dir = nvim.env.HOME..'/lua/lua-language-server'
+lsp.sumneko_lua.setup {
+    cmd = {
+        sumneko_dir..'/bin/macOS/lua-language-server',
+        '-E',
+        sumneko_dir..'/main.lua',
+    },
+    settings = {
+        Lua = {
+            runtime = {
+                version = 'LuaJIT',
+                path = nvim.split(package.path, ";"),
+            },
+            diagnostics = {
+                enable = true,
+                globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
+            },
+        },
+    },
+    on_attach = lsp_on_attach
+}
+
+treesitter.setup {
+    ensure_installed = 'all',
     highlight = {
         enable = true,
     },
@@ -63,16 +141,39 @@ tsconfigs.setup {
     },
     indent = {
         enable = true
+    },
+    textobjects = {
+        select = {
+            enable = true,
+            keymaps = {
+                ['af'] = '@function.outer',
+                ['if'] = '@function.inner',
+                ['as'] = '@class.outer',
+                ['is'] = '@class.inner',
+                ['ac'] = '@conditional.outer',
+                ['ic'] = '@conditional.inner',
+                ['al'] = '@loop.outer',
+                ['il'] = '@loop.inner',
+            }
+        },
+        move = {
+            enable = true,
+            goto_next_start = {
+                [']m'] = '@function.outer',
+            },
+            goto_previous_start = {
+                ['[m'] = '@function.outer',
+            },
+        },
     }
 }
-
-sourcerer.setup()
 
 telescope.setup {
     defaults = {
         file_sorter    = telescope_sorters.get_fzy_sorter,
         generic_sorter = telescope_sorters.get_fzy_sorter,
         mappings = {
+            -- this enables readline style movement because of my insert mode mappings on them
             i = {
                 ['<C-u>'] = false,
                 ['<C-a>'] = false,

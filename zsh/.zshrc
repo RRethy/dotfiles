@@ -140,19 +140,18 @@ export PATH="/usr/local/Cellar/git/"$(ls /usr/local/Cellar/git/ | head -n 1)"/sh
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
-
-# export VISUAL='nvim'
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
 export EDITOR='nvim'
 export MANPAGER="nvim -c 'set ft=man' -"
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/openssl/lib/pkgconfig:"
-export PGDATA=/usr/local/var/postgres/
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=dark
 --layout=reverse
 '
 
+alias src="source ~/.config/zsh/.zshrc"
+alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 alias python="python3"
@@ -160,14 +159,12 @@ alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/R
 alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
 alias wc="rwc"
 alias ls="gls --hyperlink=auto --color -p"
-alias words="v ~/.todo/words.md -c 'cd %:p:h'"
-alias src="source ~/.config/zsh/.zshrc"
-alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias showpng="kitty +kitten icat"
 alias ssh="kitty +kitten ssh"
 alias vs="v -S"
 alias bune="bundle"
 alias myip="curl ipinfo.io;echo ''"
+alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
 
 (tagrity revive &) &> /dev/null
 
