@@ -2,40 +2,39 @@ _G.nvim = require('rrethy.nvim')
 
 vim.call('backpack#init')
 
-local treesitter        = require('nvim-treesitter.configs')
-local colorscheme       = require('rrethy.colorscheme') -- base16 colorscheme library
-local hotline           = require('hotline')            -- minimal statusline/tabline lua wrapper
-local illuminate        = require('illuminate')         -- improved textDocument/documentHighlight for lsp
-local sourcerer         = require('sourcerer')          -- sources my init.lua across Neovim instances
-local lsp               = require('lspconfig')         -- my lsp configurations
-local telescope         = require('telescope')
-local telescope_sorters = require('telescope.sorters')
-local telescope_builtin = require('telescope.builtin')
-local telescope_themes  = require('telescope.themes')
-local join_lines        = require('rrethy.join_lines')
+local treesitter           = require('nvim-treesitter.configs')
+local hotline              = require('hotline') -- minimal statusline/tabline lua wrapper
+local sourcerer            = require('sourcerer') -- sources my init.lua across Neovim instances
+local illuminate           = require('illuminate')
+local lsp                  = require('lspconfig')
+local telescope            = require('telescope')
+local telescope_sorters    = require('telescope.sorters')
+local telescope_builtin    = require('telescope.builtin')
+local telescope_themes     = require('rrethy.telescope_themes')
+local telescope_action_set = require('telescope.actions.set')
+local telescope_actions    = require('telescope.actions')
+local action_state         = require('telescope.actions.state')
+local join_lines           = require('rrethy.join_lines')
+local kitty                = require('rrethy.kitty')
 
 vim.g.mapleader = ' '
 
 sourcerer.setup()
 
-colorscheme.setup({
-    initial_theme = 'gruvbox-dark-hard',
-    themes = {
-        'gruvbox-dark-pale',
-        'gruvbox-dark-soft',
-        'gruvbox-dark-medium',
-        'gruvbox-dark-hard',
-        'schemer-dark',
-        'schemer-medium'
-    }
-})
+local function set_colorscheme(name)
+    vim.cmd('colorscheme '..name)
+    kitty.set_colors(name)
+end
+local base16_theme_fname = vim.fn.expand('~/.config/.base16_theme')
+set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
 
 vim.lsp.util.close_preview_autocmd = function(events, winnr)
-    events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' end, events)
+    -- I prefer to keep the preview (especially for signature_help) open while typing in insert mode
+    events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' and v ~= 'BufLeave' end, events)
     vim.api.nvim_command("autocmd "..table.concat(events, ',').." <buffer> ++once lua pcall(vim.api.nvim_win_close, "..winnr..", true)")
 end
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-    vim.lsp.handlers.signature_help, {
+    require('rrethy.signature_help').signature_help, {
         border = 'single',
     }
 )
@@ -44,8 +43,10 @@ vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
         border = 'single',
     }
 )
+-- rust-analyzer specific lsp method
 vim.lsp.handlers['experimental/joinLines'] = join_lines.handler
 
+-- TODO client.supports_method always returns true lol
 local function lsp_on_attach(client, _)
     if client.supports_method('textDocument/hover') then
         nvim.nnoremap('K', '<cmd>lua vim.lsp.buf.hover()<cr>')
@@ -54,11 +55,7 @@ local function lsp_on_attach(client, _)
         nvim.nnoremap('<c-]>', '<cmd>lua vim.lsp.buf.definition()<cr>')
     end
     if client.supports_method('textDocument/formatting') then
-        nvim.api.nvim_command [[ autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000) ]]
-    end
-    if client.supports_method('textDocument/documentHighlight') then
-        -- TODO move this into vim-illuminate
-        illuminate.on_attach(client)
+        nvim.api.nvim_command('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000)')
     end
     if client.supports_method('textDocument/completion') then
         nvim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -66,18 +63,19 @@ local function lsp_on_attach(client, _)
     if client.supports_method('textDocument/signatureHelp') then
         nvim.inoremap('<c-s>', function()
             vim.lsp.buf.signature_help()
-        end)
+        end, {'buffer'})
     end
     if client.supports_method('textDocument/rename') then
         nvim.nnoremap('<leader>r', function()
             vim.lsp.buf.rename()
         end)
     end
-    if client.supports_method('experimental/joinLines') then
-        nvim.nnoremap('J', function()
-            join_lines.join_lines()
-        end)
-    end
+    -- if client.supports_method('experimental/joinLines') then
+    --     nvim.nnoremap('J', function()
+    --         join_lines.join_lines()
+    --     end)
+    -- end
+    illuminate.on_attach(client)
 end
 
 lsp.rust_analyzer.setup {
@@ -140,7 +138,7 @@ treesitter.setup {
         enable = true,
     },
     indent = {
-        enable = true
+        enable = true -- this is pretty buggy
     },
     textobjects = {
         select = {
@@ -173,23 +171,40 @@ telescope.setup {
         file_sorter    = telescope_sorters.get_fzy_sorter,
         generic_sorter = telescope_sorters.get_fzy_sorter,
         mappings = {
-            -- this enables readline style movement because of my insert mode mappings on them
             i = {
-                ['<C-u>'] = false,
-                ['<C-a>'] = false,
-                ['<C-e>'] = false,
-                ['<C-w>'] = false,
+                ["<esc>"] = require('telescope.actions').close,
+                ['<C-u>'] = false, -- inoremap'd to clear line
+                ['<C-a>'] = false, -- inoremap'd to move to start of line
+                ['<C-e>'] = false, -- inoremap'd to move to end of line
+                ['<C-w>'] = false, -- inoremap'd to delete previous word
             }
         }
     },
 }
 nvim.nnoremap('<c-p>', function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep(telescope_themes.get_dropdown()) end)
+nvim.nnoremap('<leader>f', function() telescope_builtin.live_grep() end)
+nvim.nnoremap('<leader>c', function()
+    return telescope_builtin.colorscheme(telescope_themes.get_dropdown({
+        prompt_title = 'Change Colorscheme',
+        attach_mappings = function(bufnr)
+            telescope_actions.select_default:replace(function()
+                local name = action_state.get_selected_entry().value
+                vim.fn.writefile({name}, base16_theme_fname)
+                set_colorscheme(name)
+                telescope_actions.close(bufnr)
+            end)
+            telescope_action_set.shift_selection:enhance({
+                post = function()
+                    local name = action_state.get_selected_entry().value
+                    vim.fn.writefile({name}, base16_theme_fname)
+                    set_colorscheme(name)
+                end
+            })
+        return true
+    end}))
+end)
 
-if vim.fn.isdirectory('/usr/local/opt/fzf') then
-    nvim.set('runtimepath+=/usr/local/opt/fzf')
-end
 nvim.set('inccommand=nosplit')
 nvim.set('ignorecase')
 nvim.set('smartcase')

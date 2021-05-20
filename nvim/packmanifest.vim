@@ -1,6 +1,6 @@
 Pack 'RRethy/nvim-align'
 Pack 'RRethy/nvim-animator'
-Pack 'RRethy/nvim-base16-colorscheme-builder'
+Pack 'RRethy/nvim-base16'
 Pack 'RRethy/nvim-hotline'
 Pack 'RRethy/nvim-sandbox'
 Pack 'RRethy/nvim-sourcerer'

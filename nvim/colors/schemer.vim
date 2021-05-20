@@ -1,1 +1,0 @@
-lua require('rrethy.colorscheme').setup({initial_theme = 'schemer-dark', themes = {'gruvbox-dark-pale', 'gruvbox-dark-soft', 'gruvbox-dark-medium', 'gruvbox-dark-hard', 'schemer-dark', 'schemer-medium'}})
