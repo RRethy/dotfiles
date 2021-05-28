@@ -1,6 +1,7 @@
 _G.nvim = require('rrethy.nvim')
 
-vim.call('backpack#init')
+require('rrethy.backpack').setup()
+vim.cmd('packadd! cfilter')
 
 local treesitter           = require('nvim-treesitter.configs')
 local hotline              = require('hotline') -- minimal statusline/tabline lua wrapper
@@ -8,25 +9,49 @@ local sourcerer            = require('sourcerer') -- sources my init.lua across 
 local illuminate           = require('illuminate')
 local lsp                  = require('lspconfig')
 local telescope            = require('telescope')
-local telescope_sorters    = require('telescope.sorters')
 local telescope_builtin    = require('telescope.builtin')
 local telescope_themes     = require('rrethy.telescope_themes')
 local telescope_action_set = require('telescope.actions.set')
 local telescope_actions    = require('telescope.actions')
 local action_state         = require('telescope.actions.state')
 local join_lines           = require('rrethy.join_lines')
-local kitty                = require('rrethy.kitty')
 
 vim.g.mapleader = ' '
 
 sourcerer.setup()
 
-local function set_colorscheme(name)
-    vim.cmd('colorscheme '..name)
-    kitty.set_colors(name)
-end
 local base16_theme_fname = vim.fn.expand('~/.config/.base16_theme')
-set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
+vim.cmd('colorscheme '..vim.fn.readfile(base16_theme_fname)[1])
+local function set_colorscheme(name)
+    vim.fn.writefile({name}, base16_theme_fname)
+    vim.cmd('colorscheme '..name)
+    vim.loop.spawn('kitty', {
+        args = {
+            '@',
+            '--to',
+            vim.env.KITTY_LISTEN_ON,
+            'set-colors',
+            '-c',
+            string.format('~/.config/kitty/base16-kitty/colors/%s.conf', name)
+        }
+    }, nil)
+end
+nvim.nnoremap('<leader>c', function()
+    return telescope_builtin.colorscheme(telescope_themes.get_dropdown({
+        prompt_title = 'Change Colorscheme',
+        attach_mappings = function(bufnr)
+            telescope_actions.select_default:replace(function()
+                set_colorscheme(action_state.get_selected_entry().value)
+                telescope_actions.close(bufnr)
+            end)
+            telescope_action_set.shift_selection:enhance({
+                post = function()
+                    set_colorscheme(action_state.get_selected_entry().value)
+                end
+            })
+        return true
+    end}))
+end)
 
 vim.lsp.util.close_preview_autocmd = function(events, winnr)
     -- I prefer to keep the preview (especially for signature_help) open while typing in insert mode
@@ -43,6 +68,26 @@ vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
         border = 'single',
     }
 )
+-- Puts the results in the location list instead of quickfix list
+vim.lsp.handlers['textDocument/definition'] = function(_, method, result)
+    if result == nil or vim.tbl_isempty(result) then
+        local _ = require('vim.lsp.log').info() and require('vim.lsp.log').info(method, 'No location found')
+        return nil
+    end
+
+    if vim.tbl_islist(result) then
+        vim.lsp.util.jump_to_location(result[1])
+
+        if #result > 1 then
+            vim.lsp.util.set_loclist(vim.lsp.util.locations_to_items(result))
+            vim.api.nvim_command("lopen")
+            vim.api.nvim_command("wincmd p")
+        end
+    else
+        vim.lsp.util.jump_to_location(result)
+    end
+end
+
 -- rust-analyzer specific lsp method
 vim.lsp.handlers['experimental/joinLines'] = join_lines.handler
 
@@ -133,9 +178,18 @@ treesitter.setup {
     ensure_installed = 'all',
     highlight = {
         enable = true,
+        disable = { 'latex' },
     },
     playground = {
         enable = true,
+    },
+    refactor = {
+        smart_rename = {
+            enable = true,
+            keymaps = {
+                smart_rename = "<leader>r",
+            },
+        },
     },
     indent = {
         enable = true -- this is pretty buggy
@@ -143,15 +197,14 @@ treesitter.setup {
     textobjects = {
         select = {
             enable = true,
+            lookahead = true,
             keymaps = {
+                ['ae'] = '@call.outer',
+                ['ie'] = '@call.inner',
                 ['af'] = '@function.outer',
                 ['if'] = '@function.inner',
-                ['as'] = '@class.outer',
-                ['is'] = '@class.inner',
-                ['ac'] = '@conditional.outer',
-                ['ic'] = '@conditional.inner',
-                ['al'] = '@loop.outer',
-                ['il'] = '@loop.inner',
+                ['ac'] = '@comment.outer',
+                -- ['is'] = '@scope.inner',
             }
         },
         move = {
@@ -167,111 +220,144 @@ treesitter.setup {
 }
 
 telescope.setup {
+    extensions = {
+        fzy_native = {
+            override_generic_sorter = false,
+            override_file_sorter = true,
+        },
+        fzf = {
+            override_generic_sorter = true,
+            override_file_sorter = false,
+        }
+    },
     defaults = {
-        file_sorter    = telescope_sorters.get_fzy_sorter,
-        generic_sorter = telescope_sorters.get_fzy_sorter,
         mappings = {
             i = {
-                ["<esc>"] = require('telescope.actions').close,
+                ['<esc>'] = telescope_actions.close,
                 ['<C-u>'] = false, -- inoremap'd to clear line
                 ['<C-a>'] = false, -- inoremap'd to move to start of line
                 ['<C-e>'] = false, -- inoremap'd to move to end of line
                 ['<C-w>'] = false, -- inoremap'd to delete previous word
+                ['<C-b>'] = telescope_actions.preview_scrolling_up,
+                ['<C-f>'] = telescope_actions.preview_scrolling_down,
             }
         }
     },
 }
+telescope.load_extension('fzy_native')
+telescope.load_extension('fzf')
 nvim.nnoremap('<c-p>', function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>f', function() telescope_builtin.live_grep() end)
-nvim.nnoremap('<leader>c', function()
-    return telescope_builtin.colorscheme(telescope_themes.get_dropdown({
-        prompt_title = 'Change Colorscheme',
-        attach_mappings = function(bufnr)
-            telescope_actions.select_default:replace(function()
-                local name = action_state.get_selected_entry().value
-                vim.fn.writefile({name}, base16_theme_fname)
-                set_colorscheme(name)
-                telescope_actions.close(bufnr)
-            end)
-            telescope_action_set.shift_selection:enhance({
-                post = function()
-                    local name = action_state.get_selected_entry().value
-                    vim.fn.writefile({name}, base16_theme_fname)
-                    set_colorscheme(name)
-                end
-            })
-        return true
-    end}))
-end)
+nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep() end)
+nvim.nnoremap('<leader>s', function() telescope_builtin.lsp_dynamic_workspace_symbols() end)
+nvim.nnoremap('<leader>d', function() telescope_builtin.lsp_document_symbols() end)
 
-nvim.set('inccommand=nosplit')
-nvim.set('ignorecase')
-nvim.set('smartcase')
-nvim.set('number')
-nvim.set('numberwidth=3')
-nvim.set('updatetime=250')
-nvim.set('noshowcmd')
-nvim.set('iskeyword+=-')
-nvim.set('hidden')
-nvim.set('tabstop=4')
-nvim.set('softtabstop=4')
-nvim.set('shiftround')
-nvim.set('shiftwidth=4')
-nvim.set('expandtab')
-nvim.set('nowrap')
-nvim.set('mouse=a')
-nvim.set('sidescroll=10')
-nvim.set('scrolloff=1')
-nvim.set('whichwrap=[,]')
-nvim.set('cmdheight=1')
-nvim.set('splitright')
-nvim.set('noshowmode')
-nvim.set('noruler')
-nvim.set('showmatch')
-nvim.set('matchtime=5')
-nvim.set('spelllang=en_ca')
-nvim.set('shortmess+=Ic')
-nvim.set('nostartofline')
-nvim.set('backup')
-nvim.set('backupdir=~/.local/share/nvim/backup')
-nvim.set('lazyredraw')
-nvim.set('grepprg=rg\\ --smart-case\\ --vimgrep\\ $*')
-nvim.set('grepformat=%f:%l:%c:%m')
-nvim.set('cpoptions+=>')
-nvim.set('completeopt=menu')
-nvim.set('hlsearch')
-nvim.set('pumblend=10')
-nvim.set('signcolumn=number')
-nvim.set('dictionary+=/usr/share/dict/words')
-nvim.set('diffopt+=hiddenoff')
-nvim.set('showtabline=1')
-nvim.set('timeoutlen=250')
-nvim.set('ttimeoutlen=-1')
-nvim.set('equalalways')
-nvim.set('termguicolors')
-nvim.set('foldnestmax=4')
-nvim.set('breakindent')
-
-vim.o.statusline = hotline.format {
+vim.opt.inccommand = 'nosplit'
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.number = true
+vim.opt.numberwidth = 3
+vim.opt.updatetime = 250
+vim.opt.showcmd = false
+vim.opt.iskeyword:append('-')
+vim.opt.hidden = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftround = true
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.wrap = false
+vim.opt.mouse = 'a'
+vim.opt.sidescroll = 10
+vim.opt.scrolloff = 1
+vim.opt.whichwrap = '[,]'
+vim.opt.cmdheight = 1
+vim.opt.splitright = true
+vim.opt.showmode = false
+vim.opt.ruler = false
+vim.opt.showmatch = true
+vim.opt.matchtime = 5
+vim.opt.spelllang = 'en_ca'
+vim.opt.shortmess:append('Ic')
+vim.opt.startofline = false
+vim.opt.backup = true
+vim.opt.backupdir = vim.fn.expand('~/.local/share/nvim/backup')
+vim.opt.lazyredraw = true
+vim.opt.grepprg = 'rg --smart-case --vimgrep $*'
+vim.opt.grepformat = '%f:%l:%c:%m'
+vim.opt.cpoptions:append('>')
+vim.opt.completeopt = 'menu'
+vim.opt.hlsearch = true
+vim.opt.pumblend = 10
+vim.opt.signcolumn = 'number'
+vim.opt.dictionary:append('/usr/share/dict/words')
+vim.opt.diffopt:append('hiddenoff')
+vim.opt.showtabline = 1
+vim.opt.timeoutlen = 250
+vim.opt.ttimeoutlen = -1
+vim.opt.equalalways = true
+vim.opt.termguicolors = true
+vim.opt.foldnestmax = 4
+vim.opt.breakindent = true
+vim.opt.sessionoptions:remove('folds')
+vim.opt.statusline = hotline.format {
     ' ',
-    function() return string.format('%d', vim.fn.bufnr()) end,
+    function()
+        -- buffer number
+        return string.format('%d', vim.fn.bufnr())
+    end,
     ' ',
-    function() return #vim.bo.filetype == 0 and '' or string.format('[%s]', vim.bo.filetype) end,
+    function()
+        -- filetype
+        return #vim.bo.filetype == 0 and '' or string.format('[%s]', vim.bo.filetype)
+    end,
     ' ',
-    function() return string.format('%s', vim.fn.fnamemodify(vim.fn.bufname(), ':t')) end,
+    function()
+        -- filename tail
+        return string.format('%s', vim.fn.fnamemodify(vim.fn.bufname(), ':t'))
+    end,
     ' ',
-    function() return vim.bo.readonly and '[readonly]' or '' end,
+    function()
+        -- whether file is readonly
+        return vim.bo.readonly and '[readonly]' or ''
+    end,
+    -- User1 hlgroup
     '%1*',
-    function() return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Error')) or '' end,
+    function()
+        -- LSP Error count or empty string
+        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
+            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Error')) or
+            ''
+    end,
+    -- User2 hlgroup
     '%2*',
-    function() return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Warning')) or '' end,
+    function()
+        -- LSP Warning count or empty string
+        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
+            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Warning')) or
+            ''
+    end,
+    -- User3 hlgroup
     '%3*',
-    function() return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Information')) or '' end,
+    function()
+        -- LSP Information count or empty string
+        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
+            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Information')) or
+            ''
+    end,
+    -- User4 hlgroup
     '%4*',
-    function() return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Hint')) or '' end,
+    function()
+        -- LSP Hint count or empty string
+        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
+            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Hint')) or
+            ''
+    end,
+    -- Reset hlgroup
     '%0*',
+    -- Right alignment
     '%=',
+    -- line num, col num, location in file as a percentage
     ' %20(%-9(%4l/%-4L%) %5( %-3c%) %-4(%3p%%%)%) ',
 }
 
@@ -324,17 +410,17 @@ nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
 nvim.nnoremap('g>', '<cmd>20messages<cr>')
 nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
+nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
 
-nvim.nnoremap('<leader>t', '<cmd>TestNearest<cr>')
-nvim.nnoremap('<leader>T', '<cmd>TestFile<cr>')
-nvim.nnoremap('<leader>g', '<cmd>TestVisit<cr>')
-nvim.nnoremap('<leader>l', '<cmd>TestLast<cr>')
-nvim.nnoremap('<leader>n', '<cmd>nohlsearch<cr>')
-nvim.nnoremap('<leader>*', '<cmd>lgrep <cword><cr>')
+nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
+nvim.nnoremap('<leader>tn', '<cmd>TestNearest<cr>')
+nvim.nnoremap('<leader>tl', '<cmd>TestLast<cr>')
 nvim.nnoremap('<leader>m', '<cmd>mksession!<cr>')
-nvim.nnoremap('<leader>r', '<cmd>redraw!<cr>')
-nvim.nnoremap('<leader>s', '<cmd>.!zsh<cr>')
-nvim.xnoremap('<leader>s', "<cmd>'<,'>!zsh<cr>")
+-- nvim.nnoremap('<leader>r', '<cmd>redraw!<cr>')
+-- nvim.nnoremap('<leader>n', '<cmd>nohlsearch<cr>')
+-- nvim.nnoremap('<leader>*', '<cmd>lgrep <cword><cr>')
+-- nvim.nnoremap('<leader>s', '<cmd>.!zsh<cr>')
+-- nvim.xnoremap('<leader>s', "<cmd>'<,'>!zsh<cr>")
 nvim.nmap('<leader>e', ':e %%')
 
 nvim.nnoremap('<leader>1', '1gt')
@@ -409,6 +495,7 @@ nvim.tmap('gt', '"<c-\\><c-n>gt"', {'expr'})
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%:p")')
 vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
+vim.cmd('command! -range=% -nargs=1 Align lua require("align").align(<f-args>)')
 
 vim.g.qf_disable_statusline = true -- This should be the default
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
@@ -420,10 +507,12 @@ vim.g.Hexokinase_refreshEvents = {'BufRead', 'BufWrite'}
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_view_method = 'skim'
 vim.g.vimtex_quickfix_mode = true
+vim.g.vimtex_compiler_latexmk = {
+    options = {'-pdf', '-shell-escape', '-verbose', '-file-line-error', '-synctex=1', '-interaction=nonstopmode'}
+}
 vim.g['test#strategy'] = 'neovim'
 vim.g.tex_flavor = 'latex'
 vim.g.indent_blankline_char = '│'
 vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
 vim.g.indent_blankline_use_treesitter = true
-
-vim.cmd [[ command! -range=% -nargs=1 Align lua require'align'.align(<f-args>) ]]
+vim.g.loaded_ruby_provider = false

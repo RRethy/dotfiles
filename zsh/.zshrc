@@ -14,6 +14,7 @@ HISTFILE=$XDG_DATA_HOME/.zsh_history
 SAVEHIST=5000
 HISTSIZE=5000
 
+# enables completion
 autoload -Uz compinit
 compinit
 # case insensitive completion
@@ -24,6 +25,7 @@ zstyle ':completion:*' list-suffixes zstyle ':completion:*' expand prefix suff
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 
+# git info for command prompt
 source $ZDOTDIR/gitprompt.sh
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWSTASHSTATE=1
@@ -35,29 +37,18 @@ precmd () {
     print -Pn "\e]0;%1~\a"
 }
 
+# some readline movements
 bindkey -e
 bindkey "[A" up-line-or-search
 bindkey "[B" down-line-or-search
 bindkey "^[[3~" delete-char
 
-function fzy_history {
-    # TODO fzy doesn't keep things chronological and doesn't have an option to do so
-    LBUFFER="$LBUFFER$(history -r 0 | fzy | sed -E 's/^ +[0-9]+  (.*)/\1/')"
-    zle reset-prompt
-}
-function fzy_path {
-    LBUFFER="$LBUFFER$(fd . | fzy)"
-    zle reset-prompt
-}
-zle -N fzy_history
-zle -N fzy_path
-bindkey '^R' fzy_history
-bindkey '^T' fzy_path
-
+# ^x^e to edit the current command line in $EDITOR
 autoload -U edit-command-line
 zle -N edit-command-line
 bindkey '^x^e' edit-command-line
 
+JUMPDIR_KEYBIND='jd '
 # Setup some data a data file to store visited directories
 mkdir -p "$XDG_DATA_HOME/zshrc"
 JD_DATA_DIR="$XDG_DATA_HOME/zshrc/chpwd.txt"
@@ -79,7 +70,7 @@ function fzy_jd {
     # If so, we manually input the `jd `
     if [[ ! -z $BUFFER ]]; then
         # Append `jd ` to the prompt
-        BUFFER=$BUFFER"jd "
+        BUFFER=$BUFFER$JUMPDIR_KEYBIND
         # move the cursor to the end of the line
         zle end-of-line
         return 0
@@ -103,11 +94,15 @@ function fzy_jd {
 # define the new widget function
 zle -N fzy_jd
 # bind the widget function to `jd `
-bindkey 'jd ' fzy_jd
+bindkey $JUMPDIR_KEYBIND fzy_jd
 # a nicety so that executing just jd will mimic the behaviour of just executing
 # cd, that is, change the pwd to $HOME
-alias jd=cd
+eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
+# set the terminal window's colors based on the current base16 theme
+eval "kitty @ set-colors -c $HOME/.config/kitty/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
+
+# this rocks
 function - {
     cd -
 }
@@ -173,6 +168,14 @@ eval "$(lua ~/lua/z.lua/z.lua --init zsh)"
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# ^t to use fzy to fuzzy complete a path
+function fzy_path {
+    LBUFFER="$LBUFFER$(fd . | fzy)"
+    zle reset-prompt
+}
+zle -N fzy_path
+bindkey '^T' fzy_path
 
 # load dev, but only if present and the shell is interactive
 if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
