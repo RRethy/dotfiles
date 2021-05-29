@@ -34,3 +34,5 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'wincent/vcs-jump' }
+use { 'folke/which-key.nvim' }
+use { 'liuchengxu/vim-clap' }

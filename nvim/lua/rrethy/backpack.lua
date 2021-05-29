@@ -1,43 +1,15 @@
-vim.cmd('packadd plenary.nvim')
-local Job = require('plenary.job')
-local echo = vim.api.nvim_echo
+-- TODO add a log file to diagnose errors
+
+local echoerr = vim.api.nvim_err_writeln
 
 local M = {}
 
 local opt = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
 local manifest = vim.fn.stdpath('config')..'/packmanifest.lua'
 
-local function echo_ok(msg)
-    echo({{msg, 'MoreMsg'}}, false, {})
-end
-
-local function echo_err(msg)
-    echo({{msg, 'Error'}}, true, {})
-end
-
-local function echo_info(msg)
-    echo({{msg, 'Normal'}}, false, {})
-end
-
-local function open_manifest(edit, close)
-    local tabnr = vim.api.nvim_get_current_tabpage()
-    vim.cmd('tabnew')
-    vim.cmd('edit '..manifest)
-    if edit then
-        edit()
-    end
-    if close then
-        vim.cmd('%!sort|uniq')
-        vim.cmd('write')
-        vim.cmd('bwipeout!')
-        vim.api.nvim_set_current_tabpage(tabnr)
-    end
-end
-
 local function parse_url(url)
     local username, plugin = string.match(url, '^https://github.com/([^/]+)/([^/]+)$')
     if not username or not plugin then
-        print('ERROR: TODO')
         return
     end
 
@@ -52,39 +24,31 @@ local function parse_url(url)
 end
 
 local function git_pull(on_success, name)
-    echo_info(name..' already exists. Pulling remote')
     local dir = opt..name
     local branch = vim.fn.system("git -C "..dir.." branch --show-current | tr -d '\n'")
-    Job:new({
-        command = 'git',
+    vim.loop.spawn('git', {
         args = { 'pull', 'origin', branch, '--update-shallow', '--ff-only', '--progress', '--rebase=false' },
         cwd = dir,
-        on_exit = vim.schedule_wrap(function(_, return_val)
-            if return_val == 0 then
-                echo_ok(name..' pulled successfully')
+    }, vim.schedule_wrap(function(code)
+            if code == 0 then
                 on_success(name)
             else
-                echo_err(name..' pulled unsuccessfully')
+                echoerr(name..' pulled unsuccessfully')
             end
-        end),
-    }):start()
+        end))
 end
 
 local function git_clone(on_success, name, git_url)
-    echo_info(name..' is being cloned')
-    Job:new({
-        command = 'git',
+    vim.loop.spawn('git', {
         args = { 'clone', '--depth=1', git_url },
         cwd = opt,
-        on_exit = vim.schedule_wrap(function(_, return_val)
-            if return_val == 0 then
-                echo_ok(name..' cloned successfully')
+    }, vim.schedule_wrap(function(code)
+            if code == 0 then
                 on_success(name)
             else
-                echo_err(name..' cloned unsuccessfully')
+                echoerr(name..' cloned unsuccessfully')
             end
-        end),
-    }):start()
+        end))
 end
 
 function M.setup()
@@ -127,12 +91,10 @@ function M.pack_add(url)
     if vim.fn.isdirectory(opt..plugin) ~= 0 then
         git_pull(on_success, plugin)
     else
-        git_clone(on_success, plugin, git_clone)
+        git_clone(on_success, plugin, git_url)
     end
 
-    open_manifest(function()
-        vim.fn.append(vim.fn.line('$'), string.format('use { name = %s }', plugin))
-    end, true)
+    vim.fn.system(string.format('echo "use { \'%s/%s\' }" >> %s', author, plugin, manifest))
 end
 
 function M.pack_update()
@@ -149,7 +111,8 @@ function M.pack_update()
 end
 
 function M.pack_edit()
-    open_manifest()
+    vim.cmd('tabnew')
+    vim.cmd('edit '..manifest)
 end
 
 return M

@@ -204,7 +204,6 @@ treesitter.setup {
                 ['af'] = '@function.outer',
                 ['if'] = '@function.inner',
                 ['ac'] = '@comment.outer',
-                -- ['is'] = '@scope.inner',
             }
         },
         move = {
