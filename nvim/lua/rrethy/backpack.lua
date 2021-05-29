@@ -60,6 +60,7 @@ function M.setup()
         table.insert(M.plugins, {
             plugin = plugin,
             author = author,
+            post_update = opts.post_update,
         })
         if vim.fn.isdirectory(opt..'/'..plugin) ~= 0 then
             vim.cmd('packadd! '..plugin)
@@ -98,10 +99,15 @@ function M.pack_add(url)
 end
 
 function M.pack_update()
-    local on_success = function(plugin)
-        vim.cmd('packadd '..plugin)
-    end
     for _, data in ipairs(M.plugins) do
+        local on_success = function(plugin)
+            vim.cmd('packadd '..plugin)
+            if data.post_update then
+                if type(data.post_update) == 'function' then
+                    data.post_update(opt..'/'..plugin)
+                end
+            end
+        end
         if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
             git_pull(on_success, data.plugin)
         else
