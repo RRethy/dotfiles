@@ -6,39 +6,45 @@ vim.cmd('packadd! cfilter')
 local treesitter           = require('nvim-treesitter.configs')
 local hotline              = require('hotline') -- minimal statusline/tabline lua wrapper
 local sourcerer            = require('sourcerer') -- sources my init.lua across Neovim instances
-local illuminate           = require('illuminate')
-local lsp                  = require('lspconfig')
 local telescope            = require('telescope')
 local telescope_builtin    = require('telescope.builtin')
 local telescope_themes     = require('rrethy.telescope_themes')
 local telescope_action_set = require('telescope.actions.set')
 local telescope_actions    = require('telescope.actions')
 local action_state         = require('telescope.actions.state')
-local join_lines           = require('rrethy.join_lines')
 
 vim.g.mapleader = ' '
 
 sourcerer.setup()
 
-local base16_theme_fname = vim.fn.expand('~/.config/.base16_theme')
-vim.cmd('colorscheme '..vim.fn.readfile(base16_theme_fname)[1])
+-- this avoids loading the same colorscheme twice on startup:
+-- See https://github.com/neovim/neovim/issues/9311
+vim.cmd('syntax on')
+-- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
+--   base16-schemer-dark
+local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
 local function set_colorscheme(name)
     vim.fn.writefile({name}, base16_theme_fname)
     vim.cmd('colorscheme '..name)
     vim.loop.spawn('kitty', {
         args = {
             '@',
-            '--to',
-            vim.env.KITTY_LISTEN_ON,
             'set-colors',
             '-c',
-            string.format('~/.config/kitty/base16-kitty/colors/%s.conf', name)
+            string.format(vim.env.HOME..'/base16-kitty/colors/%s.conf', name)
         }
     }, nil)
 end
+set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
 nvim.nnoremap('<leader>c', function()
-    return telescope_builtin.colorscheme(telescope_themes.get_dropdown({
-        prompt_title = 'Change Colorscheme',
+    local colors = vim.fn.getcompletion('base16', 'color')
+    local theme = require('telescope.themes').get_dropdown()
+    require('telescope.pickers').new(theme, {
+        prompt = 'Change Base16 Colorscheme',
+        finder = require('telescope.finders').new_table {
+            results = colors
+        },
+        sorter = require('telescope.config').values.generic_sorter(theme),
         attach_mappings = function(bufnr)
             telescope_actions.select_default:replace(function()
                 set_colorscheme(action_state.get_selected_entry().value)
@@ -49,136 +55,68 @@ nvim.nnoremap('<leader>c', function()
                     set_colorscheme(action_state.get_selected_entry().value)
                 end
             })
-        return true
-    end}))
+            return true
+        end
+    }):find()
 end)
 
-vim.lsp.util.close_preview_autocmd = function(events, winnr)
-    -- I prefer to keep the preview (especially for signature_help) open while typing in insert mode
-    events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' and v ~= 'BufLeave' end, events)
-    vim.api.nvim_command("autocmd "..table.concat(events, ',').." <buffer> ++once lua pcall(vim.api.nvim_win_close, "..winnr..", true)")
-end
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-    require('rrethy.signature_help').signature_help, {
-        border = 'single',
-    }
-)
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-    vim.lsp.handlers.hover, {
-        border = 'single',
-    }
-)
--- Puts the results in the location list instead of quickfix list
-vim.lsp.handlers['textDocument/definition'] = function(_, method, result)
-    if result == nil or vim.tbl_isempty(result) then
-        local _ = require('vim.lsp.log').info() and require('vim.lsp.log').info(method, 'No location found')
-        return nil
-    end
-
-    if vim.tbl_islist(result) then
-        vim.lsp.util.jump_to_location(result[1])
-
-        if #result > 1 then
-            vim.lsp.util.set_loclist(vim.lsp.util.locations_to_items(result))
-            vim.api.nvim_command("lopen")
-            vim.api.nvim_command("wincmd p")
-        end
-    else
-        vim.lsp.util.jump_to_location(result)
-    end
-end
-
--- rust-analyzer specific lsp method
-vim.lsp.handlers['experimental/joinLines'] = join_lines.handler
-
--- TODO client.supports_method always returns true lol
-local function lsp_on_attach(client, _)
-    if client.supports_method('textDocument/hover') then
-        nvim.nnoremap('K', '<cmd>lua vim.lsp.buf.hover()<cr>')
-    end
-    if client.supports_method('textDocument/definition') then
-        nvim.nnoremap('<c-]>', '<cmd>lua vim.lsp.buf.definition()<cr>')
-    end
-    if client.supports_method('textDocument/formatting') then
-        nvim.api.nvim_command('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000)')
-    end
-    if client.supports_method('textDocument/completion') then
-        nvim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
-    end
-    if client.supports_method('textDocument/signatureHelp') then
-        nvim.inoremap('<c-s>', function()
-            vim.lsp.buf.signature_help()
-        end, {'buffer'})
-    end
-    if client.supports_method('textDocument/rename') then
-        nvim.nnoremap('<leader>r', function()
-            vim.lsp.buf.rename()
-        end)
-    end
-    -- if client.supports_method('experimental/joinLines') then
-    --     nvim.nnoremap('J', function()
-    --         join_lines.join_lines()
-    --     end)
-    -- end
-    illuminate.on_attach(client)
-end
-
-lsp.rust_analyzer.setup {
-    settings = {
-        ["rust-analyzer"] = {
-            cargo = {
-                loadOutDirsFromCheck = true
+require('rrethy.lsp').setup {
+    servers = {
+        gopls = {},
+        rust_analyzer = {
+            settings = {
+                ["rust-analyzer"] = {
+                    cargo = {
+                        loadOutDirsFromCheck = true
+                    },
+                    procMacro = {
+                        enable = true
+                    },
+                },
+            }
+        },
+        vimls = {},
+        dartls = {
+            init_options = {
+                closingLabels = true,
             },
-            procMacro = {
-                enable = true
+        },
+        sumneko_lua = {
+            cmd = {
+                nvim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
+                '-E',
+                nvim.env.HOME..'/lua/lua-language-server'..'/main.lua',
+            },
+            settings = {
+                Lua = {
+                    runtime = {
+                        version = 'LuaJIT',
+                        path = nvim.split(package.path, ";"),
+                    },
+                    diagnostics = {
+                        enable = true,
+                        globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
+                    },
+                },
             },
         },
     },
-    on_attach = lsp_on_attach
-}
-
-lsp.vimls.setup {
-    on_attach = lsp_on_attach
-}
-
-lsp.dartls.setup {
-    init_options = {
-        closingLabels = true,
+    handlers = {
+        ['textDocument/signatureHelp'] = require('rrethy.textdocument_signature_help').handler,
+        ['textDocument/hover'] = vim.lsp.with(
+            vim.lsp.handlers.hover, {
+                border = 'single',
+            }
+        ),
+        ['textDocument/definition'] = require('rrethy.textdocument_definition').handler,
     },
-    on_attach = lsp_on_attach
-}
-
-lsp.gopls.setup {
-    on_attach = lsp_on_attach
-}
-
-local sumneko_dir = nvim.env.HOME..'/lua/lua-language-server'
-lsp.sumneko_lua.setup {
-    cmd = {
-        sumneko_dir..'/bin/macOS/lua-language-server',
-        '-E',
-        sumneko_dir..'/main.lua',
-    },
-    settings = {
-        Lua = {
-            runtime = {
-                version = 'LuaJIT',
-                path = nvim.split(package.path, ";"),
-            },
-            diagnostics = {
-                enable = true,
-                globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
-            },
-        },
-    },
-    on_attach = lsp_on_attach
 }
 
 treesitter.setup {
     ensure_installed = 'all',
     highlight = {
         enable = true,
-        disable = { 'latex' },
+        disable = { 'latex', 'yaml' },
     },
     playground = {
         enable = true,
@@ -204,6 +142,7 @@ treesitter.setup {
                 ['af'] = '@function.outer',
                 ['if'] = '@function.inner',
                 ['ac'] = '@comment.outer',
+                ['aa'] = '@smart',
             }
         },
         move = {
@@ -215,7 +154,13 @@ treesitter.setup {
                 ['[m'] = '@function.outer',
             },
         },
-    }
+    },
+    textsubjects = {
+        enable = true,
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+        }
+    },
 }
 
 telescope.setup {
@@ -233,19 +178,20 @@ telescope.setup {
         mappings = {
             i = {
                 ['<esc>'] = telescope_actions.close,
-                ['<C-u>'] = false, -- inoremap'd to clear line
-                ['<C-a>'] = false, -- inoremap'd to move to start of line
-                ['<C-e>'] = false, -- inoremap'd to move to end of line
-                ['<C-w>'] = false, -- inoremap'd to delete previous word
-                ['<C-b>'] = telescope_actions.preview_scrolling_up,
-                ['<C-f>'] = telescope_actions.preview_scrolling_down,
+                ['<c-u>'] = false, -- inoremap'd to clear line
+                ['<c-a>'] = false, -- inoremap'd to move to start of line
+                ['<c-e>'] = false, -- inoremap'd to move to end of line
+                ['<c-w>'] = false, -- inoremap'd to delete previous word
+                ['<c-b>'] = telescope_actions.preview_scrolling_up,
+                ['<c-f>'] = telescope_actions.preview_scrolling_down,
             }
         }
     },
 }
 telescope.load_extension('fzy_native')
 telescope.load_extension('fzf')
-nvim.nnoremap('<c-p>', function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
+nvim.nnoremap('<c-p>',     function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
+nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep() end)
 nvim.nnoremap('<leader>s', function() telescope_builtin.lsp_dynamic_workspace_symbols() end)
@@ -299,6 +245,18 @@ vim.opt.termguicolors = true
 vim.opt.foldnestmax = 4
 vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
+vim.opt.modelines = 0
+local function lsp_diagnostic_count(name, icon)
+    if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+        return ''
+    else
+        local count = vim.lsp.diagnostic.get_count(0, name)
+        if count > 0 then
+            return string.format(' %s %d ', icon, count)
+        end
+        return ''
+    end
+end
 vim.opt.statusline = hotline.format {
     ' ',
     function()
@@ -322,36 +280,16 @@ vim.opt.statusline = hotline.format {
     end,
     -- User1 hlgroup
     '%1*',
-    function()
-        -- LSP Error count or empty string
-        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
-            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Error')) or
-            ''
-    end,
+    function() return lsp_diagnostic_count('Error', '') end,
     -- User2 hlgroup
     '%2*',
-    function()
-        -- LSP Warning count or empty string
-        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
-            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Warning')) or
-            ''
-    end,
+    function() return lsp_diagnostic_count('Warning', '') end,
     -- User3 hlgroup
     '%3*',
-    function()
-        -- LSP Information count or empty string
-        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
-            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Information')) or
-            ''
-    end,
+    function() return lsp_diagnostic_count('Information', '') end,
     -- User4 hlgroup
     '%4*',
-    function()
-        -- LSP Hint count or empty string
-        return not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) and
-            string.format('  %d ', vim.lsp.diagnostic.get_count(0, 'Hint')) or
-            ''
-    end,
+    function() return lsp_diagnostic_count('Hint', '') end,
     -- Reset hlgroup
     '%0*',
     -- Right alignment
@@ -368,10 +306,11 @@ vim.cmd [[     autocmd TextYankPost * lua require'vim.highlight'.on_yank({timeou
 vim.cmd [[     autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel ]]
 vim.cmd [[ augroup END ]]
 
-vim.fn.mkdir(vim.env.HOME..'/.local/share/nvim/backup/', 'p')
+vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
 
-nvim.nnoremap('<a-n>', function() illuminate.next_reference{wrap=true} end)
-nvim.nnoremap('<a-p>', function() illuminate.next_reference{reverse=true,wrap=true} end)
+nvim.nnoremap('<a-n>', function() require('illuminate').next_reference({wrap = true}) end)
+nvim.nnoremap('<a-p>', function() require('illuminate').next_reference({reverse = true, wrap = true}) end)
+nvim.nnoremap('<a-i>', function() require('illuminate').toggle_pause() end)
 
 nvim.nnoremap('yow', function()
     if nvim.wo.wrap then
@@ -409,7 +348,7 @@ nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
 nvim.nnoremap('g>', '<cmd>20messages<cr>')
 nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
-nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
+-- nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
 
 nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
 nvim.nnoremap('<leader>tn', '<cmd>TestNearest<cr>')
@@ -485,6 +424,8 @@ nvim.cnoremap('%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', {'expr'})
 nvim.cnoremap('<c-a>', '<home>')
 nvim.cnoremap('<c-e>', '<end>')
 nvim.cnoremap('qq', '"q!"', {'expr'})
+nvim.cnoremap('<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', {'expr'})
+nvim.cnoremap('<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', {'expr'})
 
 nvim.tnoremap('<esc>', '<c-\\><c-n>')
 

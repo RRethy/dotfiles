@@ -100,7 +100,7 @@ bindkey $JUMPDIR_KEYBIND fzy_jd
 eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
 # set the terminal window's colors based on the current base16 theme
-eval "kitty @ set-colors -c $HOME/.config/kitty/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
+eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
 
 # this rocks
 function - {

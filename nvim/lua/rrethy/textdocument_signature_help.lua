@@ -1,7 +1,7 @@
 local M = {}
 
-function M.signature_help(_, method, result, _, bufnr, config)
-    config = config or {}
+function M.handler(_, method, result, _, bufnr, config)
+    config = { border = 'single' }
     -- When use `autocmd CompleteDone <silent><buffer> lua vim.lsp.buf.signature_help()` to call signatureHelp handler
     -- If the completion item doesn't have signatures It will make noise. Change to use `print` that can use `<silent>` to ignore
     if not (result and result.signatures and result.signatures[1]) then
@@ -14,6 +14,7 @@ function M.signature_help(_, method, result, _, bufnr, config)
         print('No signature help available')
         return
     end
+    -- I'm using 'ft' instead of 'syntax', I should look into using nested syntax
     local ft = vim.api.nvim_buf_get_option(bufnr, 'ft')
     local p_bufnr, _ = vim.lsp.util.focusable_preview(method, function()
         return lines, vim.lsp.util.try_trim_markdown_code_blocks(lines), config

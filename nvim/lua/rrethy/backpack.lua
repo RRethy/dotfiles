@@ -7,6 +7,14 @@ local M = {}
 local opt = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
 local manifest = vim.fn.stdpath('config')..'/packmanifest.lua'
 
+local function to_git_url(author, plugin)
+    if author == 'RRethy' then
+        return string.format('git@github.com:%s/%s.git', author, plugin)
+    else
+        return string.format('https://github.com:%s/%s.git', author, plugin)
+    end
+end
+
 local function parse_url(url)
     local username, plugin = string.match(url, '^https://github.com/([^/]+)/([^/]+)$')
     if not username or not plugin then
@@ -23,7 +31,7 @@ local function parse_url(url)
     return git_url, username, plugin
 end
 
-local function git_pull(on_success, name)
+local function git_pull(name, on_success)
     local dir = opt..name
     local branch = vim.fn.system("git -C "..dir.." branch --show-current | tr -d '\n'")
     vim.loop.spawn('git', {
@@ -38,7 +46,7 @@ local function git_pull(on_success, name)
         end))
 end
 
-local function git_clone(on_success, name, git_url)
+local function git_clone(name, git_url, on_success)
     vim.loop.spawn('git', {
         args = { 'clone', '--depth=1', git_url },
         cwd = opt,
@@ -64,6 +72,10 @@ function M.setup()
         })
         if vim.fn.isdirectory(opt..'/'..plugin) ~= 0 then
             vim.cmd('packadd! '..plugin)
+        else
+            git_clone(plugin, to_git_url(author, plugin), function()
+                vim.cmd('packadd! '..plugin)
+            end)
         end
     end
     if vim.fn.filereadable(manifest) ~= 0 then
@@ -90,9 +102,9 @@ function M.pack_add(url)
         vim.cmd('packadd '..plugin)
     end
     if vim.fn.isdirectory(opt..plugin) ~= 0 then
-        git_pull(on_success, plugin)
+        git_pull(plugin, on_success)
     else
-        git_clone(on_success, plugin, git_url)
+        git_clone(plugin, git_url, on_success)
     end
 
     vim.fn.system(string.format('echo "use { \'%s/%s\' }" >> %s', author, plugin, manifest))
@@ -103,15 +115,23 @@ function M.pack_update()
         local on_success = function(plugin)
             vim.cmd('packadd '..plugin)
             if data.post_update then
+                local dir = opt..'/'..plugin
                 if type(data.post_update) == 'function' then
-                    data.post_update(opt..'/'..plugin)
+                    data.post_update(dir)
+                elseif type(data.post_update) == 'table' then
+                    vim.loop.spawn(data.post_update[1], { args = data.post_update.args, cwd = dir },
+                        vim.schedule_wrap(function(code)
+                            if code ~= 0 then
+                                vim.api.nvim_err_writeln(string.format('Failed to run %s', vim.inspect(data.post_update)))
+                            end
+                        end))
                 end
             end
         end
         if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
-            git_pull(on_success, data.plugin)
+            git_pull(data.plugin, on_success)
         else
-            git_clone(on_success, data.plugin, git_clone)
+            git_clone(data.plugin, git_clone, on_success)
         end
     end
 end

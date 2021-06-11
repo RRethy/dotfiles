@@ -1,11 +1,14 @@
+use { 'RRethy/nvim-treesitter-textsubjects' }
 use { 'RRethy/nvim-align' }
-use { 'RRethy/nvim-animator' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
 use { 'RRethy/nvim-sandbox' }
 use { 'RRethy/nvim-sourcerer' }
 use { 'RRethy/vim-eunuch' }
-use { 'RRethy/vim-hexokinase' }
+use {
+    'RRethy/vim-hexokinase',
+    post_update = { 'make' }
+}
 use { 'RRethy/vim-illuminate' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }
@@ -28,9 +31,9 @@ use { 'romainl/vim-cool' }
 use { 'tpope/vim-abolish' }
 use { 'tpope/vim-commentary' }
 use { 'tpope/vim-fugitive' }
-use { 'tpope/vim-projectionist' }
 use { 'tpope/vim-repeat' }
 use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'wincent/vcs-jump' }
+use { 'camspiers/snap' }
