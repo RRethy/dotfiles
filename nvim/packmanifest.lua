@@ -1,3 +1,4 @@
+vim.cmd('packadd! cfilter')
 use { 'RRethy/nvim-treesitter-textsubjects' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }

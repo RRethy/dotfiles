@@ -1,68 +1,24 @@
 _G.nvim = require('rrethy.nvim')
 
 require('rrethy.backpack').setup()
-vim.cmd('packadd! cfilter')
 
-local treesitter           = require('nvim-treesitter.configs')
-local hotline              = require('hotline') -- minimal statusline/tabline lua wrapper
-local sourcerer            = require('sourcerer') -- sources my init.lua across Neovim instances
-local telescope            = require('telescope')
-local telescope_builtin    = require('telescope.builtin')
-local telescope_themes     = require('rrethy.telescope_themes')
-local telescope_action_set = require('telescope.actions.set')
-local telescope_actions    = require('telescope.actions')
-local action_state         = require('telescope.actions.state')
+local treesitter = require('nvim-treesitter.configs')
+local hotline    = require('hotline') -- minimal statusline/tabline lua wrapper
+local sourcerer  = require('sourcerer') -- sources my init.lua across Neovim instances
+
+local telescope              = require('telescope')
+local telescope_builtin      = require('telescope.builtin')
+local telescope_themes       = require('rrethy.telescope_themes')
+local telescope_action_set   = require('telescope.actions.set')
+local telescope_actions      = require('telescope.actions')
+local telescope_action_state = require('telescope.actions.state')
 
 vim.g.mapleader = ' '
 
 sourcerer.setup()
 
--- this avoids loading the same colorscheme twice on startup:
--- See https://github.com/neovim/neovim/issues/9311
-vim.cmd('syntax on')
--- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
---   base16-schemer-dark
-local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
-local function set_colorscheme(name)
-    vim.fn.writefile({name}, base16_theme_fname)
-    vim.cmd('colorscheme '..name)
-    vim.loop.spawn('kitty', {
-        args = {
-            '@',
-            'set-colors',
-            '-c',
-            string.format(vim.env.HOME..'/base16-kitty/colors/%s.conf', name)
-        }
-    }, nil)
-end
-set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
-nvim.nnoremap('<leader>c', function()
-    local colors = vim.fn.getcompletion('base16', 'color')
-    local theme = require('telescope.themes').get_dropdown()
-    require('telescope.pickers').new(theme, {
-        prompt = 'Change Base16 Colorscheme',
-        finder = require('telescope.finders').new_table {
-            results = colors
-        },
-        sorter = require('telescope.config').values.generic_sorter(theme),
-        attach_mappings = function(bufnr)
-            telescope_actions.select_default:replace(function()
-                set_colorscheme(action_state.get_selected_entry().value)
-                telescope_actions.close(bufnr)
-            end)
-            telescope_action_set.shift_selection:enhance({
-                post = function()
-                    set_colorscheme(action_state.get_selected_entry().value)
-                end
-            })
-            return true
-        end
-    }):find()
-end)
-
 require('rrethy.lsp').setup {
     servers = {
-        gopls = {},
         rust_analyzer = {
             settings = {
                 ["rust-analyzer"] = {
@@ -75,12 +31,7 @@ require('rrethy.lsp').setup {
                 },
             }
         },
-        vimls = {},
-        dartls = {
-            init_options = {
-                closingLabels = true,
-            },
-        },
+        gopls = {},
         sumneko_lua = {
             cmd = {
                 nvim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
@@ -98,6 +49,12 @@ require('rrethy.lsp').setup {
                         globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
                     },
                 },
+            },
+        },
+        vimls = {},
+        dartls = {
+            init_options = {
+                closingLabels = true,
             },
         },
     },
@@ -193,6 +150,49 @@ nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_them
 nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep() end)
 nvim.nnoremap('<leader>s', function() telescope_builtin.lsp_dynamic_workspace_symbols() end)
 nvim.nnoremap('<leader>d', function() telescope_builtin.lsp_document_symbols() end)
+
+-- this avoids loading the same colorscheme twice on startup:
+-- See https://github.com/neovim/neovim/issues/9311
+vim.cmd('syntax on')
+-- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
+--   base16-schemer-dark
+local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
+local function set_colorscheme(name)
+    vim.fn.writefile({name}, base16_theme_fname)
+    vim.cmd('colorscheme '..name)
+    vim.loop.spawn('kitty', {
+        args = {
+            '@',
+            'set-colors',
+            '-c',
+            string.format(vim.env.HOME..'/base16-kitty/colors/%s.conf', name)
+        }
+    }, nil)
+end
+set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
+nvim.nnoremap('<leader>c', function()
+    local colors = vim.fn.getcompletion('base16', 'color')
+    local theme = require('telescope.themes').get_dropdown()
+    require('telescope.pickers').new(theme, {
+        prompt = 'Change Base16 Colorscheme',
+        finder = require('telescope.finders').new_table {
+            results = colors
+        },
+        sorter = require('telescope.config').values.generic_sorter(theme),
+        attach_mappings = function(bufnr)
+            telescope_actions.select_default:replace(function()
+                set_colorscheme(telescope_action_state.get_selected_entry().value)
+                telescope_actions.close(bufnr)
+            end)
+            telescope_action_set.shift_selection:enhance({
+                post = function()
+                    set_colorscheme(telescope_action_state.get_selected_entry().value)
+                end
+            })
+            return true
+        end
+    }):find()
+end)
 
 vim.opt.inccommand = 'nosplit'
 vim.opt.ignorecase = true
