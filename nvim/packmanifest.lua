@@ -2,7 +2,6 @@ use { 'RRethy/nvim-treesitter-textsubjects' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
-use { 'RRethy/nvim-sandbox' }
 use { 'RRethy/nvim-sourcerer' }
 use { 'RRethy/vim-eunuch' }
 use {
@@ -36,4 +35,3 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'wincent/vcs-jump' }
-use { 'camspiers/snap' }

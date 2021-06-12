@@ -100,6 +100,7 @@ function M.pack_add(url)
     })
     local on_success = function()
         vim.cmd('packadd '..plugin)
+        vim.cmd('helptags '..plugin)
     end
     if vim.fn.isdirectory(opt..plugin) ~= 0 then
         git_pull(plugin, on_success)

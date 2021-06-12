@@ -137,12 +137,8 @@ treesitter.setup {
             enable = true,
             lookahead = true,
             keymaps = {
-                ['ae'] = '@call.outer',
-                ['ie'] = '@call.inner',
                 ['af'] = '@function.outer',
                 ['if'] = '@function.inner',
-                ['ac'] = '@comment.outer',
-                ['aa'] = '@smart',
             }
         },
         move = {
@@ -159,6 +155,7 @@ treesitter.setup {
         enable = true,
         keymaps = {
             ['.'] = 'textsubjects-smart',
+            -- ['af'] = 'textsubjects-container',
         }
     },
 }
@@ -431,7 +428,7 @@ nvim.tnoremap('<esc>', '<c-\\><c-n>')
 
 nvim.tmap('gt', '"<c-\\><c-n>gt"', {'expr'})
 
--- vim.cmd('command! -bar WS if &ft == "lua" | lua package.loaded[ | elseif &ft == "vim" | write|source % | endif')
+vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%:p")')
 vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
