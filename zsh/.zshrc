@@ -163,7 +163,7 @@ alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
 
 (tagrity revive &) &> /dev/null
 
-eval "$(lua ~/lua/z.lua/z.lua --init zsh)"
+# eval "$(lua ~/lua/z.lua/z.lua --init zsh)"
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
 
@@ -185,7 +185,7 @@ else
         eval "$(rbenv init -)"
     fi
 fi
-eval $(opam env)
+# eval $(opam env)
 
 # source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Completion for kitty
