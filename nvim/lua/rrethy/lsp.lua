@@ -30,15 +30,30 @@ local function on_attach(client, _)
             vim.lsp.buf.rename()
         end, { 'buffer' })
     end
-    -- if client.name == 'rust_analyzer' then
-    --     nvim.nnoremap('J', function()
-    --         local params = vim.lsp.util.make_range_params()
-    --         params.ranges = { params.range } -- Range[] is used by rust analyzer to support multicursors
-    --         vim.lsp.buf_request(0, "experimental/joinLines", params, function(_, _, result, _, bufnr, _)
-    --             vim.lsp.util.apply_text_edits(result, bufnr)
-    --         end)
-    --     end, { 'buffer' })
-    -- end
+    if client.supports_method('textDocument/references') then
+        nvim.nnoremap('<leader>u', function()
+            require('telescope.builtin').lsp_references()
+        end, { 'buffer' })
+    end
+    if client.supports_method('textDocument/references') then
+        nvim.nnoremap('<leader>s', function()
+            require('telescope.builtin').lsp_dynamic_workspace_symbols()
+        end, { 'buffer' })
+    end
+    if client.supports_method('textDocument/references') then
+        nvim.nnoremap('<leader>d', function()
+            require('telescope.builtin').lsp_document_symbols()
+        end, { 'buffer' })
+    end
+    if client.name == 'rust_analyzer' then
+        nvim.nnoremap('J', function()
+            local params = vim.lsp.util.make_range_params()
+            params.ranges = { params.range } -- Range[] is used by rust analyzer to support multicursors
+            vim.lsp.buf_request(0, "experimental/joinLines", params, function(_, _, result, _, bufnr, _)
+                vim.lsp.util.apply_text_edits(result, bufnr)
+            end)
+        end, { 'buffer' })
+    end
     require('illuminate').on_attach(client)
 end
 

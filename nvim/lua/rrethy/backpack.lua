@@ -11,7 +11,7 @@ local function to_git_url(author, plugin)
     if author == 'RRethy' then
         return string.format('git@github.com:%s/%s.git', author, plugin)
     else
-        return string.format('https://github.com:%s/%s.git', author, plugin)
+        return string.format('https://github.com/%s/%s.git', author, plugin)
     end
 end
 

@@ -101,6 +101,28 @@ eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
 # set the terminal window's colors based on the current base16 theme
 eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
+# keybinding to change my terminal colors with fzy
+COLORS_KEYBIND=' c'
+function fzy_colors {
+    if [[ ! -z $BUFFER ]]; then
+        BUFFER="$BUFFER c"
+        zle end-of-line
+        return 0
+    fi
+    local color=$(gls --color=never base16-kitty/colors/ | grep -v "256"| fzy)
+    if [[ -z $color ]]; then
+        zle reset-prompt
+        return 0
+    fi
+    BUFFER="kitty @ set-colors -c $HOME/base16-kitty/colors/$color"
+    echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
+    zle accept-line
+    local ret=$?
+    zle reset-prompt
+    return $ret
+}
+zle -N fzy_colors
+bindkey ' c' fzy_colors
 
 # this rocks
 function - {
@@ -160,6 +182,10 @@ alias vs="v -S"
 alias bune="bundle"
 alias myip="curl ipinfo.io;echo ''"
 alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
+alias luamake=/Users/adam.regaszrethy/lua/lua-language-server/3rd/luamake/luamake
+
+# alias k="kubectl"
+# source <(kubectl completion bash)
 
 (tagrity revive &) &> /dev/null
 
@@ -178,13 +204,13 @@ zle -N fzy_path
 bindkey '^T' fzy_path
 
 # load dev, but only if present and the shell is interactive
-if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
-    source /opt/dev/dev.sh
-else
-    if [ -x "$(command -v rbenv)" ]; then
-        eval "$(rbenv init -)"
-    fi
-fi
+# if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
+#     source /opt/dev/dev.sh
+# else
+#     if [ -x "$(command -v rbenv)" ]; then
+#         eval "$(rbenv init -)"
+#     fi
+# fi
 # eval $(opam env)
 
 # source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -195,5 +221,10 @@ fi
 # export SDKMAN_DIR="/Users/rethy/.sdkman"
 # [[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
 
-# vim: foldmethod=marker foldlevel=1
-if [ -e /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adamp.regasz-rethy/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+[ -f /opt/dev/dev.sh ] && source /opt/dev/dev.sh
+if [ -e /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# cloudplatform: add Shopify clusters to your local kubernetes config
+export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}/Users/adam.regaszrethy/.kube/config:/Users/adam.regaszrethy/.kube/config.shopify.cloudplatform
+for file in /Users/adam.regaszrethy/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do source ${file}; done
+kubectl-short-aliases

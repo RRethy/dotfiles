@@ -42,7 +42,7 @@ require('rrethy.lsp').setup {
                 Lua = {
                     runtime = {
                         version = 'LuaJIT',
-                        path = nvim.split(package.path, ";"),
+                        path = vim.split(package.path, ";"),
                     },
                     diagnostics = {
                         enable = true,
@@ -59,10 +59,14 @@ require('rrethy.lsp').setup {
         },
     },
     handlers = {
-        ['textDocument/signatureHelp'] = require('rrethy.textdocument_signature_help').handler,
+        ['textDocument/signatureHelp'] = vim.lsp.with(
+            vim.lsp.handlers.signature_help, {
+                border = 'single'
+            }
+        ),
         ['textDocument/hover'] = vim.lsp.with(
             vim.lsp.handlers.hover, {
-                border = 'single',
+                border = 'single'
             }
         ),
         ['textDocument/definition'] = require('rrethy.textdocument_definition').handler,
@@ -70,10 +74,10 @@ require('rrethy.lsp').setup {
 }
 
 treesitter.setup {
-    ensure_installed = 'all',
+    ensure_installed = {'lua', 'rust', 'go', 'ruby'}, -- haskell is causing build failures
     highlight = {
         enable = true,
-        disable = { 'latex', 'yaml' },
+        disable = { 'latex', 'yaml', 'haskell' },
     },
     playground = {
         enable = true,
@@ -138,6 +142,7 @@ telescope.setup {
                 ['<c-w>'] = false, -- inoremap'd to delete previous word
                 ['<c-b>'] = telescope_actions.preview_scrolling_up,
                 ['<c-f>'] = telescope_actions.preview_scrolling_down,
+                ['<c-l>'] = telescope_actions.smart_send_to_loclist,
             }
         }
     },
@@ -148,8 +153,6 @@ nvim.nnoremap('<c-p>',     function() telescope_builtin.find_files(telescope_the
 nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
 nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep() end)
-nvim.nnoremap('<leader>s', function() telescope_builtin.lsp_dynamic_workspace_symbols() end)
-nvim.nnoremap('<leader>d', function() telescope_builtin.lsp_document_symbols() end)
 
 -- this avoids loading the same colorscheme twice on startup:
 -- See https://github.com/neovim/neovim/issues/9311
@@ -331,20 +334,30 @@ nvim.nnoremap('yoh', function() toggle.echom_toggle_opt('hlsearch', 'global') en
 nvim.nnoremap('yos', function() toggle.echom_toggle_opt('spell', 'win') end)
 nvim.nnoremap('yob', function() toggle.echom_toggle_opt('scrollbind', 'win') end)
 
+-- I don't even use this
 nvim.nnoremap('<c-w>t', '<cmd>tabnew<cr>')
+-- clear line
 nvim.nnoremap('cl', '0D')
+-- why isn't this default???
 nvim.nnoremap('Y', 'y$')
+-- why isn't this default??? maybe it's because of old keyboard configuration
 nvim.nnoremap("'", '`')
+-- like <c-e> and <c-y> but for horizontal
 nvim.nnoremap('<A-l>', '2zl')
 nvim.nnoremap('<A-h>', '2zh')
 nvim.nnoremap('g8', '<cmd>norm! *N<cr>')
+-- gt and gT suck
 nvim.nnoremap('<left>', 'gT')
 nvim.nnoremap('<right>', 'gt')
+-- this gets even better if you map right shift to backspace
 nvim.nnoremap('<backspace>', '<c-^>')
+-- <leader>r replaces this for treesitter supported languages
 nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
 nvim.nnoremap('g>', '<cmd>20messages<cr>')
+-- this can be modified for f and , but I don't like it
 nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
+-- This is probably good but I couldn't get used to it
 -- nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
 
 nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
