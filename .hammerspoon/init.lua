@@ -10,9 +10,6 @@ hs.hotkey.bind({"alt", "ctrl"}, "1", function()
     spoon.KSheet:toggle()
 end)
 
-hs.loadSpoon("Emojis")
-spoon.Emojis:bindHotkeys({toggle = {{"alt", "ctrl"}, "e"}})
-
 hs.hotkey.bind({"alt", "ctrl"}, "v", function()
     hs.eventtap.keyStrokes(hs.pasteboard.getContents())
 end)

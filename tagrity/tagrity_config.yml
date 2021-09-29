@@ -3,6 +3,5 @@ extension_commands:
 default_command: ctags
 tagf: tags
 extensions_whitelist: [rb, c, h, vim, S, py, rs]
-# extensions_blacklist: [erb, html, txt]
 git_strategy: IGNORED
 excluded_paths: [vendor, node_modules]

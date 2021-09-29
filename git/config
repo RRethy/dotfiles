@@ -1,6 +1,6 @@
 [user]
     name = Adam P. Regasz-Rethy
-    email = rethy.spud@gmail.com
+    email = adam.regaszrethy@shopify.com
 [core]
     editor = nvim
     excludesfile = ~/.config/git/gitignore_global
@@ -57,3 +57,8 @@
 [credential]
 	helper = 
 	helper = store --file /opt/dev/var/private/git_credential_store
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

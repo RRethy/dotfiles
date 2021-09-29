@@ -8,7 +8,6 @@ local sourcerer  = require('sourcerer') -- sources my init.lua across Neovim ins
 
 local telescope              = require('telescope')
 local telescope_builtin      = require('telescope.builtin')
-local telescope_themes       = require('rrethy.telescope_themes')
 local telescope_action_set   = require('telescope.actions.set')
 local telescope_actions      = require('telescope.actions')
 local telescope_action_state = require('telescope.actions.state')
@@ -16,6 +15,50 @@ local telescope_action_state = require('telescope.actions.state')
 vim.g.mapleader = ' '
 
 sourcerer.setup()
+
+-- this avoids loading the same colorscheme twice on startup:
+-- See https://github.com/neovim/neovim/issues/9311
+-- vim.cmd('syntax on')
+-- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
+--   base16-schemer-dark
+local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
+local function set_colorscheme(name)
+    vim.fn.writefile({name}, base16_theme_fname)
+    vim.cmd('colorscheme '..name)
+    vim.loop.spawn('kitty', {
+        args = {
+            '@',
+            'set-colors',
+            '-c',
+            '-a',
+            string.format(vim.env.HOME..'/base16-kitty/colors/%s.conf', name)
+        }
+    }, nil)
+end
+set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
+nvim.nnoremap('<leader>c', function()
+    local colors = vim.fn.getcompletion('base16', 'color')
+    local theme = require('telescope.themes').get_dropdown()
+    require('telescope.pickers').new(theme, {
+        prompt = 'Change Base16 Colorscheme',
+        finder = require('telescope.finders').new_table {
+            results = colors
+        },
+        sorter = require('telescope.config').values.generic_sorter(theme),
+        attach_mappings = function(bufnr)
+            telescope_actions.select_default:replace(function()
+                set_colorscheme(telescope_action_state.get_selected_entry().value)
+                telescope_actions.close(bufnr)
+            end)
+            telescope_action_set.shift_selection:enhance({
+                post = function()
+                    set_colorscheme(telescope_action_state.get_selected_entry().value)
+                end
+            })
+            return true
+        end
+    }):find()
+end)
 
 require('rrethy.lsp').setup {
     servers = {
@@ -32,6 +75,8 @@ require('rrethy.lsp').setup {
             }
         },
         gopls = {},
+        sorbet = {},
+        -- solargraph = {},
         sumneko_lua = {
             cmd = {
                 nvim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
@@ -47,6 +92,12 @@ require('rrethy.lsp').setup {
                     diagnostics = {
                         enable = true,
                         globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
+                    },
+                    workspace = {
+                        library = {
+                            [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                            [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+                        },
                     },
                 },
             },
@@ -69,15 +120,13 @@ require('rrethy.lsp').setup {
                 border = 'single'
             }
         ),
-        ['textDocument/definition'] = require('rrethy.textdocument_definition').handler,
     },
 }
 
 treesitter.setup {
-    ensure_installed = {'lua', 'rust', 'go', 'ruby'}, -- haskell is causing build failures
     highlight = {
         enable = true,
-        disable = { 'latex', 'yaml', 'haskell' },
+        disable = { 'latex', 'haskell' },
     },
     playground = {
         enable = true,
@@ -116,8 +165,11 @@ treesitter.setup {
         enable = true,
         keymaps = {
             ['.'] = 'textsubjects-smart',
-            -- ['af'] = 'textsubjects-container',
+            [';'] = 'textsubjects-container-outer',
         }
+    },
+    endwise = {
+        enable = true,
     },
 }
 
@@ -149,54 +201,39 @@ telescope.setup {
 }
 telescope.load_extension('fzy_native')
 telescope.load_extension('fzf')
-nvim.nnoremap('<c-p>',     function() telescope_builtin.find_files(telescope_themes.get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(telescope_themes.get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags(telescope_themes.get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep() end)
+nvim.nnoremap('<c-p>',     function() telescope_builtin.find_files(require('telescope.themes').get_dropdown({previewer=false})) end)
+nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(require("telescope.themes").get_dropdown({previewer=false})) end)
+nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags() end)
+nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep(require("telescope.themes").get_ivy()) end)
 
--- this avoids loading the same colorscheme twice on startup:
--- See https://github.com/neovim/neovim/issues/9311
-vim.cmd('syntax on')
--- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
---   base16-schemer-dark
-local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
-local function set_colorscheme(name)
-    vim.fn.writefile({name}, base16_theme_fname)
-    vim.cmd('colorscheme '..name)
-    vim.loop.spawn('kitty', {
-        args = {
-            '@',
-            'set-colors',
-            '-c',
-            string.format(vim.env.HOME..'/base16-kitty/colors/%s.conf', name)
-        }
-    }, nil)
+-- require('lint').linters.rubocop = {
+--   cmd = 'rubocop',
+--   stdin = false,
+--   args = {}, -- list of arguments. Can contain functions with zero arguments that will be evaluated once the linter is used.
+--   stream = nil, -- ('stdout' | 'stderr') configure the stream to which the linter outputs the linting result.
+--   ignore_exitcode = false, -- set this to true if the linter exits with a code != 0 and that's considered normal.
+--   -- parser = your_parse_function
+-- }
+-- require('lint').linters_by_ft = {
+--   ruby = {'rubocop',}
+-- }
+
+vim.cmd('hi DiffAdd     guibg=#2e3c34 guifg=NONE gui=NONE')
+vim.cmd('hi DiffChange  guibg=NONE    guifg=NONE gui=NONE')
+vim.cmd('hi DiffDelete  guibg=#342426 guifg=NONE gui=NONE')
+vim.cmd('hi DiffText    guibg=#342e3c guifg=NONE gui=NONE')
+vim.cmd('hi DiffAdded   guibg=#2e3c34 guifg=NONE gui=NONE')
+
+if vim.fn.has('vim_starting') then
+    vim.opt.tabstop = 4
+    vim.opt.softtabstop = 4
+    vim.opt.shiftwidth = 4
+    vim.opt.expandtab = true
+    vim.opt.foldlevel = 999
 end
-set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
-nvim.nnoremap('<leader>c', function()
-    local colors = vim.fn.getcompletion('base16', 'color')
-    local theme = require('telescope.themes').get_dropdown()
-    require('telescope.pickers').new(theme, {
-        prompt = 'Change Base16 Colorscheme',
-        finder = require('telescope.finders').new_table {
-            results = colors
-        },
-        sorter = require('telescope.config').values.generic_sorter(theme),
-        attach_mappings = function(bufnr)
-            telescope_actions.select_default:replace(function()
-                set_colorscheme(telescope_action_state.get_selected_entry().value)
-                telescope_actions.close(bufnr)
-            end)
-            telescope_action_set.shift_selection:enhance({
-                post = function()
-                    set_colorscheme(telescope_action_state.get_selected_entry().value)
-                end
-            })
-            return true
-        end
-    }):find()
-end)
-
+vim.opt.fillchars = 'diff: '
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.inccommand = 'nosplit'
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -206,11 +243,7 @@ vim.opt.updatetime = 250
 vim.opt.showcmd = false
 vim.opt.iskeyword:append('-')
 vim.opt.hidden = true
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
 vim.opt.shiftround = true
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
 vim.opt.wrap = false
 vim.opt.mouse = 'a'
 vim.opt.sidescroll = 10
@@ -301,9 +334,11 @@ vim.opt.statusline = hotline.format {
 vim.cmd [[ augroup rrethy ]]
 vim.cmd [[ autocmd! ]]
 vim.cmd [[     autocmd FileType c,cpp,java setlocal commentstring=//\ %s ]]
+vim.cmd [[     autocmd FileType go setlocal noexpandtab ]]
 vim.cmd [[     autocmd FileType toml setlocal commentstring=#\ %s ]]
 vim.cmd [[     autocmd TextYankPost * lua require'vim.highlight'.on_yank({timeout=250}) ]]
 vim.cmd [[     autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel ]]
+-- vim.cmd [[     autocmd BufWritePost <buffer> lua require('lint').try_lint() ]]
 vim.cmd [[ augroup END ]]
 
 vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
@@ -327,14 +362,28 @@ nvim.nnoremap('yow', function()
 end)
 
 local toggle = require('rrethy.toggle')
-nvim.nnoremap('yon', function() toggle.toggle_opt('number', 'win') end)
-nvim.nnoremap('yor', function() toggle.toggle_opt('relativenumber', 'win') end)
-nvim.nnoremap('yoc', function() toggle.toggle_opt('cursorcolumn', 'win') end)
+nvim.nnoremap('yon', function()
+    if vim.wo.number then vim.wo.number = false else vim.wo.number = true end
+end)
+nvim.nnoremap('yor', function()
+    if vim.wo.relativenumber then vim.wo.relativenumber = false else vim.wo.relativenumber = true end
+end)
+nvim.nnoremap('yoc', function()
+    if vim.wo.cursorcolumn then vim.wo.cursorcolumn = false else vim.wo.cursorcolumn = true end
+end)
 nvim.nnoremap('yoh', function() toggle.echom_toggle_opt('hlsearch', 'global') end)
 nvim.nnoremap('yos', function() toggle.echom_toggle_opt('spell', 'win') end)
 nvim.nnoremap('yob', function() toggle.echom_toggle_opt('scrollbind', 'win') end)
+nvim.nnoremap('yoh', function()
+    if vim.o.hlsearch then
+        vim.o.hlsearch = false
+        vim.api.nvim_err_writeln("'hlsearch'")
+    else
+        vim.o.hlsearch = true
+        print("'hlsearch'")
+    end
+end)
 
--- I don't even use this
 nvim.nnoremap('<c-w>t', '<cmd>tabnew<cr>')
 -- clear line
 nvim.nnoremap('cl', '0D')
@@ -359,6 +408,7 @@ nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
 -- This is probably good but I couldn't get used to it
 -- nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
+nvim.nnoremap('gp', '`[v`]')
 
 nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
 nvim.nnoremap('<leader>tn', '<cmd>TestNearest<cr>')
@@ -380,6 +430,9 @@ nvim.nnoremap('<leader>6', '6gt')
 nvim.nnoremap('<leader>7', '7gt')
 nvim.nnoremap('<leader>8', '8gt')
 nvim.nnoremap('<leader>9', '9gt')
+
+nvim.nnoremap('<c-c>l', '<cmd>lclose<cr>')
+nvim.nnoremap('<c-c>c', '<cmd>cclose<cr>')
 
 nvim.nnoremap(']d', function() vim.lsp.diagnostic.goto_next() end)
 nvim.nnoremap('[d', function() vim.lsp.diagnostic.goto_prev() end)
@@ -424,6 +477,7 @@ nvim.inoremap('Kj', '<esc>')
 nvim.inoremap('kJ', '<esc>')
 nvim.inoremap('90', '()')
 nvim.inoremap('<c-a>', '<esc>gI')
+nvim.inoremap('<c-e>', '<esc>A')
 
 nvim.onoremap('A', '<cmd>normal! ggVG<cr>')
 
@@ -443,7 +497,7 @@ nvim.tmap('gt', '"<c-\\><c-n>gt"', {'expr'})
 
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
-vim.cmd('command! Yankfname let @* = expand("%:p")')
+vim.cmd('command! Yankfname let @* = expand("%")')
 vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
 vim.cmd('command! -range=% -nargs=1 Align lua require("align").align(<f-args>)')
 
@@ -466,3 +520,5 @@ vim.g.indent_blankline_char = '│'
 vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
 vim.g.indent_blankline_use_treesitter = true
 vim.g.loaded_ruby_provider = false
+vim.g.Illuminate_delay = 100
+vim.g.vimsyn_embed = 'l'

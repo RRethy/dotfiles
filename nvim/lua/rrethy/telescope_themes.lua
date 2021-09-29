@@ -1,4 +1,5 @@
 local themes = {}
+-- TODO(RRethy): Fix this
 
 function themes.get_dropdown(opts)
   opts = opts or {}

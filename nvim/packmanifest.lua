@@ -1,5 +1,6 @@
 vim.cmd('packadd! cfilter')
 use { 'RRethy/nvim-treesitter-textsubjects' }
+use { 'RRethy/nvim-treesitter-endwise' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
@@ -36,3 +37,9 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'wincent/vcs-jump' }
+use { 'mfussenegger/nvim-lint' }
+use { 'wincent/loupe' }
+use { 'shopify/vim-devilish' }
+use { 'shopify/vim-repoify' }
+use { 'hashivim/vim-terraform' }
+use { 'tpope/vim-projectionist' }

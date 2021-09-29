@@ -11,3 +11,4 @@ cscope.out
 .projections.json
 .todo.md
 .tagrity_config.yml
+.git_worktrees/
