@@ -102,82 +102,58 @@ bindkey $JUMPDIR_KEYBIND fzy_jd
 # cd, that is, change the pwd to $HOME
 eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
-# set the terminal window's colors based on the current base16 theme
-eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
-# keybinding to change my terminal colors with fzy
-COLORS_KEYBIND=' c'
-function fzy_colors {
-    if [[ ! -z $BUFFER ]]; then
-        BUFFER="$BUFFER c"
-        zle end-of-line
-        return 0
-    fi
-    local color=$(gls --color=never $HOME/base16-kitty/colors/ | grep -v "256"| fzy)
-    if [[ -z $color ]]; then
+if $command -v kitty &> /dev/null ; then
+    # set the terminal window's colors based on the current base16 theme
+    eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
+    # keybinding to change my terminal colors with fzy
+    COLORS_KEYBIND=' c'
+    function fzy_colors {
+        if [[ ! -z $BUFFER ]]; then
+            BUFFER="$BUFFER c"
+            zle end-of-line
+            return 0
+        fi
+        local color=$(gls --color=never $HOME/base16-kitty/colors/ | grep -v "256"| fzy)
+        if [[ -z $color ]]; then
+            zle reset-prompt
+            return 0
+        fi
+        BUFFER="kitty @ set-colors -c $HOME/base16-kitty/colors/$color"
+        echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
+        zle accept-line
+        local ret=$?
         zle reset-prompt
-        return 0
-    fi
-    BUFFER="kitty @ set-colors -c $HOME/base16-kitty/colors/$color"
-    echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
-    zle accept-line
-    local ret=$?
-    zle reset-prompt
-    return $ret
-}
-zle -N fzy_colors
-bindkey ' c' fzy_colors
+        return $ret
+    }
+    zle -N fzy_colors
+    bindkey ' c' fzy_colors
 
-SMART_TRIGGER='  '
-function fzy_smart {
-    # if [[ ! -z $BUFFER ]]; then
-    #     BUFFER="$BUFFER  "
-    #     zle end-of-line
-    #     return 0
-    # fi
-    if [[ "$BUFFER" = "dev cd" ]]; then
-        return fzy_dev_cd
-    elif [[ "$BUFFER" = "c" ]]; then
-        return fzy_change_colors
-    elif [[ "$BUFFER" = "jd" ]]; then
-        return fzy_jumpdir
-    elif [[ "$BUFFER" = "k config get-contexts" ]]; then
-    elif [[ "$BUFFER" = "k" ]]; then
-        return fzy_kubectl
-    fi
-}
-# zle -N fzy_smart
-# bindkey '  ' fzy_smart
+    alias showpng="kitty +kitten icat"
+    alias ssh="kitty +kitten ssh"
+fi
 
-# this rocks
 function - {
-    cd -
+    cd - &> /dev/null
 }
 
 export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
-# export JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
+export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
+export ANDROID_HOME=~/Library/Android/sdk/
 export PATH="$JAVA_HOME/bin":$PATH
 export PATH="$HOME/bin":$PATH
 export PATH="$PATH:/Users/rethy/Library/Application Support/Coursier/bin"
 export PATH="$PATH:$HOME/flutter/flutter/bin"
 export PATH="$PATH:$HOME/Downloads/apache-maven-3.6.3/bin/"
-# export ANDROIDSDK="/Users/rethy/Library/Android/sdk"
-# export ANDROIDNDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
-# export NDK="/Users/rethy/Library/Android/sdk/ndk-bundle"
-# export FLUTTER="~/Programming/flutter"
-# export ANDROID_HOME="/Users/rethy/Library/Android/sdk"
-export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
-export ANDROID_HOME=~/Library/Android/sdk/
 export PATH=/usr/local/bin:$PATH
-export PATH="$HOME/.cargo/bin/":$PATH
-export PATH="$HOME/.config/bin/":$PATH
+export PATH=$HOME/.cargo/bin/:$PATH
+export PATH=$HOME/.config/bin/:$PATH
 export PATH=/usr/local/opt/openssl/bin:$PATH
 export PATH=$GOPATH/bin/:$PATH
 export PATH=/usr/local/go/bin:$PATH
 export PATH=~/Library/Android/sdk/tools/bin/:$PATH
-export PATH=$XDG_CONFIG_HOME/git/bin/git-jump
-# export PATH=~/.rbenv/versions/2.6.3/bin:$PATH
+export PATH=$XDG_CONFIG_HOME/git/bin/git-jump:$PATH
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
@@ -191,37 +167,31 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --layout=reverse
 '
 
-source $HOME/.cargo/env
+[[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 alias src="source ~/.config/zsh/.zshrc"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 alias python="python3"
-alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
+[[ "$OSTYPE" == "darwin"* ]] && alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
 # alias wc="rwc"
 alias ls="gls --hyperlink=auto --color -p"
-alias showpng="kitty +kitten icat"
-alias ssh="kitty +kitten ssh"
 alias vs="v -S"
 alias bune="bundle"
 alias myip="curl ipinfo.io;echo ''"
 alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
-alias luamake=/Users/adam.regaszrethy/lua/lua-language-server/3rd/luamake/luamake
+if [[ -x $HOME/lua/lua-language-server/3rd/luamake/luamake ]]; then
+    alias luamake=/Users/adam.regaszrethy/lua/lua-language-server/3rd/luamake/luamake
+fi
 
-# alias k="kubectl"
-# source <(kubectl completion bash)
-
-(tagrity revive &) &> /dev/null
-
-# eval "$(lua ~/lua/z.lua/z.lua --init zsh)"
+command -v tagrity &> /dev/null && (tagrity revive &) &> /dev/null
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 
-# ^t to use fzy to fuzzy complete a path
 function fzy_path {
     LBUFFER="$LBUFFER$(fd . | fzy)"
     zle reset-prompt
@@ -229,33 +199,16 @@ function fzy_path {
 zle -N fzy_path
 bindkey '^T' fzy_path
 
-# load dev, but only if present and the shell is interactive
-# if [[ -f /opt/dev/dev.sh ]] && [[ $- == *i* ]]; then
-#     source /opt/dev/dev.sh
-# else
-#     if [ -x "$(command -v rbenv)" ]; then
-#         eval "$(rbenv init -)"
-#     fi
-# fi
-# eval $(opam env)
-
-# source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# Completion for kitty
-# kitty + complete setup zsh | source /dev/stdin
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-# export SDKMAN_DIR="/Users/rethy/.sdkman"
-# [[ -s "/Users/rethy/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/rethy/.sdkman/bin/sdkman-init.sh"
-
-[ -f /opt/dev/dev.sh ] && source /opt/dev/dev.sh
-if [ -e /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+[[ -f /opt/dev/dev.sh ]] && source /opt/dev/dev.sh
+[[ -e /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh ]] && . /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh
 
 # cloudplatform: add Shopify clusters to your local kubernetes config
-export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}/Users/adam.regaszrethy/.kube/config:/Users/adam.regaszrethy/.kube/config.shopify.cloudplatform
+export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}$HOME/.kube/config:/Users/adam.regaszrethy/.kube/config.shopify.cloudplatform
 export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
-for file in /Users/adam.regaszrethy/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do source ${file}; done
+for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
+    source ${file};
+done
 kubectl-short-aliases
-
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc'; fi
