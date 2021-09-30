@@ -176,8 +176,8 @@ alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 alias python="python3"
 [[ "$OSTYPE" == "darwin"* ]] && alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
 alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
-# alias wc="rwc"
-alias ls="gls --hyperlink=auto --color -p"
+command -v rwc &> /dev/null && alias wc="rwc"
+command -v gls &> /dev/null && alias ls="gls --hyperlink=auto --color -p"
 alias vs="v -S"
 alias bune="bundle"
 alias myip="curl ipinfo.io;echo ''"
@@ -205,10 +205,12 @@ bindkey '^T' fzy_path
 # cloudplatform: add Shopify clusters to your local kubernetes config
 export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}$HOME/.kube/config:/Users/adam.regaszrethy/.kube/config.shopify.cloudplatform
 export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
-for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
-    source ${file};
-done
-kubectl-short-aliases
+if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
+    for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
+        source ${file};
+    done
+fi
+command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc'; fi
