@@ -1,3 +1,5 @@
+#! /bin/sh
+
 XDG_CONFIG_HOME=$HOME/.config
 XDG_DATA_HOME=$HOME/.local/share
 
@@ -102,95 +104,28 @@ bindkey $JUMPDIR_KEYBIND fzy_jd
 # cd, that is, change the pwd to $HOME
 eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
-if command -v kitty &> /dev/null ; then
-    # set the terminal window's colors based on the current base16 theme
-    eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
-    # keybinding to change my terminal colors with fzy
-    COLORS_KEYBIND=' c'
-    function fzy_colors {
-        if [[ ! -z $BUFFER ]]; then
-            BUFFER="$BUFFER c"
-            zle end-of-line
-            return 0
-        fi
-        local color=$(gls --color=never $HOME/base16-kitty/colors/ | grep -v "256"| fzy)
-        if [[ -z $color ]]; then
-            zle reset-prompt
-            return 0
-        fi
-        BUFFER="kitty @ set-colors -c $HOME/base16-kitty/colors/$color"
-        echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
-        zle accept-line
-        local ret=$?
-        zle reset-prompt
-        return $ret
-    }
-    zle -N fzy_colors
-    bindkey ' c' fzy_colors
-
-    alias showpng="kitty +kitten icat"
-    alias ssh="kitty +kitten ssh"
-fi
-
 function - {
     cd - &> /dev/null
 }
 
-export GOPATH=$HOME/go
 export SSH_KEY_PATH="~/.ssh/id_rsa"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home"
-export GRADLE_COMPLETION_UNQUALIFIED_TASKS="true"
-export ANDROID_HOME=~/Library/Android/sdk/
-export PATH="$JAVA_HOME/bin":$PATH
-export PATH="$HOME/bin":$PATH
-export PATH="$PATH:/Users/rethy/Library/Application Support/Coursier/bin"
-export PATH="$PATH:$HOME/flutter/flutter/bin"
-export PATH="$PATH:$HOME/Downloads/apache-maven-3.6.3/bin/"
-export PATH=/usr/local/bin:$PATH
-export PATH=$HOME/.cargo/bin/:$PATH
-export PATH=$HOME/.config/bin/:$PATH
-export PATH=/usr/local/opt/openssl/bin:$PATH
-export PATH=$GOPATH/bin/:$PATH
-export PATH=/usr/local/go/bin:$PATH
-export PATH=~/Library/Android/sdk/tools/bin/:$PATH
+export PATH=$XDG_CONFIG_HOME/bin/:$PATH
 export PATH=$XDG_CONFIG_HOME/git/bin/git-jump:$PATH
-export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
-export PATH=$HOME/Library/Python/3.7/bin:$PATH
 
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
 export EDITOR='nvim'
 export MANPAGER="nvim -c 'set ft=man' -"
-export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/opt/openssl/lib/pkgconfig:"
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
---color=dark
---layout=reverse
-'
-
-[[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 alias src="source ~/.config/zsh/.zshrc"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
-alias python="python3"
-[[ "$OSTYPE" == "darwin"* ]] && alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
-alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
 command -v rwc &> /dev/null && alias wc="rwc"
 command -v gls &> /dev/null && alias ls="gls --hyperlink=auto --color -p"
 alias vs="v -S"
 alias bune="bundle"
 alias myip="curl ipinfo.io;echo ''"
-alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
-if [[ -x $HOME/lua/lua-language-server/3rd/luamake/luamake ]]; then
-    alias luamake=/Users/adam.regaszrethy/lua/lua-language-server/3rd/luamake/luamake
-fi
-
-command -v tagrity &> /dev/null && (tagrity revive &) &> /dev/null
-
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/opt/libxml2/lib/pkgconfig
-
-[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 
 function fzy_path {
     LBUFFER="$LBUFFER$(fd . | fzy)"
@@ -198,22 +133,3 @@ function fzy_path {
 }
 zle -N fzy_path
 bindkey '^T' fzy_path
-
-[[ -f /opt/dev/dev.sh ]] && source /opt/dev/dev.sh
-[[ -e /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh ]] && . /Users/adam.regaszrethy/.nix-profile/etc/profile.d/nix.sh
-
-# cloudplatform: add Shopify clusters to your local kubernetes config
-export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}$HOME/.kube/config:/Users/adam.regaszrethy/.kube/config.shopify.cloudplatform
-export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
-if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
-    for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
-        source ${file};
-    done
-fi
-command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/adam.regaszrethy/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
