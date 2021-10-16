@@ -153,9 +153,10 @@ export PATH=/usr/local/opt/openssl/bin:$PATH
 export PATH=$GOPATH/bin/:$PATH
 export PATH=/usr/local/go/bin:$PATH
 export PATH=~/Library/Android/sdk/tools/bin/:$PATH
-export PATH=$XDG_CONFIG_HOME/git/bin/git-jump:$PATH
+export PATH=$XDG_CONFIG_HOME/git/bin:$PATH
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
+export PATH=$HOME/src/github.com/Shopify/runtime/exe:$PATH
 
 export VISUAL='nvim'
 export LANG=en_US.UTF-8

@@ -64,11 +64,6 @@ end
 
 
 function M.setup(opts)
-    vim.lsp.util.close_preview_autocmd = function(events, winnr)
-        -- I prefer to keep the preview (especially for signature_help) open while typing in insert mode
-        events = vim.tbl_filter(function(v) return v ~= 'CursorMovedI' and v ~= 'BufLeave' end, events)
-        vim.api.nvim_command("autocmd "..table.concat(events, ',').." <buffer> ++once lua pcall(vim.api.nvim_win_close, "..winnr..", true)")
-    end
     for name, server_opts in pairs(opts.servers) do
         if not server_opts.on_attach then
             server_opts.on_attach = on_attach

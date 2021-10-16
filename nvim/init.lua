@@ -112,7 +112,8 @@ require('rrethy.lsp').setup {
     handlers = {
         ['textDocument/signatureHelp'] = vim.lsp.with(
             vim.lsp.handlers.signature_help, {
-                border = 'single'
+                border = 'single',
+                close_events = {"CursorMoved", "BufHidden", "InsertCharPre"},
             }
         ),
         ['textDocument/hover'] = vim.lsp.with(
@@ -132,12 +133,12 @@ treesitter.setup {
         enable = true,
     },
     refactor = {
-        smart_rename = {
-            enable = true,
-            keymaps = {
-                smart_rename = "<leader>r",
-            },
-        },
+        -- smart_rename = {
+        --     enable = true,
+        --     keymaps = {
+        --         smart_rename = "<leader>r",
+        --     },
+        -- },
     },
     indent = {
         enable = true -- this is pretty buggy
