@@ -9,6 +9,7 @@ ln -sf ~/dotfiles/nvim ~/.config/nvim
 ln -sf ~/dotfiles/tagrity ~/.config/tagrity
 ln -sf ~/dotfiles/zsh ~/.config/zsh
 ln -sf ~/dotfiles/.base16_theme ~/.config/.base16_theme
+tic -x -o \~/.terminfo ~/dotfiles/kitty/infocmp.txt
 
 if [[ $OSTYPE == "darwin"* ]]; then
     ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc

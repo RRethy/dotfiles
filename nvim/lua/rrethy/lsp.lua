@@ -69,10 +69,10 @@ function M.setup(opts)
             server_opts.on_attach = on_attach
         end
         if not server_opts.flags then
-            server_opts.flags = {
-                debounce_text_changes = 1250,
-            }
         end
+        server_opts.flags = {
+            debounce_text_changes = 1250,
+        }
         lsp[name].setup(server_opts)
     end
     for method, handler in pairs(opts.handlers) do

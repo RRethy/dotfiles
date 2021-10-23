@@ -156,7 +156,7 @@ export PATH=~/Library/Android/sdk/tools/bin/:$PATH
 export PATH=$XDG_CONFIG_HOME/git/bin:$PATH
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
-export PATH=$HOME/src/github.com/Shopify/runtime/exe:$PATH
+export PATH=$HOME/src/github.com/Shopify/runtime/dev_exe:$PATH
 
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
