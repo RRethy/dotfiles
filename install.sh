@@ -2,9 +2,7 @@
 
 mkdir ~/.config
 
-ln -sf ~/dotfiles/bin ~/.config/bin
 ln -sf ~/dotfiles/git ~/.config/git
-ln -sf ~/dotfiles/git-chain ~/.config/git-chain
 ln -sf ~/dotfiles/nvim ~/.config/nvim
 ln -sf ~/dotfiles/tagrity ~/.config/tagrity
 ln -sf ~/dotfiles/zsh ~/.config/zsh

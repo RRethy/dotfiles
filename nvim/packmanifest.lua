@@ -43,3 +43,4 @@ use { 'shopify/vim-devilish' }
 use { 'shopify/vim-repoify' }
 use { 'hashivim/vim-terraform' }
 use { 'tpope/vim-projectionist' }
+use { 'chipsenkbeil/distant.nvim' }
