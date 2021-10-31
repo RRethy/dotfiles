@@ -1,6 +1,3 @@
-XDG_CONFIG_HOME=$HOME/.config
-XDG_DATA_HOME=$HOME/.local/share
-
 setopt no_auto_cd
 setopt no_case_glob
 setopt extended_history
