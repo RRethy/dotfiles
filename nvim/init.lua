@@ -207,6 +207,8 @@ nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(require("telesco
 nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags() end)
 nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep(require("telescope.themes").get_ivy()) end)
 
+-- require'nvim-tree'.setup {}
+
 -- require('lint').linters.rubocop = {
 --   cmd = 'rubocop',
 --   stdin = false,
