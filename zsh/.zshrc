@@ -32,8 +32,18 @@ GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUPSTREAM="verbose"
 GIT_PS1_SHOWCOLORHINTS=1
 setopt prompt_subst
-PROMPT='%F{magenta}%? %F{blue}%~%F{white} $(__git_ps1 "%s") '
-precmd () {
+system_env() {
+    if [[ $OSTYPE == "darwin"* ]]; then
+        # macos apple icon
+        echo -n "\xee\x9c\x91"
+    elif if [[ $SPIN ]]; then
+        # spin icon
+        echo -n "\xea\xa9\x9c"
+    fi
+}
+PROMPT='%F{white}$(system_env) %F{magenta}%? %F{blue}%~%F{white} $(__git_ps1 "%s") '
+precmd() {
+    # Setup title bar to pwd tail
     print -Pn "\e]0;%1~\a"
 }
 
