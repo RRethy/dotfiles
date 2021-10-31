@@ -16,8 +16,8 @@ ln -sf ~/dotfiles/tagrity ~/.config/tagrity
 
 # zshrc setup
 mkdir -p ~/.config/zsh
-ln -sf ~/dotfiles/zsh/.zshenv ~/.config/zsh/.zshenv
-ln -sf ~/dotfiles/zsh/.zshrc ~/.config/zsh/.zshrc
+ln -sf ~/dotfiles/zsh/.zshenv ~/.zshenv
+ln -sf ~/dotfiles/zsh/.zshrc ~/.zshrc
 ln -sf ~/dotfiles/zsh/gitprompt.sh ~/.config/zsh/gitprompt.sh
 
 # specify the colours I use
