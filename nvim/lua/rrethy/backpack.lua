@@ -4,11 +4,15 @@ local echoerr = vim.api.nvim_err_writeln
 
 local M = {}
 
-local opt = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
+local opt      = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
 local manifest = vim.fn.stdpath('config')..'/packmanifest.lua'
 
+local wait_stack = {}
+local run_stack  = {}
+local MAX_TASKS = 10
+
 local function to_git_url(author, plugin)
-    if author == 'RRethy' then
+    if vim.env.BACKPACK_NO_SSH == nil and author == 'RRethy' then
         return string.format('git@github.com:%s/%s.git', author, plugin)
     else
         return string.format('https://github.com/%s/%s.git', author, plugin)
@@ -59,6 +63,22 @@ local function git_clone(name, git_url, on_success)
         end))
 end
 
+local function do_tasks()
+    while true do
+        if #wait_stack == 0 and #run_stack == 0 then
+            break
+        end
+
+        while #wait_stack > 0 and MAX_TASKS > #run_stack do
+            local data = table.remove(wait_stack)
+            git_clone(data.plugin, to_git_url(data.author, data.plugin), function()
+                vim.cmd('packadd! '..data.plugin)
+            end)
+        end
+        vim.wait(500, function() return MAX_TASKS > #run_stack end)
+    end
+end
+
 function M.setup()
     vim.fn.mkdir(opt, 'p')
 
@@ -68,20 +88,20 @@ function M.setup()
         table.insert(M.plugins, {
             plugin = plugin,
             author = author,
-            post_update = opts.post_update,
+            post_update = opts.post_update, -- TODO: handle this in git_clone
         })
         if vim.fn.isdirectory(opt..'/'..plugin) ~= 0 then
             vim.cmd('packadd! '..plugin)
         else
-            git_clone(plugin, to_git_url(author, plugin), function()
-                vim.cmd('packadd! '..plugin)
-            end)
+            table.insert(wait_stack, M.plugins[#M.plugins])
         end
     end
     if vim.fn.filereadable(manifest) ~= 0 then
         dofile(manifest)
     end
     _G.use = nil
+
+    do_tasks()
 
     vim.cmd [[ command! -nargs=1 PackAdd lua require('rrethy.backpack').pack_add(<f-args>) ]]
     vim.cmd [[ command! PackUpdate lua require('rrethy.backpack').pack_update() ]]

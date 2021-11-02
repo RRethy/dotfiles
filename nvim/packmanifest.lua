@@ -45,3 +45,4 @@ use { 'hashivim/vim-terraform' }
 use { 'tpope/vim-projectionist' }
 -- use { 'kyazdani42/nvim-tree.lua' }
 -- use { 'github/copilot.vim' }
+use { 'williamboman/nvim-lsp-installer' }
