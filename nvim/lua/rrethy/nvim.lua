@@ -32,7 +32,7 @@ local function make_map_function(mode, noremap)
 end
 
 function M.do_map_callback(id)
-    map_callbacks[id]()
+    return map_callbacks[id]()
 end
 
 M.map = make_map_function('', false)

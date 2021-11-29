@@ -180,7 +180,7 @@ export PATH=~/Library/Android/sdk/tools/bin/:$PATH
 export PATH=$XDG_CONFIG_HOME/git/bin:$PATH
 export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
-export PATH=$HOME/src/github.com/Shopify/runtime/dev_exe:$PATH
+export PATH=$HOME/src/github.com/Shopify/runtime-gem/dev_exe:$PATH
 
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
@@ -199,8 +199,8 @@ alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 alias python="python3"
-[[ "$OSTYPE" == "darwin"* ]] && alias PDFconcat="/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py -o"
-alias todo="v ~/.todo/hometodo.md -c 'cd %:p:h'"
+alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
+alias todo="kitty @ set-tab-title todo;v ~/.todo/hometodo.md -c 'cd %:p:h'"
 command -v rwc &> /dev/null && alias wc="rwc"
 if [[ $(command -v gls) ]]; then
     alias ls="gls --hyperlink=auto --color -p"

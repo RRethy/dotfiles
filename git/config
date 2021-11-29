@@ -32,11 +32,8 @@
     up = fetch --all
     b  = branch --sort=committerdate
     pls = push --force-with-lease
-    ; ca = !git add -A && git commit -av
     cc = !git add -A && git commit -av
-    ; caa = !git add -A && git commit --amend -av
     ca = !git add -A && git commit --amend -av
-    ; caas = !git add -A && git commit --amend --no-edit
     cas = !git add -A && git commit --amend --no-edit
     foor = branch
     rn = "!f() { git branch -m $1; }; f"

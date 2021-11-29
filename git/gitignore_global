@@ -8,7 +8,6 @@ doc/tags
 tags
 cscope.out
 .starscope.db
-.projections.json
 .todo.md
 .tagrity_config.yml
 .git_worktrees/

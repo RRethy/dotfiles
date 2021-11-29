@@ -406,22 +406,16 @@ nvim.nnoremap('<backspace>', '<c-^>')
 -- <leader>r replaces this for treesitter supported languages
 nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
 nvim.nnoremap('g>', '<cmd>20messages<cr>')
--- this can be modified for f and , but I don't like it
 nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
 nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
--- This is probably good but I couldn't get used to it
--- nvim.nnoremap('0', "getline('.')[0 : col('.') - 2] =~# '^\\s\\+$' ? '0' : '^'", {'silent', 'expr'})
+nvim.nnoremap(';', 'getcharsearch().forward ? ";" : ","', {'expr'})
+nvim.nnoremap(',', 'getcharsearch().forward ? "," : ";"', {'expr'})
 nvim.nnoremap('gp', '`[v`]')
 
 nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
 nvim.nnoremap('<leader>tn', '<cmd>TestNearest<cr>')
 nvim.nnoremap('<leader>tl', '<cmd>TestLast<cr>')
 nvim.nnoremap('<leader>m', '<cmd>mksession!<cr>')
--- nvim.nnoremap('<leader>r', '<cmd>redraw!<cr>')
--- nvim.nnoremap('<leader>n', '<cmd>nohlsearch<cr>')
--- nvim.nnoremap('<leader>*', '<cmd>lgrep <cword><cr>')
--- nvim.nnoremap('<leader>s', '<cmd>.!zsh<cr>')
--- nvim.xnoremap('<leader>s', "<cmd>'<,'>!zsh<cr>")
 nvim.nmap('<leader>e', ':e %%')
 
 nvim.nnoremap('<leader>1', '1gt')
