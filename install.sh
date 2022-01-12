@@ -9,7 +9,7 @@ ln -sf ~/dotfiles/git/gitignore_global ~/.config/git/gitignore_global
 ln -sf ~/dotfiles/git/bin/git-jump ~/.config/git/bin/git-jump
 
 # neovim setup
-ln -sf ~/dotfiles/nvim ~/.config/nvim
+# ln -sf ~/dotfiles/nvim ~/.config/nvim
 
 # tagrity setup
 ln -sf ~/dotfiles/tagrity ~/.config/tagrity
@@ -62,12 +62,13 @@ if [[ $SPIN ]]; then
     sudo apt-get install fd-find
 
     # install Neovim
+    sudo apt purge neovim
     sudo add-apt-repository -y ppa:neovim-ppa/unstable
-    sudo apt-get update
-    sudo apt-get install -y neovim
+    sudo apt update
+    sudo apt install -y neovim
 fi
 
 # backpack.nvim will block and install any missing plugins and block the UI
 # thread when Neovim is opened. So to install Neovim plugins we just open and
 # close it immediately.
-BACKPACK_NO_SSH=1 nvim -c "q"
+# BACKPACK_NO_SSH=1 nvim -c "q"

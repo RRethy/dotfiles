@@ -127,18 +127,21 @@ require('rrethy.lsp').setup {
 treesitter.setup {
     highlight = {
         enable = true,
-        disable = { 'latex', 'haskell' },
+        disable = { 'latex', 'haskell', 'python' },
+    },
+    endwise = {
+        enable = true,
     },
     playground = {
         enable = true,
     },
     refactor = {
-        -- smart_rename = {
-        --     enable = true,
-        --     keymaps = {
-        --         smart_rename = "<leader>r",
-        --     },
-        -- },
+        smart_rename = {
+            enable = true,
+            keymaps = {
+                smart_rename = "<leader>r",
+            },
+        },
     },
     indent = {
         enable = true -- this is pretty buggy
@@ -164,13 +167,11 @@ treesitter.setup {
     },
     textsubjects = {
         enable = true,
+        prev_selection = ',',
         keymaps = {
             ['.'] = 'textsubjects-smart',
             [';'] = 'textsubjects-container-outer',
-        }
-    },
-    endwise = {
-        enable = true,
+        },
     },
 }
 
@@ -518,4 +519,5 @@ vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
 vim.g.indent_blankline_use_treesitter = true
 vim.g.loaded_ruby_provider = false
 vim.g.Illuminate_delay = 100
+-- vim.g.Illuminate_highlightUnderCursor = 0
 vim.g.vimsyn_embed = 'l'

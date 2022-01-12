@@ -6,10 +6,10 @@ use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
 use { 'RRethy/nvim-sourcerer' }
 use { 'RRethy/vim-eunuch' }
-use {
-    'RRethy/vim-hexokinase',
-    post_update = { 'make' }
-}
+-- use {
+--     'RRethy/vim-hexokinase',
+--     post_update = { 'make' }
+-- }
 use { 'RRethy/vim-illuminate' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }

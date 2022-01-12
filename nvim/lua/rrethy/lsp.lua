@@ -68,8 +68,6 @@ function M.setup(opts)
         if not server_opts.on_attach then
             server_opts.on_attach = on_attach
         end
-        if not server_opts.flags then
-        end
         server_opts.flags = {
             debounce_text_changes = 1250,
         }

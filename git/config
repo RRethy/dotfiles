@@ -52,8 +52,8 @@
 	insteadOf = ssh://git@github.com/Shopify/
 	insteadOf = ssh://git@github.com/shopify/
 [credential]
-	helper = 
 	helper = store --file /opt/dev/var/private/git_credential_store
+    helper = spin-github
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

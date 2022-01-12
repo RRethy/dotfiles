@@ -214,6 +214,7 @@ alias dk="eval \$(history -1 | sd '^[\s\d]+\s\s(.*)\$' '\$1')"
 if [[ -x "$HOME/lua/lua-language-server/3rd/luamake/luamake" ]]; then
     alias luamake="$HOME/lua/lua-language-server/3rd/luamake/luamake"
 fi
+alias rb="ruby $XDG_CONFIG_HOME/rb/rb.rb"
 
 command -v tagrity &> /dev/null && (tagrity revive &) &> /dev/null
 
