@@ -9,7 +9,7 @@ ln -sf ~/dotfiles/git/gitignore_global ~/.config/git/gitignore_global
 ln -sf ~/dotfiles/git/bin/git-jump ~/.config/git/bin/git-jump
 
 # neovim setup
-# ln -sf ~/dotfiles/nvim ~/.config/nvim
+ln -sf ~/dotfiles/nvim ~/.config/nvim
 
 # tagrity setup
 ln -sf ~/dotfiles/tagrity ~/.config/tagrity
