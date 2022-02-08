@@ -1,5 +1,5 @@
 [platform-api]
-updated-at-production = 2021-11-26 19:55:42 UTC
+updated-at-production = 2022-02-02 19:47:28 UTC
 domain-production = production-platform.shopifysvc.com
 
 [user]
@@ -7,4 +7,10 @@ shopify_email = adam.regaszrethy@shopify.com
 
 [services_db]
 etag = valid_etag
-refresh_at = 2021-12-04 00:01:10 UTC
+refresh_at = 2022-02-03 15:43:48 UTC
+
+[default]
+account = Shopify
+
+[srcpath]
+default = /code/Shopify

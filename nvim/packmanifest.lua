@@ -6,16 +6,12 @@ use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
 use { 'RRethy/nvim-sourcerer' }
 use { 'RRethy/vim-eunuch' }
--- use {
---     'RRethy/vim-hexokinase',
---     post_update = { 'make' }
--- }
 use { 'RRethy/vim-illuminate' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }
 use { 'editorconfig/editorconfig-vim' }
 use { 'justinmk/vim-dirvish' }
-use { 'lervag/vimtex' }
+-- use { 'lervag/vimtex' }
 use { 'lukas-reineke/indent-blankline.nvim' }
 use { 'neovim/nvim-lspconfig' }
 use { 'nvim-lua/plenary.nvim' }
@@ -30,7 +26,6 @@ use { 'nvim-treesitter/nvim-treesitter-textobjects' }
 use { 'nvim-treesitter/playground' }
 use { 'romainl/vim-cool' }
 use { 'tpope/vim-abolish' }
-use { 'tpope/vim-commentary' }
 use { 'tpope/vim-fugitive' }
 use { 'tpope/vim-repeat' }
 use { 'tpope/vim-rhubarb' }
@@ -43,6 +38,7 @@ use { 'shopify/vim-devilish' }
 use { 'shopify/vim-repoify' }
 use { 'hashivim/vim-terraform' }
 use { 'tpope/vim-projectionist' }
--- use { 'kyazdani42/nvim-tree.lua' }
--- use { 'github/copilot.vim' }
 use { 'williamboman/nvim-lsp-installer' }
+use { 'rcarriga/nvim-notify' }
+use { 'numToStr/Comment.nvim' }
+use { 'kyazdani42/nvim-web-devicons' }

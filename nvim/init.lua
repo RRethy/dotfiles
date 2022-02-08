@@ -1,10 +1,10 @@
-_G.nvim = require('rrethy.nvim')
-
 require('rrethy.backpack').setup()
 
-local treesitter = require('nvim-treesitter.configs')
-local hotline    = require('hotline') -- minimal statusline/tabline lua wrapper
-local sourcerer  = require('sourcerer') -- sources my init.lua across Neovim instances
+local treesitter  = require('nvim-treesitter.configs')
+local hotline     = require('hotline') -- minimal statusline/tabline lua wrapper
+local sourcerer   = require('sourcerer') -- sources my init.lua across Neovim instances
+local notify      = require('notify')
+local lspconfig   = require('lspconfig')
 
 local telescope              = require('telescope')
 local telescope_builtin      = require('telescope.builtin')
@@ -12,15 +12,11 @@ local telescope_action_set   = require('telescope.actions.set')
 local telescope_actions      = require('telescope.actions')
 local telescope_action_state = require('telescope.actions.state')
 
+local lsp_debounce_time_ms = 1000
+
 vim.g.mapleader = ' '
 
-sourcerer.setup()
-
--- this avoids loading the same colorscheme twice on startup:
--- See https://github.com/neovim/neovim/issues/9311
--- vim.cmd('syntax on')
--- this files holds a single line describing my terminal and Neovim colorscheme. e.g.
---   base16-schemer-dark
+-- this files holds a single line describing my terminal and Neovim colorscheme. e.g. base16-schemer-dark
 local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
 local function set_colorscheme(name)
     vim.fn.writefile({name}, base16_theme_fname)
@@ -35,8 +31,7 @@ local function set_colorscheme(name)
         }
     }, nil)
 end
-set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
-nvim.nnoremap('<leader>c', function()
+vim.keymap.set('n', '<leader>c', function()
     local colors = vim.fn.getcompletion('base16', 'color')
     local theme = require('telescope.themes').get_dropdown()
     require('telescope.pickers').new(theme, {
@@ -59,70 +54,123 @@ nvim.nnoremap('<leader>c', function()
         end
     }):find()
 end)
+set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
 
-require('rrethy.lsp').setup {
-    servers = {
-        rust_analyzer = {
-            settings = {
-                ["rust-analyzer"] = {
-                    cargo = {
-                        loadOutDirsFromCheck = true
-                    },
-                    procMacro = {
-                        enable = true
-                    },
-                },
-            }
-        },
-        gopls = {},
-        sorbet = {},
-        -- solargraph = {},
-        sumneko_lua = {
-            cmd = {
-                nvim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
-                '-E',
-                nvim.env.HOME..'/lua/lua-language-server'..'/main.lua',
-            },
-            settings = {
-                Lua = {
-                    runtime = {
-                        version = 'LuaJIT',
-                        path = vim.split(package.path, ";"),
-                    },
-                    diagnostics = {
-                        enable = true,
-                        globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
-                    },
-                    workspace = {
-                        library = {
-                            [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-                            [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
-                        },
-                    },
-                },
-            },
-        },
-        vimls = {},
-        dartls = {
-            init_options = {
-                closingLabels = true,
-            },
-        },
-    },
-    handlers = {
-        ['textDocument/signatureHelp'] = vim.lsp.with(
-            vim.lsp.handlers.signature_help, {
-                border = 'single',
-                close_events = {"CursorMoved", "BufHidden", "InsertCharPre"},
-            }
-        ),
-        ['textDocument/hover'] = vim.lsp.with(
-            vim.lsp.handlers.hover, {
-                border = 'single'
-            }
-        ),
+local ERROR_ICON   = ''
+local WARNING_ICON = ''
+local INFO_ICON    = ''
+local HINT_ICON    = ''
+vim.cmd(string.format('sign define DiagnosticSignError text=%s   texthl=DiagnosticSignError linehl= numhl=', ERROR_ICON))
+vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s   texthl=DiagnosticSignWarn  linehl= numhl=', WARNING_ICON))
+vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s   texthl=DiagnosticSignInfo  linehl= numhl=', INFO_ICON))
+vim.cmd(string.format('sign define DiagnosticSignHint  text=%s   texthl=DiagnosticSignHint  linehl= numhl=', HINT_ICON))
+
+sourcerer.setup()
+
+vim.notify = notify
+vim.keymap.set('n', '<leader>n', function() notify.dismiss() end)
+
+require('Comment').setup()
+
+local function on_attach(client)
+    vim.lsp.set_log_level("debug")
+    vim.keymap.set('n', '\\d', function() vim.lsp.diagnostic.show_line_diagnostics() end, {buffer=true})
+    vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, {buffer=true})
+    vim.keymap.set('n', '<c-]>', function() vim.lsp.buf.definition() end, {buffer=true})
+    vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition() end, {buffer=true})
+    vim.keymap.set('i', '<c-s>', function() vim.lsp.buf.signature_help() end, {buffer=true})
+    vim.keymap.set('n', 'gr', function() vim.lsp.buf.rename() end, {buffer=true})
+    vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, {buffer=true})
+    vim.keymap.set('n', 'gu', function() vim.lsp.buf.references() end, {buffer=true})
+    vim.keymap.set('n', '<leader>s', function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, {buffer=true})
+    vim.keymap.set('n', '<leader>d', function() require('telescope.builtin').lsp_document_symbols() end, {buffer=true})
+    vim.api.nvim_command('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000)')
+    vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
+    require('illuminate').on_attach(client)
+end
+
+local default_lsp_config = {
+    on_attach = on_attach,
+    flags = {
+        debounce_text_changes = lsp_debounce_time_ms,
     },
 }
+lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
+    settings = {
+        ["rust-analyzer"] = {
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        },
+    },
+}))
+lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {}))
+lspconfig.sorbet.setup(vim.tbl_extend("force", default_lsp_config, {}))
+lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
+    cmd = {
+        vim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
+        '-E',
+        vim.env.HOME..'/lua/lua-language-server'..'/main.lua',
+    },
+    settings = {
+        Lua = {
+            runtime = {
+                version = 'LuaJIT',
+                path = vim.split(package.path, ";"),
+            },
+            diagnostics = {
+                enable = true,
+                globals = {'vim', 'describe', 'it', 'before_each', 'after_each', 'teardown', 'pending', 'bit'},
+            },
+            workspace = {
+                library = {
+                    [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                    [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+                },
+            },
+        },
+    },
+}))
+lspconfig.dartls.setup(vim.tbl_extend("force", default_lsp_config, {
+    init_options = {
+        closingLabels = true,
+    },
+}))
+
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+    vim.lsp.handlers['signature_help'], {
+        border = 'single',
+        close_events = {"CursorMoved", "BufHidden", "InsertCharPre"},
+    }
+)
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+    vim.lsp.handlers['hover'], {
+        border = 'single',
+    }
+)
+vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(
+    vim.lsp.handlers['textDocument/typeDefinition'], {
+        loclist = true,
+    }
+)
+vim.lsp.handlers['textDocument/declaration'] = vim.lsp.with(
+    vim.lsp.handlers['textDocument/declaration'], {
+        loclist = true,
+    }
+)
+vim.lsp.handlers['textDocument/definition'] = vim.lsp.with(
+    vim.lsp.handlers['textDocument/definition'], {
+        loclist = true,
+    }
+)
+vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(
+    vim.lsp.handlers['textDocument/implementation'], {
+        loclist = true,
+    }
+)
 
 treesitter.setup {
     highlight = {
@@ -131,6 +179,15 @@ treesitter.setup {
     },
     endwise = {
         enable = true,
+    },
+    textsubjects = {
+        enable = true,
+        prev_selection = ',',
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
+        },
     },
     playground = {
         enable = true,
@@ -143,18 +200,7 @@ treesitter.setup {
             },
         },
     },
-    indent = {
-        enable = true -- this is pretty buggy
-    },
     textobjects = {
-        select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-                ['af'] = '@function.outer',
-                ['if'] = '@function.inner',
-            }
-        },
         move = {
             enable = true,
             goto_next_start = {
@@ -163,14 +209,6 @@ treesitter.setup {
             goto_previous_start = {
                 ['[m'] = '@function.outer',
             },
-        },
-    },
-    textsubjects = {
-        enable = true,
-        prev_selection = ',',
-        keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
         },
     },
 }
@@ -187,8 +225,13 @@ telescope.setup {
         }
     },
     defaults = {
+        prompt_prefix = " ",
+        selection_caret = " ",
+        entry_prefix = " ",
+        color_devicons = true,
         mappings = {
             i = {
+                -- TODO: get previous history scrolling to work
                 ['<esc>'] = telescope_actions.close,
                 ['<c-u>'] = false, -- inoremap'd to clear line
                 ['<c-a>'] = false, -- inoremap'd to move to start of line
@@ -203,24 +246,10 @@ telescope.setup {
 }
 telescope.load_extension('fzy_native')
 telescope.load_extension('fzf')
-nvim.nnoremap('<c-p>',     function() telescope_builtin.find_files(require('telescope.themes').get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>b', function() telescope_builtin.buffers(require("telescope.themes").get_dropdown({previewer=false})) end)
-nvim.nnoremap('<leader>h', function() telescope_builtin.help_tags() end)
-nvim.nnoremap('<leader>g', function() telescope_builtin.live_grep(require("telescope.themes").get_ivy()) end)
-
--- require'nvim-tree'.setup {}
-
--- require('lint').linters.rubocop = {
---   cmd = 'rubocop',
---   stdin = false,
---   args = {}, -- list of arguments. Can contain functions with zero arguments that will be evaluated once the linter is used.
---   stream = nil, -- ('stdout' | 'stderr') configure the stream to which the linter outputs the linting result.
---   ignore_exitcode = false, -- set this to true if the linter exits with a code != 0 and that's considered normal.
---   -- parser = your_parse_function
--- }
--- require('lint').linters_by_ft = {
---   ruby = {'rubocop',}
--- }
+vim.keymap.set('n', '<c-p>',     function() telescope_builtin.find_files(require('telescope.themes').get_dropdown({previewer=false})) end)
+vim.keymap.set('n', '<leader>b', function() telescope_builtin.buffers(require("telescope.themes").get_dropdown({previewer=false})) end)
+vim.keymap.set('n', '<leader>h', function() telescope_builtin.help_tags() end)
+vim.keymap.set('n', '<leader>g', function() telescope_builtin.live_grep() end)
 
 vim.cmd('hi DiffAdd     guibg=#2e3c34 guifg=NONE gui=NONE')
 vim.cmd('hi DiffChange  guibg=NONE    guifg=NONE gui=NONE')
@@ -287,7 +316,7 @@ local function lsp_diagnostic_count(name, icon)
     if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
         return ''
     else
-        local count = vim.lsp.diagnostic.get_count(0, name)
+        local count = #vim.diagnostic.get(0, {severity=name})
         if count > 0 then
             return string.format(' %s %d ', icon, count)
         end
@@ -313,20 +342,20 @@ vim.opt.statusline = hotline.format {
     ' ',
     function()
         -- whether file is readonly
-        return vim.bo.readonly and '[readonly]' or ''
+        return vim.bo.readonly and '[readonly] ' or ''
     end,
     -- User1 hlgroup
     '%1*',
-    function() return lsp_diagnostic_count('Error', '') end,
+    function() return lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON) end,
     -- User2 hlgroup
     '%2*',
-    function() return lsp_diagnostic_count('Warning', '') end,
+    function() return lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARNING_ICON) end,
     -- User3 hlgroup
     '%3*',
-    function() return lsp_diagnostic_count('Information', '') end,
+    function() return lsp_diagnostic_count(vim.diagnostic.severity.Information, INFO_ICON) end,
     -- User4 hlgroup
     '%4*',
-    function() return lsp_diagnostic_count('Hint', '') end,
+    function() return lsp_diagnostic_count(vim.diagnostic.severity.Hint, HINT_ICON) end,
     -- Reset hlgroup
     '%0*',
     -- Right alignment
@@ -340,168 +369,173 @@ vim.cmd [[ autocmd! ]]
 vim.cmd [[     autocmd FileType c,cpp,java setlocal commentstring=//\ %s ]]
 vim.cmd [[     autocmd FileType go setlocal noexpandtab ]]
 vim.cmd [[     autocmd FileType toml setlocal commentstring=#\ %s ]]
-vim.cmd [[     autocmd TextYankPost * lua require'vim.highlight'.on_yank({timeout=250}) ]]
+vim.cmd [[     autocmd TextYankPost * lua require('vim.highlight').on_yank({timeout=250}) ]]
 vim.cmd [[     autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel ]]
 -- vim.cmd [[     autocmd BufWritePost <buffer> lua require('lint').try_lint() ]]
 vim.cmd [[ augroup END ]]
 
 vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
 
-nvim.nnoremap('<a-n>', function() require('illuminate').next_reference({wrap = true}) end)
-nvim.nnoremap('<a-p>', function() require('illuminate').next_reference({reverse = true, wrap = true}) end)
-nvim.nnoremap('<a-i>', function() require('illuminate').toggle_pause() end)
+vim.keymap.set('n', '<a-n>', function() require('illuminate').next_reference({wrap = true}) end)
+vim.keymap.set('n', '<a-p>', function() require('illuminate').next_reference({reverse = true, wrap = true}) end)
+vim.keymap.set('n', '<a-i>', function() require('illuminate').toggle_pause() end)
 
-nvim.nnoremap('yow', function()
-    if nvim.wo.wrap then
-        nvim.wo.wrap = false
-        nvim.wo.linebreak = false
-        nvim.api.nvim_buf_del_keymap(0, 'n', 'j')
-        nvim.api.nvim_buf_del_keymap(0, 'n', 'k')
+vim.keymap.set('n', 'yow', function()
+    if vim.wo.wrap then
+        vim.wo.wrap = false
+        vim.wo.linebreak = false
+        vim.keymap.del('n', 'j', {buffer=true})
+        vim.keymap.del('n', 'k', {buffer=true})
     else
-        nvim.wo.wrap = true
-        nvim.wo.linebreak = true
-        nvim.nnoremap('j', 'gj', {'buffer'})
-        nvim.nnoremap('k', 'gk', {'buffer'})
+        vim.wo.wrap = true
+        vim.wo.linebreak = true
+        vim.keymap.set('n', 'j', 'gj', {buffer=true})
+        vim.keymap.set('n', 'k', 'gk', {buffer=true})
     end
 end)
 
 local toggle = require('rrethy.toggle')
-nvim.nnoremap('yon', function()
+vim.keymap.set('n', 'yon', function()
     if vim.wo.number then vim.wo.number = false else vim.wo.number = true end
 end)
-nvim.nnoremap('yor', function()
+vim.keymap.set('n', 'yor', function()
     if vim.wo.relativenumber then vim.wo.relativenumber = false else vim.wo.relativenumber = true end
 end)
-nvim.nnoremap('yoc', function()
+vim.keymap.set('n', 'yoc', function()
     if vim.wo.cursorcolumn then vim.wo.cursorcolumn = false else vim.wo.cursorcolumn = true end
 end)
-nvim.nnoremap('yoh', function() toggle.echom_toggle_opt('hlsearch', 'global') end)
-nvim.nnoremap('yos', function() toggle.echom_toggle_opt('spell', 'win') end)
-nvim.nnoremap('yob', function() toggle.echom_toggle_opt('scrollbind', 'win') end)
-nvim.nnoremap('yoh', function()
+vim.keymap.set('n', 'yoh', function() toggle.echom_toggle_opt('hlsearch', 'global') end)
+vim.keymap.set('n', 'yos', function() toggle.echom_toggle_opt('spell', 'win') end)
+vim.keymap.set('n', 'yob', function() toggle.echom_toggle_opt('scrollbind', 'win') end)
+vim.keymap.set('n', 'yoh', function()
     if vim.o.hlsearch then
         vim.o.hlsearch = false
-        vim.api.nvim_err_writeln("'hlsearch'")
+        vim.notify("'hlsearch'", vim.diagnostic.severity.ERROR)
     else
         vim.o.hlsearch = true
-        print("'hlsearch'")
+        vim.notify("'hlsearch'", vim.diagnostic.severity.INFO)
     end
 end)
 
-nvim.nnoremap('<c-w>t', '<cmd>tabnew<cr>')
+vim.keymap.set('n', '<c-w>t', '<cmd>tabnew<cr>')
 -- clear line
-nvim.nnoremap('cl', '0D')
--- why isn't this default???
-nvim.nnoremap('Y', 'y$')
+vim.keymap.set('n', 'cl', '0D')
 -- why isn't this default??? maybe it's because of old keyboard configuration
-nvim.nnoremap("'", '`')
+vim.keymap.set('n', "'", '`')
 -- like <c-e> and <c-y> but for horizontal
-nvim.nnoremap('<A-l>', '2zl')
-nvim.nnoremap('<A-h>', '2zh')
-nvim.nnoremap('g8', '<cmd>norm! *N<cr>')
+vim.keymap.set('n', '<A-l>', '2zl')
+vim.keymap.set('n', '<A-h>', '2zh')
+vim.keymap.set('n', 'g8', '<cmd>norm! *N<cr>')
 -- gt and gT suck
-nvim.nnoremap('<left>', 'gT')
-nvim.nnoremap('<right>', 'gt')
+vim.keymap.set('n', '<left>', 'gT')
+vim.keymap.set('n', '<right>', 'gt')
 -- this gets even better if you map right shift to backspace
-nvim.nnoremap('<backspace>', '<c-^>')
+vim.keymap.set('n', '<backspace>', '<c-^>')
 -- <leader>r replaces this for treesitter supported languages
-nvim.nnoremap('<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
-nvim.nnoremap('g>', '<cmd>20messages<cr>')
-nvim.nnoremap('n', '"Nn"[v:searchforward]', {'expr'})
-nvim.nnoremap('N', '"nN"[v:searchforward]', {'expr'})
-nvim.nnoremap(';', 'getcharsearch().forward ? ";" : ","', {'expr'})
-nvim.nnoremap(',', 'getcharsearch().forward ? "," : ";"', {'expr'})
-nvim.nnoremap('gp', '`[v`]')
+vim.keymap.set('n', '<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
+vim.keymap.set('n', 'g>', '<cmd>20messages<cr>')
+vim.keymap.set('n', 'n', '"Nn"[v:searchforward]', {expr=true})
+vim.keymap.set('n', 'N', '"nN"[v:searchforward]', {expr=true})
+vim.keymap.set('n', ';', 'getcharsearch().forward ? ";" : ","', {expr=true})
+vim.keymap.set('n', ',', 'getcharsearch().forward ? "," : ";"', {expr=true})
+vim.keymap.set('n', 'gp', '`[v`]')
 
-nvim.nnoremap('<leader>tf', '<cmd>TestFile<cr>')
-nvim.nnoremap('<leader>tn', '<cmd>TestNearest<cr>')
-nvim.nnoremap('<leader>tl', '<cmd>TestLast<cr>')
-nvim.nnoremap('<leader>m', '<cmd>mksession!<cr>')
-nvim.nmap('<leader>e', ':e %%')
+vim.keymap.set('n', '<leader>tf', '<cmd>TestFile<cr>')
+vim.keymap.set('n', '<leader>tn', '<cmd>TestNearest<cr>')
+vim.keymap.set('n', '<leader>tl', '<cmd>TestLast<cr>')
+vim.keymap.set('n', '<leader>m', '<cmd>mksession!<cr>')
+vim.keymap.set('n', '<leader>e', ':e %%', {remap=true})
 
-nvim.nnoremap('<leader>1', '1gt')
-nvim.nnoremap('<leader>2', '2gt')
-nvim.nnoremap('<leader>3', '3gt')
-nvim.nnoremap('<leader>4', '4gt')
-nvim.nnoremap('<leader>5', '5gt')
-nvim.nnoremap('<leader>6', '6gt')
-nvim.nnoremap('<leader>7', '7gt')
-nvim.nnoremap('<leader>8', '8gt')
-nvim.nnoremap('<leader>9', '9gt')
+vim.keymap.set('n', '<leader>1', '1gt')
+vim.keymap.set('n', '<leader>2', '2gt')
+vim.keymap.set('n', '<leader>3', '3gt')
+vim.keymap.set('n', '<leader>4', '4gt')
+vim.keymap.set('n', '<leader>5', '5gt')
+vim.keymap.set('n', '<leader>6', '6gt')
+vim.keymap.set('n', '<leader>7', '7gt')
+vim.keymap.set('n', '<leader>8', '8gt')
+vim.keymap.set('n', '<leader>9', '9gt')
 
-nvim.nnoremap('<c-c>l', '<cmd>lclose<cr>')
-nvim.nnoremap('<c-c>c', '<cmd>cclose<cr>')
+vim.keymap.set('n', '<c-c>c', function()
+    -- TODO: This is wrong, we need to loop over the windows in the current tab
+    -- closed doesn't imply empty
+    if #vim.fn.getloclist(vim.fn.winnr()) > 0 then
+        vim.cmd('lclose')
+    elseif #vim.fn.getqflist() > 0 then
+        vim.cmd('cclose')
+    end
+end)
 
-nvim.nnoremap(']d', function() vim.lsp.diagnostic.goto_next() end)
-nvim.nnoremap('[d', function() vim.lsp.diagnostic.goto_prev() end)
+vim.keymap.set('n', ']d', function() vim.diagnostic.goto_next() end)
+vim.keymap.set('n', '[d', function() vim.diagnostic.goto_prev() end)
 
-nvim.nnoremap('[a', '<cmd>previous<cr>')
-nvim.nnoremap(']a', '<cmd>next<cr>')
-nvim.nnoremap('[A', '<cmd>first<cr>')
-nvim.nnoremap(']A', '<cmd>last<cr>')
+vim.keymap.set('n', '[a', '<cmd>previous<cr>')
+vim.keymap.set('n', ']a', '<cmd>next<cr>')
+vim.keymap.set('n', '[A', '<cmd>first<cr>')
+vim.keymap.set('n', ']A', '<cmd>last<cr>')
 
-nvim.nnoremap('[b', '<cmd>bprevious<cr>')
-nvim.nnoremap(']b', '<cmd>bnext<cr>')
-nvim.nnoremap('[B', '<cmd>bfirst<cr>')
-nvim.nnoremap(']B', '<cmd>blast<cr>')
+vim.keymap.set('n', '[b', '<cmd>bprevious<cr>')
+vim.keymap.set('n', ']b', '<cmd>bnext<cr>')
+vim.keymap.set('n', '[B', '<cmd>bfirst<cr>')
+vim.keymap.set('n', ']B', '<cmd>blast<cr>')
 
-nvim.nnoremap('<up>', '<cmd>lprevious<cr>')
-nvim.nnoremap('<down>', '<cmd>lnext<cr>')
-nvim.nnoremap('[L', '<cmd>lfirst<cr>')
-nvim.nnoremap(']L', '<cmd>llast<cr>')
+vim.keymap.set('n', '<up>', '<cmd>lprevious<cr>')
+vim.keymap.set('n', '<down>', '<cmd>lnext<cr>')
+vim.keymap.set('n', '[L', '<cmd>lfirst<cr>')
+vim.keymap.set('n', ']L', '<cmd>llast<cr>')
 
-nvim.nnoremap('[q', '<cmd>cprevious<cr>')
-nvim.nnoremap(']q', '<cmd>cnext<cr>')
-nvim.nnoremap('[Q', '<cmd>cfirst<cr>')
-nvim.nnoremap(']Q', '<cmd>clast<cr>')
+vim.keymap.set('n', '[q', '<cmd>cprevious<cr>')
+vim.keymap.set('n', ']q', '<cmd>cnext<cr>')
+vim.keymap.set('n', '[Q', '<cmd>cfirst<cr>')
+vim.keymap.set('n', ']Q', '<cmd>clast<cr>')
 
-nvim.nnoremap('[t', '<cmd>tprevious<cr>')
-nvim.nnoremap(']t', '<cmd>tnext<cr>')
-nvim.nnoremap('[T', '<cmd>tfirst<cr>')
-nvim.nnoremap(']T', '<cmd>tlast<cr>')
+vim.keymap.set('n', '[t', '<cmd>tprevious<cr>')
+vim.keymap.set('n', ']t', '<cmd>tnext<cr>')
+vim.keymap.set('n', '[T', '<cmd>tfirst<cr>')
+vim.keymap.set('n', ']T', '<cmd>tlast<cr>')
 
-nvim.nnoremap('<c-l>', '<c-w>l')
-nvim.nnoremap('<c-k>', '<c-w>k')
-nvim.nnoremap('<c-j>', '<c-w>j')
-nvim.nnoremap('<c-h>', '<c-w>h')
+vim.keymap.set('n', '<c-l>', '<c-w>l')
+vim.keymap.set('n', '<c-k>', '<c-w>k')
+vim.keymap.set('n', '<c-j>', '<c-w>j')
+vim.keymap.set('n', '<c-h>', '<c-w>h')
 
-nvim.inoremap('jk', '<esc>')
-nvim.inoremap('kj', '<esc>')
-nvim.inoremap('JK', '<esc>')
-nvim.inoremap('KJ', '<esc>')
-nvim.inoremap('Jk', '<esc>')
-nvim.inoremap('jK', '<esc>')
-nvim.inoremap('Kj', '<esc>')
-nvim.inoremap('kJ', '<esc>')
-nvim.inoremap('90', '()')
-nvim.inoremap('<c-a>', '<esc>gI')
-nvim.inoremap('<c-e>', '<esc>A')
+vim.keymap.set('i', 'jk', '<esc>')
+vim.keymap.set('i', 'kj', '<esc>')
+vim.keymap.set('i', 'JK', '<esc>')
+vim.keymap.set('i', 'KJ', '<esc>')
+vim.keymap.set('i', 'Jk', '<esc>')
+vim.keymap.set('i', 'jK', '<esc>')
+vim.keymap.set('i', 'Kj', '<esc>')
+vim.keymap.set('i', 'kJ', '<esc>')
+vim.keymap.set('i', '90', '()')
+vim.keymap.set('i', '<c-a>', '<esc>gI')
+vim.keymap.set('i', '<c-e>', '<esc>A')
 
-nvim.onoremap('A', '<cmd>normal! ggVG<cr>')
+vim.keymap.set('o', 'A', '<cmd>normal! ggVG<cr>')
 
-nvim.vnoremap('<c-g>', '"*y')
-nvim.vnoremap('gn', ':norma ')
+vim.keymap.set('v', '<c-g>', '"*y')
+vim.keymap.set('v', 'gn', ':norma ')
 
-nvim.cnoremap('%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', {'expr'})
-nvim.cnoremap('<c-a>', '<home>')
-nvim.cnoremap('<c-e>', '<end>')
-nvim.cnoremap('qq', '"q!"', {'expr'})
-nvim.cnoremap('<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', {'expr'})
-nvim.cnoremap('<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', {'expr'})
+vim.keymap.set('c', '%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', {expr=true})
+vim.keymap.set('c', '<c-a>', '<home>')
+vim.keymap.set('c', '<c-e>', '<end>')
+vim.keymap.set('c', 'qq', '"q!"', {expr=true})
+vim.keymap.set('c', '<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', {expr=true})
+vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', {expr=true})
 
-nvim.tnoremap('<esc>', '<c-\\><c-n>')
+vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
 
-nvim.tmap('gt', '"<c-\\><c-n>gt"', {'expr'})
+vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', {expr=true, remap=true})
 
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
 vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
-vim.cmd('command! -range=% -nargs=1 Align lua require("align").align(<f-args>)')
+vim.cmd('command! QlistToLlist call setloclist(winnr(), getqflist())')
 
 vim.g.qf_disable_statusline = true -- This should be the default
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
-vim.g.Illuminate_ftblacklist = {'.*'} -- Only use lsp highlighting from the plugin
+vim.g.Illuminate_ftwhitelist = {'vim'} -- Only use lsp highlighting from the plugin
 vim.g.netrw_banner = false
 vim.g.Hexokinase_highlighters = {'backgroundfull'}
 vim.g.Hexokinase_optInPatterns = {'full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla'}
@@ -519,5 +553,4 @@ vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
 vim.g.indent_blankline_use_treesitter = true
 vim.g.loaded_ruby_provider = false
 vim.g.Illuminate_delay = 100
--- vim.g.Illuminate_highlightUnderCursor = 0
 vim.g.vimsyn_embed = 'l'

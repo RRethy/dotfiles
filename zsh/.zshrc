@@ -170,6 +170,7 @@ function - {
 export GOPATH="$HOME/go"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export PATH="$PATH:$HOME/bin"
+export PATH="$PATH:$XDG_CONFIG_HOME/bin"
 export PATH="$PATH:/usr/local/bin"
 export PATH=$HOME/.cargo/bin/:$PATH
 export PATH=$HOME/.config/bin/:$PATH
@@ -198,7 +199,7 @@ alias src="source ~/.config/zsh/.zshrc"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
-alias python="python3"
+# alias python="python3"
 alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
 alias todo="kitty @ set-tab-title todo;v ~/.todo/hometodo.md -c 'cd %:p:h'"
 command -v rwc &> /dev/null && alias wc="rwc"
@@ -239,6 +240,10 @@ if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
     done
 fi
 command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
+
+function list_clusters {
+    k config view -o jsonpath='{.contexts}' | jq -Rc 'fromjson? | .[].name' | sed -En 's/"((apps|tierstaging)-.*)"/\1/p'
+}
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi

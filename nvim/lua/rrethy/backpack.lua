@@ -1,7 +1,3 @@
--- TODO add a log file to diagnose errors
-
-local echoerr = vim.api.nvim_err_writeln
-
 local M = {}
 
 local opt      = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
@@ -43,9 +39,9 @@ local function git_pull(name, on_success)
         cwd = dir,
     }, vim.schedule_wrap(function(code)
             if code == 0 then
-                on_success(name)
+                on_success()
             else
-                echoerr(name..' pulled unsuccessfully')
+                vim.notify(name..' pulled unsuccessfully', vim.log.levels.ERROR)
             end
         end))
 end
@@ -56,39 +52,38 @@ local function git_clone(name, git_url, on_success)
         cwd = opt,
     }, vim.schedule_wrap(function(code)
             if code == 0 then
-                on_success(name)
+                on_success()
             else
-                echoerr(name..' cloned unsuccessfully')
+                vim.notify(name..' cloned unsuccessfully', vim.log.levels.ERROR)
             end
         end))
 end
 
 local function do_tasks()
+    if #wait_stack == 0 and #run_stack == 0 then return end
     while true do
-        if #wait_stack == 0 and #run_stack == 0 then
-            break
-        end
-
         while #wait_stack > 0 and MAX_TASKS > #run_stack do
             local data = table.remove(wait_stack)
             git_clone(data.plugin, to_git_url(data.author, data.plugin), function()
                 vim.cmd('packadd! '..data.plugin)
             end)
         end
+        if #wait_stack == 0 and #run_stack == 0 then break end
         vim.wait(500, function() return MAX_TASKS > #run_stack end)
     end
+    vim.notify("Finished backpack tasks")
 end
 
 function M.setup()
     vim.fn.mkdir(opt, 'p')
 
     M.plugins = {}
+    local tmp = _G.use
     _G.use = function(opts)
         local _, _, author, plugin = string.find(opts[1], '^([^ /]+)/([^ /]+)$')
         table.insert(M.plugins, {
             plugin = plugin,
             author = author,
-            post_update = opts.post_update, -- TODO: handle this in git_clone
         })
         if vim.fn.isdirectory(opt..'/'..plugin) ~= 0 then
             vim.cmd('packadd! '..plugin)
@@ -99,7 +94,7 @@ function M.setup()
     if vim.fn.filereadable(manifest) ~= 0 then
         dofile(manifest)
     end
-    _G.use = nil
+    _G.use = tmp
 
     do_tasks()
 
@@ -133,21 +128,8 @@ end
 
 function M.pack_update()
     for _, data in ipairs(M.plugins) do
-        local on_success = function(plugin)
-            vim.cmd('packadd '..plugin)
-            if data.post_update then
-                local dir = opt..'/'..plugin
-                if type(data.post_update) == 'function' then
-                    data.post_update(dir)
-                elseif type(data.post_update) == 'table' then
-                    vim.loop.spawn(data.post_update[1], { args = data.post_update.args, cwd = dir },
-                        vim.schedule_wrap(function(code)
-                            if code ~= 0 then
-                                vim.api.nvim_err_writeln(string.format('Failed to run %s', vim.inspect(data.post_update)))
-                            end
-                        end))
-                end
-            end
+        local on_success = function()
+            vim.cmd('packadd '..data.plugin)
         end
         if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
             git_pull(data.plugin, on_success)
