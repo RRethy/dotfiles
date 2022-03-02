@@ -5,7 +5,6 @@
 [core]
     editor = nvim
     excludesfile = ~/.config/git/gitignore_global
-    commitGraph = true
 [commit]
     verbose = true
 [push]
@@ -21,7 +20,6 @@
     cmd = nvim -f -c "Gdiff" "$MERGED"
 [diff]
     tool = nvimdiff
-    algorithm = patience
 [difftool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE
     trustExitCode = true
@@ -43,20 +41,10 @@
     cp = cherry-pick
     cob = !git checkout $(git branch --sort=committerdate | fzf)
     d = diff --cached --diff-algorithm=minimal
-[gc]
-    writeCommitGraph = true
-[protocol]
-    version = 2
-[url "https://github.com/Shopify/"]
-    insteadOf = git@github.com:Shopify/
-    insteadOf = git@github.com:shopify/
-    insteadOf = ssh://git@github.com/Shopify/
-    insteadOf = ssh://git@github.com/shopify/
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
-[credential]
-	helper = 
-	helper = store --file /opt/dev/var/private/git_credential_store
+[include]
+	path = /Users/adam.regaszrethy/.config/dev/gitconfig

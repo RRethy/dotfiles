@@ -4,11 +4,11 @@ use { 'RRethy/nvim-treesitter-endwise' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
-use { 'RRethy/nvim-sourcerer' }
 use { 'RRethy/vim-eunuch' }
 use { 'RRethy/vim-illuminate' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }
+use { 'RRethy/nvim-shopify-dev' }
 use { 'editorconfig/editorconfig-vim' }
 use { 'justinmk/vim-dirvish' }
 -- use { 'lervag/vimtex' }
@@ -34,7 +34,6 @@ use { 'vim-test/vim-test' }
 use { 'wincent/vcs-jump' }
 use { 'mfussenegger/nvim-lint' }
 use { 'wincent/loupe' }
-use { 'shopify/vim-devilish' }
 use { 'shopify/vim-repoify' }
 use { 'hashivim/vim-terraform' }
 use { 'tpope/vim-projectionist' }
@@ -42,3 +41,4 @@ use { 'williamboman/nvim-lsp-installer' }
 use { 'rcarriga/nvim-notify' }
 use { 'numToStr/Comment.nvim' }
 use { 'kyazdani42/nvim-web-devicons' }
+use { 'windwp/nvim-autopairs' }

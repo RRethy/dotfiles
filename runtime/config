@@ -6,8 +6,8 @@ domain-production = production-platform.shopifysvc.com
 shopify_email = adam.regaszrethy@shopify.com
 
 [services_db]
-etag = valid_etag
-refresh_at = 2022-02-03 15:43:48 UTC
+etag = CJWbhP+bjN8CEAE=
+refresh_at = 2022-02-25 22:21:12 UTC
 
 [default]
 account = Shopify

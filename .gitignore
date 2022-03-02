@@ -16,3 +16,5 @@ wikidates/
 git-chain/
 irb/
 cli-kit/
+spin/
+zsh/.zcompdump

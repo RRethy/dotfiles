@@ -1,26 +1,53 @@
 require('rrethy.backpack').setup()
 
 local treesitter  = require('nvim-treesitter.configs')
-local hotline     = require('hotline') -- minimal statusline/tabline lua wrapper
-local sourcerer   = require('sourcerer') -- sources my init.lua across Neovim instances
+local hotline     = require('hotline')
 local notify      = require('notify')
 local lspconfig   = require('lspconfig')
 
 local telescope              = require('telescope')
 local telescope_builtin      = require('telescope.builtin')
-local telescope_action_set   = require('telescope.actions.set')
 local telescope_actions      = require('telescope.actions')
-local telescope_action_state = require('telescope.actions.state')
-
-local lsp_debounce_time_ms = 1000
 
 vim.g.mapleader = ' '
 
+if File_watchers == nil then
+    File_watchers = {}
+end
+local watch_file_augroup = 'watch_file_augroup'
+vim.api.nvim_create_augroup(watch_file_augroup, {clear=true})
+vim.api.nvim_create_autocmd('VimLeave', {
+    group = watch_file_augroup,
+    callback = function()
+        for _, watcher in pairs(File_watchers) do
+            watcher:stop()
+        end
+    end
+})
+local function watch_file(fname, cb, time)
+    if File_watchers[fname] then
+        File_watchers[fname]:stop()
+        File_watchers[fname] = nil
+    end
+
+    File_watchers[fname] = vim.loop.new_fs_poll()
+    File_watchers[fname]:start(fname, time, vim.schedule_wrap(cb))
+end
+
+local init_lua = vim.fn.stdpath('config')..'/init.lua'
+watch_file(init_lua, function()
+    dofile(init_lua)
+    vim.notify('Reloaded init.lua', vim.diagnostic.severity.INFO)
+end, 500)
+
 -- this files holds a single line describing my terminal and Neovim colorscheme. e.g. base16-schemer-dark
 local base16_theme_fname = vim.fn.expand(vim.env.XDG_CONFIG_HOME..'/.base16_theme')
-local function set_colorscheme(name)
+if Colorscheme_counter == nil then
+    Colorscheme_counter = 0
+end
+local function notify_colorscheme_changes(name)
+    Colorscheme_counter = Colorscheme_counter + 1
     vim.fn.writefile({name}, base16_theme_fname)
-    vim.cmd('colorscheme '..name)
     vim.loop.spawn('kitty', {
         args = {
             '@',
@@ -31,32 +58,45 @@ local function set_colorscheme(name)
         }
     }, nil)
 end
+watch_file(base16_theme_fname, function()
+    if Colorscheme_counter > 0 then
+        Colorscheme_counter = Colorscheme_counter - 1
+    else
+        local colorscheme = vim.fn.readfile(base16_theme_fname)[1]
+        vim.cmd('colorscheme '..colorscheme)
+        vim.notify('colorscheme: '..colorscheme, vim.diagnostic.severity.INFO)
+    end
+end, 500)
 vim.keymap.set('n', '<leader>c', function()
     local colors = vim.fn.getcompletion('base16', 'color')
     local theme = require('telescope.themes').get_dropdown()
+    local telescope_action_set   = require('telescope.actions.set')
+    local telescope_action_state = require('telescope.actions.state')
     require('telescope.pickers').new(theme, {
-        prompt = 'Change Base16 Colorscheme',
-        finder = require('telescope.finders').new_table {
-            results = colors
-        },
+        prompt = 'Change Base16 Colorscheme', -- TODO this prompt doesn't work
+        finder = require('telescope.finders').new_table({results = colors}),
         sorter = require('telescope.config').values.generic_sorter(theme),
         attach_mappings = function(bufnr)
             telescope_actions.select_default:replace(function()
-                set_colorscheme(telescope_action_state.get_selected_entry().value)
+                local name = telescope_action_state.get_selected_entry().value
+                vim.cmd('colorscheme '..name)
+                notify_colorscheme_changes(name)
                 telescope_actions.close(bufnr)
             end)
             telescope_action_set.shift_selection:enhance({
                 post = function()
-                    set_colorscheme(telescope_action_state.get_selected_entry().value)
+                    local name = telescope_action_state.get_selected_entry().value
+                    vim.cmd('colorscheme '..name)
+                    notify_colorscheme_changes(name)
                 end
             })
             return true
         end
     }):find()
 end)
-set_colorscheme(vim.fn.readfile(base16_theme_fname)[1])
+vim.cmd('colorscheme '..vim.fn.readfile(base16_theme_fname)[1])
 
-local ERROR_ICON   = ''
+local ERROR_ICON   = ''
 local WARNING_ICON = ''
 local INFO_ICON    = ''
 local HINT_ICON    = ''
@@ -65,14 +105,16 @@ vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s   texthl=Diagnost
 vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s   texthl=DiagnosticSignInfo  linehl= numhl=', INFO_ICON))
 vim.cmd(string.format('sign define DiagnosticSignHint  text=%s   texthl=DiagnosticSignHint  linehl= numhl=', HINT_ICON))
 
-sourcerer.setup()
-
 vim.notify = notify
 vim.keymap.set('n', '<leader>n', function() notify.dismiss() end)
 
 require('Comment').setup()
 
-local function on_attach(client)
+require('nvim-autopairs').setup({
+    check_ts = true,
+})
+
+local function on_attach(client, bufnr)
     vim.lsp.set_log_level("debug")
     vim.keymap.set('n', '\\d', function() vim.lsp.diagnostic.show_line_diagnostics() end, {buffer=true})
     vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, {buffer=true})
@@ -84,7 +126,15 @@ local function on_attach(client)
     vim.keymap.set('n', 'gu', function() vim.lsp.buf.references() end, {buffer=true})
     vim.keymap.set('n', '<leader>s', function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, {buffer=true})
     vim.keymap.set('n', '<leader>d', function() require('telescope.builtin').lsp_document_symbols() end, {buffer=true})
-    vim.api.nvim_command('autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 3000)')
+    local lsp_augroup = 'rrethy_lsp_augroup'..bufnr
+    vim.api.nvim_create_augroup(lsp_augroup, {clear=true})
+    vim.api.nvim_create_autocmd('BufWritePre', {
+        group = lsp_augroup,
+        buffer = bufnr,
+        callback = function()
+            vim.lsp.buf.formatting_sync(nil, 3000)
+        end
+    })
     vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
     require('illuminate').on_attach(client)
 end
@@ -92,7 +142,7 @@ end
 local default_lsp_config = {
     on_attach = on_attach,
     flags = {
-        debounce_text_changes = lsp_debounce_time_ms,
+        debounce_text_changes = 500,
     },
 }
 lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
@@ -107,8 +157,8 @@ lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
         },
     },
 }))
-lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {}))
-lspconfig.sorbet.setup(vim.tbl_extend("force", default_lsp_config, {}))
+lspconfig.gopls.setup(default_lsp_config)
+lspconfig.sorbet.setup(default_lsp_config)
 lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
     cmd = {
         vim.env.HOME..'/lua/lua-language-server'..'/bin/macOS/lua-language-server',
@@ -149,6 +199,11 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
     vim.lsp.handlers['hover'], {
         border = 'single',
+    }
+)
+vim.lsp.handlers['textDocument/references'] = vim.lsp.with(
+    vim.lsp.handlers['textDocument/references'], {
+        loclist = true,
     }
 )
 vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(
@@ -225,7 +280,7 @@ telescope.setup {
         }
     },
     defaults = {
-        prompt_prefix = " ",
+        prompt_prefix = " ",
         selection_caret = " ",
         entry_prefix = " ",
         color_devicons = true,
@@ -364,15 +419,32 @@ vim.opt.statusline = hotline.format {
     ' %20(%-9(%4l/%-4L%) %5( %-3c%) %-4(%3p%%%)%) ',
 }
 
-vim.cmd [[ augroup rrethy ]]
-vim.cmd [[ autocmd! ]]
-vim.cmd [[     autocmd FileType c,cpp,java setlocal commentstring=//\ %s ]]
-vim.cmd [[     autocmd FileType go setlocal noexpandtab ]]
-vim.cmd [[     autocmd FileType toml setlocal commentstring=#\ %s ]]
-vim.cmd [[     autocmd TextYankPost * lua require('vim.highlight').on_yank({timeout=250}) ]]
-vim.cmd [[     autocmd BufNewFile *.tex 0r!cat ~/.config/nvim/skeletons/latex.skel ]]
--- vim.cmd [[     autocmd BufWritePost <buffer> lua require('lint').try_lint() ]]
-vim.cmd [[ augroup END ]]
+local init_lua_augroup = 'init_lua_augroup'
+vim.api.nvim_create_augroup(init_lua_augroup, {clear=true})
+vim.api.nvim_create_autocmd('FileType', {
+    group = init_lua_augroup,
+    pattern = {'c', 'cpp', 'java'},
+    callback = function() vim.bo.commentstring = '// %s' end,
+})
+vim.api.nvim_create_autocmd('FileType', {
+    group = init_lua_augroup,
+    pattern = {'go'},
+    callback = function() vim.bo.expandtab = false end,
+})
+vim.api.nvim_create_autocmd('FileType', {
+    group = init_lua_augroup,
+    pattern = {'toml'},
+    callback = function() vim.bo.commentstring = '# %s' end,
+})
+vim.api.nvim_create_autocmd('BufNewFile', {
+    group = init_lua_augroup,
+    pattern = {'tex'},
+    command = '0r!cat ~/.config/nvim/skeletons/latex.skel',
+})
+vim.api.nvim_create_autocmd('TextYankPost', {
+    group = init_lua_augroup,
+    callback = function() vim.highlight.on_yank({timeout=250}) end,
+})
 
 vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
 
@@ -394,7 +466,6 @@ vim.keymap.set('n', 'yow', function()
     end
 end)
 
-local toggle = require('rrethy.toggle')
 vim.keymap.set('n', 'yon', function()
     if vim.wo.number then vim.wo.number = false else vim.wo.number = true end
 end)
@@ -404,9 +475,24 @@ end)
 vim.keymap.set('n', 'yoc', function()
     if vim.wo.cursorcolumn then vim.wo.cursorcolumn = false else vim.wo.cursorcolumn = true end
 end)
-vim.keymap.set('n', 'yoh', function() toggle.echom_toggle_opt('hlsearch', 'global') end)
-vim.keymap.set('n', 'yos', function() toggle.echom_toggle_opt('spell', 'win') end)
-vim.keymap.set('n', 'yob', function() toggle.echom_toggle_opt('scrollbind', 'win') end)
+vim.keymap.set('n', 'yos', function()
+    if vim.wo.spell then
+        vim.wo.spell = false
+        vim.notify("'spell'", vim.diagnostic.severity.ERROR)
+    else
+        vim.wo.spell = true
+        vim.notify("'spell'", vim.diagnostic.severity.INFO)
+    end
+end)
+vim.keymap.set('n', 'yos', function()
+    if vim.wo.scrollbind then
+        vim.wo.scrollbind = false
+        vim.notify("'scrollbind'", vim.diagnostic.severity.ERROR)
+    else
+        vim.wo.scrollbind = true
+        vim.notify("'scrollbind'", vim.diagnostic.severity.INFO)
+    end
+end)
 vim.keymap.set('n', 'yoh', function()
     if vim.o.hlsearch then
         vim.o.hlsearch = false
@@ -456,7 +542,7 @@ vim.keymap.set('n', '<leader>7', '7gt')
 vim.keymap.set('n', '<leader>8', '8gt')
 vim.keymap.set('n', '<leader>9', '9gt')
 
-vim.keymap.set('n', '<c-c>c', function()
+vim.keymap.set('n', '<c-c><c-c>', function()
     -- TODO: This is wrong, we need to loop over the windows in the current tab
     -- closed doesn't imply empty
     if #vim.fn.getloclist(vim.fn.winnr()) > 0 then
