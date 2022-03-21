@@ -18,3 +18,4 @@ irb/
 cli-kit/
 spin/
 zsh/.zcompdump
+runtime/
