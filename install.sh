@@ -30,8 +30,8 @@ tic -x -o \~/.terminfo ~/dotfiles/kitty/infocmp.txt
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 # install some of my own command line tools
-cargo install --git https://github.com/RRethy/rwc
-cargo install --git https://github.com/RRethy/tcount.git
+# cargo install --git https://github.com/RRethy/rwc
+# cargo install --git https://github.com/RRethy/tcount.git
 
 # OSX specific setup
 if [[ $OSTYPE == "darwin"* ]]; then
@@ -62,10 +62,10 @@ if [[ $SPIN ]]; then
     sudo apt-get install fd-find
 
     # install Neovim
-    sudo apt purge neovim
-    sudo add-apt-repository -y ppa:neovim-ppa/unstable
-    sudo apt update
-    sudo apt install -y neovim
+    # sudo apt purge neovim
+    # sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    # sudo apt update
+    # sudo apt install -y neovim
 fi
 
 # backpack.nvim will block and install any missing plugins and block the UI

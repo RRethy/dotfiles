@@ -31,7 +31,7 @@ local function parse_url(url)
     return git_url, username, plugin
 end
 
-local function git_pull(name, on_success)
+local function git_pull(name, on_success, on_complete)
     local dir = opt..name
     local branch = vim.fn.system("git -C "..dir.." branch --show-current | tr -d '\n'")
     vim.loop.spawn('git', {
@@ -43,10 +43,13 @@ local function git_pull(name, on_success)
             else
                 vim.notify(name..' pulled unsuccessfully', vim.log.levels.ERROR)
             end
+            if on_complete then
+                on_complete()
+            end
         end))
 end
 
-local function git_clone(name, git_url, on_success)
+local function git_clone(name, git_url, on_success, on_complete)
     vim.loop.spawn('git', {
         args = { 'clone', '--depth=1', git_url },
         cwd = opt,
@@ -56,6 +59,9 @@ local function git_clone(name, git_url, on_success)
             else
                 vim.notify(name..' cloned unsuccessfully', vim.log.levels.ERROR)
             end
+            if on_complete then
+                on_complete()
+            end
         end))
 end
 
@@ -64,9 +70,13 @@ local function do_tasks()
     while true do
         while #wait_stack > 0 and MAX_TASKS > #run_stack do
             local data = table.remove(wait_stack)
-            git_clone(data.plugin, to_git_url(data.author, data.plugin), function()
-                vim.cmd('packadd! '..data.plugin)
-            end)
+            git_clone(
+                data.plugin,
+                to_git_url(data.author, data.plugin),
+                function()
+                    vim.cmd('packadd! '..data.plugin)
+                end
+            )
         end
         if #wait_stack == 0 and #run_stack == 0 then break end
         vim.wait(500, function() return MAX_TASKS > #run_stack end)
@@ -127,14 +137,19 @@ function M.pack_add(url)
 end
 
 function M.pack_update()
+    local updated = 0
     for _, data in ipairs(M.plugins) do
         local on_success = function()
             vim.cmd('packadd '..data.plugin)
         end
+        local on_complete = function()
+            updated = updated + 1
+            print(string.format('Backpack: %d/%d', updated, #M.plugins))
+        end
         if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
-            git_pull(data.plugin, on_success)
+            git_pull(data.plugin, on_success, on_complete)
         else
-            git_clone(data.plugin, git_clone, on_success)
+            git_clone(data.plugin, git_clone, on_success, on_complete)
         end
     end
 end

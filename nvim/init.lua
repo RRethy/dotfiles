@@ -193,7 +193,7 @@ lspconfig.dartls.setup(vim.tbl_extend("force", default_lsp_config, {
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
     vim.lsp.handlers['signature_help'], {
         border = 'single',
-        close_events = {"CursorMoved", "BufHidden", "InsertCharPre"},
+        close_events = {"CursorMoved", "BufHidden"},
     }
 )
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
@@ -367,6 +367,7 @@ vim.opt.foldnestmax = 4
 vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
+vim.opt.laststatus = 3
 local function lsp_diagnostic_count(name, icon)
     if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
         return ''
@@ -420,22 +421,31 @@ vim.opt.statusline = hotline.format {
 }
 
 local init_lua_augroup = 'init_lua_augroup'
+local function on_ft(ft, cb)
+    vim.api.nvim_create_autocmd('FileType', {
+        group = init_lua_augroup,
+        pattern = ft,
+        callback = cb,
+    })
+end
 vim.api.nvim_create_augroup(init_lua_augroup, {clear=true})
-vim.api.nvim_create_autocmd('FileType', {
-    group = init_lua_augroup,
-    pattern = {'c', 'cpp', 'java'},
-    callback = function() vim.bo.commentstring = '// %s' end,
-})
-vim.api.nvim_create_autocmd('FileType', {
-    group = init_lua_augroup,
-    pattern = {'go'},
-    callback = function() vim.bo.expandtab = false end,
-})
-vim.api.nvim_create_autocmd('FileType', {
-    group = init_lua_augroup,
-    pattern = {'toml'},
-    callback = function() vim.bo.commentstring = '# %s' end,
-})
+on_ft('rust', function()
+    vim.cmd('compiler cargo')
+end)
+on_ft('ruby', function()
+    vim.bo.tabstop = 2
+    vim.bo.softtabstop = 2
+    vim.bo.shiftwidth = 2
+end)
+on_ft({'c', 'cpp', 'java'}, function()
+    vim.bo.commentstring = '// %s'
+end)
+on_ft('go', function()
+    vim.bo.expandtab = false
+end)
+on_ft('toml', function()
+    vim.bo.commentstring = '# %s'
+end)
 vim.api.nvim_create_autocmd('BufNewFile', {
     group = init_lua_augroup,
     pattern = {'tex'},
@@ -443,7 +453,9 @@ vim.api.nvim_create_autocmd('BufNewFile', {
 })
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = init_lua_augroup,
-    callback = function() vim.highlight.on_yank({timeout=250}) end,
+    callback = function()
+        vim.highlight.on_yank({timeout=250})
+    end,
 })
 
 vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
