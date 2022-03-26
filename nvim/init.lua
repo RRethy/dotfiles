@@ -1,13 +1,12 @@
 require('rrethy.backpack').setup()
 
-local treesitter  = require('nvim-treesitter.configs')
-local hotline     = require('hotline')
-local notify      = require('notify')
-local lspconfig   = require('lspconfig')
-
-local telescope              = require('telescope')
-local telescope_builtin      = require('telescope.builtin')
-local telescope_actions      = require('telescope.actions')
+local treesitter = require('nvim-treesitter.configs')
+local hotline = require('hotline')
+local notify = require('notify')
+local lspconfig = require('lspconfig')
+local telescope = require('telescope')
+local telescope_builtin = require('telescope.builtin')
+local telescope_actions = require('telescope.actions')
 
 vim.g.mapleader = ' '
 
