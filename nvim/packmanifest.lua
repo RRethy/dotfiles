@@ -39,6 +39,5 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'williamboman/nvim-lsp-installer' }
-use { 'wincent/loupe' }
-use { 'wincent/vcs-jump' }
+-- use { 'wincent/loupe' }
 use { 'windwp/nvim-autopairs' }

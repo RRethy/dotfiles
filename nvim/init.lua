@@ -36,7 +36,7 @@ end
 local init_lua = vim.fn.stdpath('config')..'/init.lua'
 watch_file(init_lua, function()
     dofile(init_lua)
-    vim.notify('Reloaded init.lua', vim.diagnostic.severity.INFO)
+    vim.notify('Reloaded init.lua', vim.lsp.log_levels.INFO)
 end, 500)
 
 -- this files holds a single line describing my terminal and Neovim colorscheme. e.g. base16-schemer-dark
@@ -63,7 +63,7 @@ watch_file(base16_theme_fname, function()
     else
         local colorscheme = vim.fn.readfile(base16_theme_fname)[1]
         vim.cmd('colorscheme '..colorscheme)
-        vim.notify('colorscheme: '..colorscheme, vim.diagnostic.severity.INFO)
+        vim.notify('colorscheme: '..colorscheme, vim.lsp.log_levels.INFO)
     end
 end, 500)
 vim.keymap.set('n', '<leader>c', function()
@@ -106,6 +106,15 @@ vim.cmd(string.format('sign define DiagnosticSignHint  text=%s   texthl=Diagnost
 
 vim.notify = notify
 vim.keymap.set('n', '<leader>n', function() notify.dismiss() end)
+vim.notify.setup({
+    icons = {
+        ERROR = ERROR_ICON,
+        WARN = WARNING_ICON,
+        INFO = INFO_ICON,
+        DEBUG = HINT_ICON,
+        TRACE = HINT_ICON,
+    }
+})
 
 require('Comment').setup()
 
@@ -131,7 +140,9 @@ local function on_attach(client, bufnr)
         group = lsp_augroup,
         buffer = bufnr,
         callback = function()
-            vim.lsp.buf.formatting_sync(nil, 3000)
+            if not DISABLE_FMT then
+                vim.lsp.buf.formatting_sync(nil, 3000)
+            end
         end
     })
     vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -489,28 +500,28 @@ end)
 vim.keymap.set('n', 'yos', function()
     if vim.wo.spell then
         vim.wo.spell = false
-        vim.notify("'spell'", vim.diagnostic.severity.ERROR)
+        vim.notify("'spell'", vim.lsp.log_levels.ERROR)
     else
         vim.wo.spell = true
-        vim.notify("'spell'", vim.diagnostic.severity.INFO)
+        vim.notify("'spell'", vim.lsp.log_levels.INFO)
     end
 end)
 vim.keymap.set('n', 'yos', function()
     if vim.wo.scrollbind then
         vim.wo.scrollbind = false
-        vim.notify("'scrollbind'", vim.diagnostic.severity.ERROR)
+        vim.notify("'scrollbind'", vim.lsp.log_levels.ERROR)
     else
         vim.wo.scrollbind = true
-        vim.notify("'scrollbind'", vim.diagnostic.severity.INFO)
+        vim.notify("'scrollbind'", vim.lsp.log_levels.INFO)
     end
 end)
 vim.keymap.set('n', 'yoh', function()
     if vim.o.hlsearch then
         vim.o.hlsearch = false
-        vim.notify("'hlsearch'", vim.diagnostic.severity.ERROR)
+        vim.notify("'hlsearch'", vim.lsp.log_levels.ERROR)
     else
         vim.o.hlsearch = true
-        vim.notify("'hlsearch'", vim.diagnostic.severity.INFO)
+        vim.notify("'hlsearch'", vim.lsp.log_levels.INFO)
     end
 end)
 
@@ -604,7 +615,6 @@ vim.keymap.set('i', 'Jk', '<esc>')
 vim.keymap.set('i', 'jK', '<esc>')
 vim.keymap.set('i', 'Kj', '<esc>')
 vim.keymap.set('i', 'kJ', '<esc>')
-vim.keymap.set('i', '90', '()')
 vim.keymap.set('i', '<c-a>', '<esc>gI')
 vim.keymap.set('i', '<c-e>', '<esc>A')
 
