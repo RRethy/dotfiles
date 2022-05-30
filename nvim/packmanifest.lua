@@ -1,5 +1,4 @@
 vim.cmd('packadd! cfilter')
--- use { 'lervag/vimtex' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
@@ -28,7 +27,7 @@ use { 'nvim-treesitter/nvim-treesitter' }
 use { 'nvim-treesitter/nvim-treesitter-refactor' }
 use { 'nvim-treesitter/nvim-treesitter-textobjects' }
 use { 'nvim-treesitter/playground' }
-use { 'rcarriga/nvim-notify' }
+use { 'rcarriga/nvim-notify' } -- bug with quickfix line
 use { 'romainl/vim-cool' }
 use { 'shopify/vim-repoify' }
 use { 'tpope/vim-abolish' }
@@ -39,5 +38,4 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'williamboman/nvim-lsp-installer' }
--- use { 'wincent/loupe' }
 use { 'windwp/nvim-autopairs' }

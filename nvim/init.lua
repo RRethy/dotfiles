@@ -10,9 +10,7 @@ local telescope_actions = require('telescope.actions')
 
 vim.g.mapleader = ' '
 
-if File_watchers == nil then
-    File_watchers = {}
-end
+File_watchers = File_watchers or {}
 local watch_file_augroup = 'watch_file_augroup'
 vim.api.nvim_create_augroup(watch_file_augroup, {clear=true})
 vim.api.nvim_create_autocmd('VimLeave', {
@@ -106,7 +104,7 @@ vim.cmd(string.format('sign define DiagnosticSignHint  text=%s   texthl=Diagnost
 
 vim.notify = notify
 vim.keymap.set('n', '<leader>n', function() notify.dismiss() end)
-vim.notify.setup({
+notify.setup({
     icons = {
         ERROR = ERROR_ICON,
         WARN = WARNING_ICON,
@@ -114,6 +112,13 @@ vim.notify.setup({
         DEBUG = HINT_ICON,
         TRACE = HINT_ICON,
     }
+})
+
+require('indent_blankline').setup({
+    show_current_context = true,
+    indent_blankline_char = '│',
+    indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'},
+    indent_blankline_use_treesitter = true,
 })
 
 require('Comment').setup()
@@ -124,6 +129,8 @@ require('nvim-autopairs').setup({
 
 local function on_attach(client, bufnr)
     vim.lsp.set_log_level("debug")
+    vim.keymap.set('n', ']d', function() vim.diagnostic.goto_next() end, {buffer=true})
+    vim.keymap.set('n', '[d', function() vim.diagnostic.goto_prev() end, {buffer=true})
     vim.keymap.set('n', '\\d', function() vim.lsp.diagnostic.show_line_diagnostics() end, {buffer=true})
     vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, {buffer=true})
     vim.keymap.set('n', '<c-]>', function() vim.lsp.buf.definition() end, {buffer=true})
@@ -140,8 +147,8 @@ local function on_attach(client, bufnr)
         group = lsp_augroup,
         buffer = bufnr,
         callback = function()
-            if not DISABLE_FMT then
-                vim.lsp.buf.formatting_sync(nil, 3000)
+            if not _G.DISABLE_FMT then
+                vim.lsp.buf.format({timeout_ms = 3000})
             end
         end
     })
@@ -200,42 +207,48 @@ lspconfig.dartls.setup(vim.tbl_extend("force", default_lsp_config, {
     },
 }))
 
+local function location_handler(_, result, ctx, _, config)
+    if result == nil or vim.tbl_isempty(result) then
+        local _ = vim.lsp.log.info() and vim.lsp.log.info(ctx.method, 'No location found')
+        return nil
+    end
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+
+    if vim.tbl_islist(result) then
+        vim.lsp.util.jump_to_location(result[1], client.offset_encoding)
+
+        if #result > 1 then
+            config = config or {}
+            if config.loclist then
+                vim.fn.setloclist(0, {}, ' ', {
+                    title = 'LSP locations',
+                    items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
+                })
+                vim.cmd("botright lopen")
+            else
+                vim.fn.setqflist({}, ' ', {
+                    title = 'LSP locations',
+                    items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
+                })
+                vim.cmd("botright copen")
+            end
+        end
+    else
+        vim.lsp.util.jump_to_location(result, client.offset_encoding)
+    end
+end
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
     vim.lsp.handlers['signature_help'], {
         border = 'single',
         close_events = {"CursorMoved", "BufHidden"},
     }
 )
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-    vim.lsp.handlers['hover'], {
-        border = 'single',
-    }
-)
-vim.lsp.handlers['textDocument/references'] = vim.lsp.with(
-    vim.lsp.handlers['textDocument/references'], {
-        loclist = true,
-    }
-)
-vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(
-    vim.lsp.handlers['textDocument/typeDefinition'], {
-        loclist = true,
-    }
-)
-vim.lsp.handlers['textDocument/declaration'] = vim.lsp.with(
-    vim.lsp.handlers['textDocument/declaration'], {
-        loclist = true,
-    }
-)
-vim.lsp.handlers['textDocument/definition'] = vim.lsp.with(
-    vim.lsp.handlers['textDocument/definition'], {
-        loclist = true,
-    }
-)
-vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(
-    vim.lsp.handlers['textDocument/implementation'], {
-        loclist = true,
-    }
-)
+vim.lsp.handlers['textDocument/hover']          = vim.lsp.with(vim.lsp.handlers['hover'], {border = 'single'})
+vim.lsp.handlers['textDocument/references']     = vim.lsp.with(vim.lsp.handlers['textDocument/references'], {loclist = true})
+vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(location_handler, {loclist=true})
+vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler, {loclist=true})
+vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, {loclist=true})
+vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, {loclist=true})
 
 treesitter.setup {
     highlight = {
@@ -389,27 +402,39 @@ local function lsp_diagnostic_count(name, icon)
         return ''
     end
 end
-vim.opt.statusline = hotline.format {
+vim.opt.winbar = hotline.format {
+    -- '%=',
+    '%5*',
     ' ',
     function()
         -- buffer number
-        return string.format('%d', vim.fn.bufnr())
+        return vim.fn.bufnr()
     end,
     ' ',
     function()
         -- filetype
         return #vim.bo.filetype == 0 and '' or string.format('[%s]', vim.bo.filetype)
     end,
+    '%m',
     ' ',
     function()
-        -- filename tail
-        return string.format('%s', vim.fn.fnamemodify(vim.fn.bufname(), ':t'))
+        if vim.bo.filetype == 'qf' then
+            -- previous grep argument
+            return '' -- TODO
+        else
+            -- filename tail
+            return vim.fn.fnamemodify(vim.fn.bufname(), ':t')
+        end
     end,
     ' ',
     function()
         -- whether file is readonly
         return vim.bo.readonly and '[readonly] ' or ''
     end,
+    '%0*',
+}
+vim.opt.statusline = hotline.format {
+    ' ',
     -- User1 hlgroup
     '%1*',
     function() return lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON) end,
@@ -439,6 +464,9 @@ local function on_ft(ft, cb)
     })
 end
 vim.api.nvim_create_augroup(init_lua_augroup, {clear=true})
+on_ft('qf', function()
+    vim.wo.winbar = ''
+end)
 on_ft('rust', function()
     vim.cmd('compiler cargo')
 end)
@@ -474,17 +502,15 @@ vim.keymap.set('n', '<a-n>', function() require('illuminate').next_reference({wr
 vim.keymap.set('n', '<a-p>', function() require('illuminate').next_reference({reverse = true, wrap = true}) end)
 vim.keymap.set('n', '<a-i>', function() require('illuminate').toggle_pause() end)
 
+vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'k', 'gk')
 vim.keymap.set('n', 'yow', function()
     if vim.wo.wrap then
         vim.wo.wrap = false
         vim.wo.linebreak = false
-        vim.keymap.del('n', 'j', {buffer=true})
-        vim.keymap.del('n', 'k', {buffer=true})
     else
         vim.wo.wrap = true
         vim.wo.linebreak = true
-        vim.keymap.set('n', 'j', 'gj', {buffer=true})
-        vim.keymap.set('n', 'k', 'gk', {buffer=true})
     end
 end)
 
@@ -506,7 +532,7 @@ vim.keymap.set('n', 'yos', function()
         vim.notify("'spell'", vim.lsp.log_levels.INFO)
     end
 end)
-vim.keymap.set('n', 'yos', function()
+vim.keymap.set('n', 'yob', function()
     if vim.wo.scrollbind then
         vim.wo.scrollbind = false
         vim.notify("'scrollbind'", vim.lsp.log_levels.ERROR)
@@ -564,19 +590,6 @@ vim.keymap.set('n', '<leader>7', '7gt')
 vim.keymap.set('n', '<leader>8', '8gt')
 vim.keymap.set('n', '<leader>9', '9gt')
 
-vim.keymap.set('n', '<c-c><c-c>', function()
-    -- TODO: This is wrong, we need to loop over the windows in the current tab
-    -- closed doesn't imply empty
-    if #vim.fn.getloclist(vim.fn.winnr()) > 0 then
-        vim.cmd('lclose')
-    elseif #vim.fn.getqflist() > 0 then
-        vim.cmd('cclose')
-    end
-end)
-
-vim.keymap.set('n', ']d', function() vim.diagnostic.goto_next() end)
-vim.keymap.set('n', '[d', function() vim.diagnostic.goto_prev() end)
-
 vim.keymap.set('n', '[a', '<cmd>previous<cr>')
 vim.keymap.set('n', ']a', '<cmd>next<cr>')
 vim.keymap.set('n', '[A', '<cmd>first<cr>')
@@ -607,6 +620,9 @@ vim.keymap.set('n', '<c-k>', '<c-w>k')
 vim.keymap.set('n', '<c-j>', '<c-w>j')
 vim.keymap.set('n', '<c-h>', '<c-w>h')
 
+vim.keymap.set('n', '<c-w>l', function() vim.cmd('lclose') end)
+vim.keymap.set('n', '<c-w>q', function() vim.cmd('cclose') end)
+
 vim.keymap.set('i', 'jk', '<esc>')
 vim.keymap.set('i', 'kj', '<esc>')
 vim.keymap.set('i', 'JK', '<esc>')
@@ -615,17 +631,19 @@ vim.keymap.set('i', 'Jk', '<esc>')
 vim.keymap.set('i', 'jK', '<esc>')
 vim.keymap.set('i', 'Kj', '<esc>')
 vim.keymap.set('i', 'kJ', '<esc>')
+
 vim.keymap.set('i', '<c-a>', '<esc>gI')
 vim.keymap.set('i', '<c-e>', '<esc>A')
 
 vim.keymap.set('o', 'A', '<cmd>normal! ggVG<cr>')
 
 vim.keymap.set('v', '<c-g>', '"*y')
-vim.keymap.set('v', 'gn', ':norma ')
+vim.keymap.set('v', 'gn', ':normal! ')
 
 vim.keymap.set('c', '%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', {expr=true})
 vim.keymap.set('c', '<c-a>', '<home>')
 vim.keymap.set('c', '<c-e>', '<end>')
+-- vim.keymap.set('c', '<c-k>', '<>') TODO get this delete from cursor to end of line
 vim.keymap.set('c', 'qq', '"q!"', {expr=true})
 vim.keymap.set('c', '<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', {expr=true})
 vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', {expr=true})
@@ -638,7 +656,7 @@ vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
 vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
-vim.cmd('command! QlistToLlist call setloclist(winnr(), getqflist())')
+vim.cmd('command! ClistToLlist call setloclist(winnr(), getqflist())')
 
 vim.g.qf_disable_statusline = true -- This should be the default
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
@@ -655,9 +673,6 @@ vim.g.vimtex_compiler_latexmk = {
 }
 vim.g['test#strategy'] = 'neovim'
 vim.g.tex_flavor = 'latex'
-vim.g.indent_blankline_char = '│'
-vim.g.indent_blankline_filetype = {'rust', 'go', 'lua', 'json', 'ruby'}
-vim.g.indent_blankline_use_treesitter = true
 vim.g.loaded_ruby_provider = false
 vim.g.Illuminate_delay = 100
 vim.g.vimsyn_embed = 'l'

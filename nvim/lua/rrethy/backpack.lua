@@ -106,11 +106,13 @@ function M.setup()
     end
     _G.use = tmp
 
-    do_tasks()
+    -- do_tasks()
 
     vim.cmd [[ command! -nargs=1 PackAdd lua require('rrethy.backpack').pack_add(<f-args>) ]]
     vim.cmd [[ command! PackUpdate lua require('rrethy.backpack').pack_update() ]]
     vim.cmd [[ command! PackEdit lua require('rrethy.backpack').pack_edit() ]]
+
+    return {}
 end
 
 function M.pack_add(url)
@@ -157,6 +159,13 @@ end
 function M.pack_edit()
     vim.cmd('tabnew')
     vim.cmd('edit '..manifest)
+    local bufnr = vim.fn.bufnr()
+    vim.api.nvim_create_autocmd('WinClosed', {
+        buffer = bufnr,
+        callback = function()
+            vim.api.nvim_buf_delete(bufnr, {force=true})
+        end
+    })
 end
 
 return M
