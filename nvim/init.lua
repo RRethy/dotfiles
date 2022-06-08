@@ -103,7 +103,7 @@ vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s   texthl=Diagnost
 vim.cmd(string.format('sign define DiagnosticSignHint  text=%s   texthl=DiagnosticSignHint  linehl= numhl=', HINT_ICON))
 
 vim.notify = notify
-vim.keymap.set('n', '<leader>n', function() notify.dismiss() end)
+vim.keymap.set('n', '<leader>n', notify.dismiss)
 notify.setup({
     icons = {
         ERROR = ERROR_ICON,
@@ -129,18 +129,18 @@ require('nvim-autopairs').setup({
 
 local function on_attach(client, bufnr)
     vim.lsp.set_log_level("debug")
-    vim.keymap.set('n', ']d', function() vim.diagnostic.goto_next() end, {buffer=true})
-    vim.keymap.set('n', '[d', function() vim.diagnostic.goto_prev() end, {buffer=true})
-    vim.keymap.set('n', '\\d', function() vim.lsp.diagnostic.show_line_diagnostics() end, {buffer=true})
-    vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, {buffer=true})
-    vim.keymap.set('n', '<c-]>', function() vim.lsp.buf.definition() end, {buffer=true})
-    vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition() end, {buffer=true})
-    vim.keymap.set('i', '<c-s>', function() vim.lsp.buf.signature_help() end, {buffer=true})
-    vim.keymap.set('n', 'gr', function() vim.lsp.buf.rename() end, {buffer=true})
-    vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end, {buffer=true})
-    vim.keymap.set('n', 'gu', function() vim.lsp.buf.references() end, {buffer=true})
-    vim.keymap.set('n', '<leader>s', function() require('telescope.builtin').lsp_dynamic_workspace_symbols() end, {buffer=true})
-    vim.keymap.set('n', '<leader>d', function() require('telescope.builtin').lsp_document_symbols() end, {buffer=true})
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, {buffer=true})
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, {buffer=true})
+    vim.keymap.set('n', '\\d', vim.lsp.diagnostic.show_line_diagnostics, {buffer=true})
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, {buffer=true})
+    vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, {buffer=true})
+    vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, {buffer=true})
+    vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, {buffer=true})
+    vim.keymap.set('n', 'gr', vim.lsp.buf.rename, {buffer=true})
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {buffer=true})
+    vim.keymap.set('n', 'gu', vim.lsp.buf.references, {buffer=true})
+    vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, {buffer=true})
+    vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, {buffer=true})
     local lsp_augroup = 'rrethy_lsp_augroup'..bufnr
     vim.api.nvim_create_augroup(lsp_augroup, {clear=true})
     vim.api.nvim_create_autocmd('BufWritePre', {
@@ -324,10 +324,14 @@ telescope.setup {
 }
 telescope.load_extension('fzy_native')
 telescope.load_extension('fzf')
-vim.keymap.set('n', '<c-p>',     function() telescope_builtin.find_files(require('telescope.themes').get_dropdown({previewer=false})) end)
-vim.keymap.set('n', '<leader>b', function() telescope_builtin.buffers(require("telescope.themes").get_dropdown({previewer=false})) end)
-vim.keymap.set('n', '<leader>h', function() telescope_builtin.help_tags() end)
-vim.keymap.set('n', '<leader>g', function() telescope_builtin.live_grep() end)
+vim.keymap.set('n', '<c-p>',     function()
+    telescope_builtin.find_files(require('telescope.themes').get_dropdown({previewer=false}))
+end)
+vim.keymap.set('n', '<leader>b', function()
+    telescope_builtin.buffers(require("telescope.themes").get_dropdown({previewer=false}))
+end)
+vim.keymap.set('n', '<leader>h', telescope_builtin.help_tags)
+vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep)
 
 vim.cmd('hi DiffAdd     guibg=#2e3c34 guifg=NONE gui=NONE')
 vim.cmd('hi DiffChange  guibg=NONE    guifg=NONE gui=NONE')
@@ -392,24 +396,23 @@ vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
 vim.opt.laststatus = 3
 local function lsp_diagnostic_count(name, icon)
-    if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
-        return ''
-    else
-        local count = #vim.diagnostic.get(0, {severity=name})
-        if count > 0 then
-            return string.format(' %s %d ', icon, count)
+    return function()
+        if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+            return ''
+        else
+            local count = #vim.diagnostic.get(0, {severity=name})
+            if count > 0 then
+                return string.format(' %s %d ', icon, count)
+            end
+            return ''
         end
-        return ''
     end
 end
 vim.opt.winbar = hotline.format {
     -- '%=',
     '%5*',
     ' ',
-    function()
-        -- buffer number
-        return vim.fn.bufnr()
-    end,
+    vim.fn.bufnr,
     ' ',
     function()
         -- filetype
@@ -437,16 +440,16 @@ vim.opt.statusline = hotline.format {
     ' ',
     -- User1 hlgroup
     '%1*',
-    function() return lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON) end,
+    lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON),
     -- User2 hlgroup
     '%2*',
-    function() return lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARNING_ICON) end,
+    lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARNING_ICON),
     -- User3 hlgroup
     '%3*',
-    function() return lsp_diagnostic_count(vim.diagnostic.severity.Information, INFO_ICON) end,
+    lsp_diagnostic_count(vim.diagnostic.severity.Information, INFO_ICON),
     -- User4 hlgroup
     '%4*',
-    function() return lsp_diagnostic_count(vim.diagnostic.severity.Hint, HINT_ICON) end,
+    lsp_diagnostic_count(vim.diagnostic.severity.Hint, HINT_ICON),
     -- Reset hlgroup
     '%0*',
     -- Right alignment
@@ -498,9 +501,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.fn.mkdir(vim.fn.stdpath('data')..'/backup/', 'p')
 
-vim.keymap.set('n', '<a-n>', function() require('illuminate').next_reference({wrap = true}) end)
-vim.keymap.set('n', '<a-p>', function() require('illuminate').next_reference({reverse = true, wrap = true}) end)
-vim.keymap.set('n', '<a-i>', function() require('illuminate').toggle_pause() end)
+vim.keymap.set('n', '<a-n>', function()
+    require('illuminate').next_reference({wrap = true})
+end)
+vim.keymap.set('n', '<a-p>', function()
+    require('illuminate').next_reference({reverse = true, wrap = true})
+end)
+vim.keymap.set('n', '<a-i>', require('illuminate').toggle_pause)
 
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
@@ -515,13 +522,25 @@ vim.keymap.set('n', 'yow', function()
 end)
 
 vim.keymap.set('n', 'yon', function()
-    if vim.wo.number then vim.wo.number = false else vim.wo.number = true end
+    if vim.wo.number then
+        vim.wo.number = false
+    else
+        vim.wo.number = true
+    end
 end)
 vim.keymap.set('n', 'yor', function()
-    if vim.wo.relativenumber then vim.wo.relativenumber = false else vim.wo.relativenumber = true end
+    if vim.wo.relativenumber then
+        vim.wo.relativenumber = false
+    else
+        vim.wo.relativenumber = true
+    end
 end)
 vim.keymap.set('n', 'yoc', function()
-    if vim.wo.cursorcolumn then vim.wo.cursorcolumn = false else vim.wo.cursorcolumn = true end
+    if vim.wo.cursorcolumn then
+        vim.wo.cursorcolumn = false
+    else
+        vim.wo.cursorcolumn = true
+    end
 end)
 vim.keymap.set('n', 'yos', function()
     if vim.wo.spell then
@@ -620,8 +639,12 @@ vim.keymap.set('n', '<c-k>', '<c-w>k')
 vim.keymap.set('n', '<c-j>', '<c-w>j')
 vim.keymap.set('n', '<c-h>', '<c-w>h')
 
-vim.keymap.set('n', '<c-w>l', function() vim.cmd('lclose') end)
-vim.keymap.set('n', '<c-w>q', function() vim.cmd('cclose') end)
+vim.keymap.set('n', '<c-w>l', function()
+    vim.cmd('lclose')
+end)
+vim.keymap.set('n', '<c-w>q', function()
+    vim.cmd('cclose')
+end)
 
 vim.keymap.set('i', 'jk', '<esc>')
 vim.keymap.set('i', 'kj', '<esc>')
