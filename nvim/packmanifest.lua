@@ -2,7 +2,6 @@ vim.cmd('packadd! cfilter')
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
-use { 'RRethy/nvim-shopify-dev' }
 use { 'RRethy/nvim-treesitter-endwise' }
 use { 'RRethy/nvim-treesitter-textsubjects' }
 use { 'RRethy/vim-eunuch' }
@@ -14,7 +13,6 @@ use { 'hashivim/vim-terraform' }
 use { 'justinmk/vim-dirvish' }
 use { 'kyazdani42/nvim-web-devicons' }
 use { 'lukas-reineke/indent-blankline.nvim' }
-use { 'mfussenegger/nvim-lint' }
 use { 'neovim/nvim-lspconfig' }
 use { 'numToStr/Comment.nvim' }
 use { 'nvim-lua/plenary.nvim' }
@@ -29,7 +27,6 @@ use { 'nvim-treesitter/nvim-treesitter-textobjects' }
 use { 'nvim-treesitter/playground' }
 use { 'rcarriga/nvim-notify' } -- bug with quickfix line
 use { 'romainl/vim-cool' }
-use { 'shopify/vim-repoify' }
 use { 'tpope/vim-abolish' }
 use { 'tpope/vim-fugitive' }
 use { 'tpope/vim-projectionist' }
@@ -39,3 +36,4 @@ use { 'tpope/vim-surround' }
 use { 'vim-test/vim-test' }
 use { 'williamboman/nvim-lsp-installer' }
 use { 'windwp/nvim-autopairs' }
+use { 'wsdjeg/vim-fetch' }

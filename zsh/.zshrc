@@ -111,7 +111,7 @@ eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
 if command -v kitty &> /dev/null ; then
     # set the terminal window's colors based on the current base16 theme
-    eval "kitty @ set-colors -c $HOME/base16-kitty/colors/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
+    eval "kitty @ set-colors -c $XDG_CONFIG_HOME/kitty/themes/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
     # keybinding to change my terminal colors with fzy
     COLORS_KEYBIND=' c'
     function fzy_colors {
@@ -120,12 +120,12 @@ if command -v kitty &> /dev/null ; then
             zle end-of-line
             return 0
         fi
-        local color=$(gls --color=never $HOME/base16-kitty/colors/ | grep -v "256"| fzy)
+        local color=$(gls --color=never $XDG_CONFIG_HOME/kitty/themes/ | grep -v "256"| fzy)
         if [[ -z $color ]]; then
             zle reset-prompt
             return 0
         fi
-        BUFFER="kitty @ set-colors -c $HOME/base16-kitty/colors/$color"
+        BUFFER="kitty @ set-colors -c -a $XDG_CONFIG_HOME/kitty/themes/$color"
         echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
         zle accept-line
         local ret=$?
