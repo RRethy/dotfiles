@@ -8,7 +8,6 @@ use { 'RRethy/vim-eunuch' }
 use { 'RRethy/vim-illuminate' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }
-use { 'editorconfig/editorconfig-vim' }
 use { 'hashivim/vim-terraform' }
 use { 'justinmk/vim-dirvish' }
 use { 'kyazdani42/nvim-web-devicons' }
@@ -37,3 +36,4 @@ use { 'vim-test/vim-test' }
 use { 'williamboman/nvim-lsp-installer' }
 use { 'windwp/nvim-autopairs' }
 use { 'wsdjeg/vim-fetch' }
+use { 'tpope/vim-sleuth' }

@@ -53,7 +53,7 @@ local function notify_colorscheme_changes(name)
             'set-colors',
             '-c',
             '-a',
-            string.format(vim.env.HOME .. '/base16-kitty/colors/%s.conf', name)
+            string.format(vim.env.XDG_CONFIG_HOME .. '/kitty/themes/%s.conf', name)
         }
     }, nil)
 end
@@ -274,18 +274,6 @@ treesitter.setup {
         enable = true,
         disable = { 'latex', 'haskell', 'python' },
     },
-    endwise = {
-        enable = true,
-    },
-    textsubjects = {
-        enable = true,
-        prev_selection = ',',
-        keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
-        },
-    },
     playground = {
         enable = true,
     },
@@ -306,6 +294,18 @@ treesitter.setup {
             goto_previous_start = {
                 ['[m'] = '@function.outer',
             },
+        },
+    },
+    endwise = {
+        enable = true,
+    },
+    textsubjects = {
+        enable = true,
+        prev_selection = ',',
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
         },
     },
 }

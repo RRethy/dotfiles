@@ -9,6 +9,7 @@
     verbose = true
 [push]
     default = current
+    autoSetupRemote = true
 [pull]
     rebase = true
 [rerere]
