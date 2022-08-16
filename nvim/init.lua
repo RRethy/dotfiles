@@ -96,21 +96,33 @@ vim.keymap.set('n', '<leader>c', function()
 end)
 vim.cmd('colorscheme ' .. vim.fn.readfile(base16_theme_fname)[1])
 
-local ERROR_ICON   = ''
-local WARNING_ICON = ''
-local INFO_ICON    = ''
-local HINT_ICON    = ''
+local ERROR_ICON = ''
+local WARN_ICON  = ''
+local INFO_ICON  = ''
+local HINT_ICON  = ''
 vim.cmd(string.format('sign define DiagnosticSignError text=%s texthl=DiagnosticSignError linehl= numhl=', ERROR_ICON))
-vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s texthl=DiagnosticSignWarn  linehl= numhl=', WARNING_ICON))
+vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s texthl=DiagnosticSignWarn  linehl= numhl=', WARN_ICON))
 vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s texthl=DiagnosticSignInfo  linehl= numhl=', INFO_ICON))
 vim.cmd(string.format('sign define DiagnosticSignHint  text=%s texthl=DiagnosticSignHint  linehl= numhl=', HINT_ICON))
+vim.diagnostic.config({
+    virtual_text = {
+        prefix = '',
+        format = function(diagnostic)
+            local icon = diagnostic.severity == vim.diagnostic.severity.ERROR and ERROR_ICON
+                or diagnostic.severity == vim.diagnostic.severity.WARN and WARN_ICON
+                or diagnostic.severity == vim.diagnostic.severity.INFO and INFO_ICON
+                or diagnostic.severity == vim.diagnostic.severity.HINT and HINT_ICON
+            return string.format("%s %s", icon, diagnostic.message)
+        end,
+    },
+})
 
 -- vim.notify = notify
 vim.keymap.set('n', '<leader>n', notify.dismiss)
 notify.setup({
     icons = {
         ERROR = ERROR_ICON,
-        WARN = WARNING_ICON,
+        WARN = WARN_ICON,
         INFO = INFO_ICON,
         DEBUG = HINT_ICON,
         TRACE = HINT_ICON,
@@ -131,10 +143,24 @@ require('nvim-autopairs').setup({
 })
 
 local function on_attach(client, bufnr)
-    -- vim.lsp.set_log_level("debug")
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { buffer = true })
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { buffer = true })
-    vim.keymap.set('n', '\\d', vim.diagnostic.open_float, { buffer = true })
+    vim.keymap.set(
+        'n',
+        ']d',
+        function() vim.diagnostic.goto_next({ float = { border = 'single' } }) end,
+        { buffer = true }
+    )
+    vim.keymap.set(
+        'n',
+        '[d',
+        function() vim.diagnostic.goto_prev({ float = { border = 'single' } }) end,
+        { buffer = true }
+    )
+    vim.keymap.set(
+        'n',
+        '\\d',
+        function() vim.diagnostic.open_float({ float = { border = 'single' } }) end,
+        { buffer = true }
+    )
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = true })
     vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, { buffer = true })
     vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, { buffer = true })
@@ -158,10 +184,10 @@ local function on_attach(client, bufnr)
         })
     end
     vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
-    require('illuminate').on_attach(client)
 end
 
 lsp_installer.setup({})
+
 local default_lsp_config = {
     on_attach = on_attach,
     flags = {
@@ -255,15 +281,14 @@ local function location_handler(_, result, ctx, _, config)
     end
 end
 
-vim.lsp.handlers['textDocument/signatureHelp']  = vim.lsp.with(
-    vim.lsp.handlers['signature_help'], {
+vim.lsp.handlers['textDocument/signatureHelp']  = vim.lsp.with(vim.lsp.handlers['signature_help'], {
     border = 'single',
     close_events = { "CursorMoved", "BufHidden" },
-}
-)
+})
 vim.lsp.handlers['textDocument/hover']          = vim.lsp.with(vim.lsp.handlers['hover'], { border = 'single' })
-vim.lsp.handlers['textDocument/references']     = vim.lsp.with(vim.lsp.handlers['textDocument/references'],
-    { loclist = true })
+vim.lsp.handlers['textDocument/references']     = vim.lsp.with(vim.lsp.handlers['textDocument/references'], {
+    loclist = true
+})
 vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(location_handler, { loclist = true })
 vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler, { loclist = true })
 vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, { loclist = true })
@@ -277,14 +302,14 @@ treesitter.setup {
     playground = {
         enable = true,
     },
-    refactor = {
-        smart_rename = {
-            enable = true,
-            keymaps = {
-                smart_rename = "<leader>r",
-            },
-        },
-    },
+    -- refactor = {
+    --     smart_rename = {
+    --         enable = true,
+    --         keymaps = {
+    --             smart_rename = "<leader>r",
+    --         },
+    --     },
+    -- },
     textobjects = {
         move = {
             enable = true,
@@ -467,7 +492,7 @@ vim.opt.statusline = hotline.format {
     lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON),
     -- User2 hlgroup
     '%2*',
-    lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARNING_ICON),
+    lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARN_ICON),
     -- User3 hlgroup
     '%3*',
     lsp_diagnostic_count(vim.diagnostic.severity.Information, INFO_ICON),
