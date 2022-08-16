@@ -205,9 +205,11 @@ alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
 alias todo="kitty @ set-tab-title todo;v ~/.todo/hometodo.md -c 'cd %:p:h'"
 command -v rwc &> /dev/null && alias wc="rwc"
 if [[ $(command -v gls) ]]; then
-    alias ls="gls --hyperlink=auto --color -p"
+    # alias ls="gls --hyperlink=auto --color -p"
+    alias ls="gls --color -p"
 else
-    alias ls="ls --hyperlink=auto --color -p"
+    # alias ls="ls --hyperlink=auto --color -p"
+    alias ls="ls --color -p"
 fi
 alias vs="v -S"
 alias bune="bundle"
@@ -251,3 +253,6 @@ if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloa
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
+
+[[ -x /usr/local/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+

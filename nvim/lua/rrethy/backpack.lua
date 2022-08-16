@@ -151,7 +151,7 @@ function M.pack_update()
         if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
             git_pull(data.plugin, on_success, on_complete)
         else
-            git_clone(data.plugin, git_clone, on_success, on_complete)
+            git_clone(data.plugin, to_git_url(data.author, data.plugin), on_success, on_complete)
         end
     end
 end
