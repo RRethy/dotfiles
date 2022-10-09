@@ -1,11 +1,11 @@
 local M = {}
 
-local opt      = vim.fn.stdpath('data')..'/site/pack/backpack/opt/'
-local manifest = vim.fn.stdpath('config')..'/packmanifest.lua'
+local opt      = vim.fn.stdpath('data') .. '/site/pack/backpack/opt/'
+local manifest = vim.fn.stdpath('config') .. '/packmanifest.lua'
 
 local wait_stack = {}
 local run_stack  = {}
-local MAX_TASKS = 10
+local MAX_TASKS  = 10
 
 local function to_git_url(author, plugin)
     if vim.env.BACKPACK_NO_SSH == nil and author == 'RRethy' then
@@ -32,21 +32,21 @@ local function parse_url(url)
 end
 
 local function git_pull(name, on_success, on_complete)
-    local dir = opt..name
-    local branch = vim.fn.system("git -C "..dir.." branch --show-current | tr -d '\n'")
+    local dir = opt .. name
+    local branch = vim.fn.system("git -C " .. dir .. " branch --show-current | tr -d '\n'")
     vim.loop.spawn('git', {
         args = { 'pull', 'origin', branch, '--update-shallow', '--ff-only', '--progress', '--rebase=false' },
         cwd = dir,
     }, vim.schedule_wrap(function(code)
-            if code == 0 then
-                on_success()
-            else
-                vim.notify(name..' pulled unsuccessfully', vim.log.levels.ERROR)
-            end
-            if on_complete then
-                on_complete()
-            end
-        end))
+        if code == 0 then
+            on_success()
+        else
+            vim.notify(name .. ' pulled unsuccessfully', vim.log.levels.ERROR)
+        end
+        if on_complete then
+            on_complete()
+        end
+    end))
 end
 
 local function git_clone(name, git_url, on_success, on_complete)
@@ -54,15 +54,15 @@ local function git_clone(name, git_url, on_success, on_complete)
         args = { 'clone', '--depth=1', git_url },
         cwd = opt,
     }, vim.schedule_wrap(function(code)
-            if code == 0 then
-                on_success()
-            else
-                vim.notify(name..' cloned unsuccessfully', vim.log.levels.ERROR)
-            end
-            if on_complete then
-                on_complete()
-            end
-        end))
+        if code == 0 then
+            on_success()
+        else
+            vim.notify(name .. ' cloned unsuccessfully', vim.log.levels.ERROR)
+        end
+        if on_complete then
+            on_complete()
+        end
+    end))
 end
 
 local function do_tasks()
@@ -74,7 +74,7 @@ local function do_tasks()
                 data.plugin,
                 to_git_url(data.author, data.plugin),
                 function()
-                    vim.cmd('packadd! '..data.plugin)
+                    vim.cmd('packadd! ' .. data.plugin)
                 end
             )
         end
@@ -95,8 +95,8 @@ function M.setup()
             plugin = plugin,
             author = author,
         })
-        if vim.fn.isdirectory(opt..'/'..plugin) ~= 0 then
-            vim.cmd('packadd! '..plugin)
+        if vim.fn.isdirectory(opt .. '/' .. plugin) ~= 0 then
+            vim.cmd('packadd! ' .. plugin)
         else
             table.insert(wait_stack, M.plugins[#M.plugins])
         end
@@ -126,10 +126,10 @@ function M.pack_add(url)
         author = author,
     })
     local on_success = function()
-        vim.cmd('packadd '..plugin)
+        vim.cmd('packadd ' .. plugin)
         vim.cmd('helptags ALL')
     end
-    if vim.fn.isdirectory(opt..plugin) ~= 0 then
+    if vim.fn.isdirectory(opt .. plugin) ~= 0 then
         git_pull(plugin, on_success)
     else
         git_clone(plugin, git_url, on_success)
@@ -142,13 +142,13 @@ function M.pack_update()
     local updated = 0
     for _, data in ipairs(M.plugins) do
         local on_success = function()
-            vim.cmd('packadd '..data.plugin)
+            vim.cmd('packadd ' .. data.plugin)
         end
         local on_complete = function()
             updated = updated + 1
             print(string.format('Backpack: %d/%d', updated, #M.plugins))
         end
-        if vim.fn.isdirectory(opt..data.plugin) ~= 0 then
+        if vim.fn.isdirectory(opt .. data.plugin) ~= 0 then
             git_pull(data.plugin, on_success, on_complete)
         else
             git_clone(data.plugin, to_git_url(data.author, data.plugin), on_success, on_complete)
@@ -158,12 +158,12 @@ end
 
 function M.pack_edit()
     vim.cmd('tabnew')
-    vim.cmd('edit '..manifest)
+    vim.cmd('edit ' .. manifest)
     local bufnr = vim.fn.bufnr()
     vim.api.nvim_create_autocmd('WinClosed', {
         buffer = bufnr,
         callback = function()
-            vim.api.nvim_buf_delete(bufnr, {force=true})
+            vim.api.nvim_buf_delete(bufnr, { force = true })
         end
     })
 end

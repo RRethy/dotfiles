@@ -41,10 +41,11 @@ system_env() {
         echo -n "\xea\xa9\x9c"
     fi
 }
-PROMPT='%F{white}$(system_env) %F{magenta}%? %F{blue}%~%F{white} $(__git_ps1 "%s") '
+PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
 precmd() {
     # Setup title bar to pwd tail
-    print -Pn "\e]0;%1~\a"
+    print -Pn "\e]0;%~\a"
+    # print -Pn "\e]0;%1~\a"
 }
 
 # some readline movements
@@ -237,6 +238,7 @@ bindkey '^T' fzy_path
 # cloudplatform: add Shopify clusters to your local kubernetes config
 export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}"$HOME/.kube/config":"$HOME/.kube/config.shopify.cloudplatform"
 export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
+export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}/Users/adamregasz-rethy/.kube/config:/Users/adamregasz-rethy/.kube/config.shopify.cloudplatform
 if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
     for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
         source ${file};
@@ -254,5 +256,4 @@ if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloa
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
 
-[[ -x /usr/local/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
-
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"

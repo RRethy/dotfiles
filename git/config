@@ -48,4 +48,4 @@
     process = git-lfs filter-process
     required = true
 [include]
-	path = /Users/adam.regaszrethy/.config/dev/gitconfig
+    path = /Users/adam.regaszrethy/.config/dev/gitconfig

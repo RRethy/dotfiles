@@ -2,12 +2,10 @@ require('rrethy.backpack').setup()
 
 local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
-local notify = require('notify')
 local lspconfig = require('lspconfig')
 local telescope = require('telescope')
 local telescope_builtin = require('telescope.builtin')
 local telescope_actions = require('telescope.actions')
-local lsp_installer = require('nvim-lsp-installer')
 local log = require('vim.lsp.log')
 
 vim.g.mapleader = ' '
@@ -68,9 +66,9 @@ watch_file(base16_theme_fname, function()
     end
 end, 500)
 vim.keymap.set('n', '<leader>c', function()
-    local colors                 = vim.fn.getcompletion('base16', 'color')
-    local theme                  = require('telescope.themes').get_dropdown()
-    local telescope_action_set   = require('telescope.actions.set')
+    local colors = vim.fn.getcompletion('base16', 'color')
+    local theme = require('telescope.themes').get_dropdown()
+    local telescope_action_set = require('telescope.actions.set')
     local telescope_action_state = require('telescope.actions.state')
     require('telescope.pickers').new(theme, {
         prompt_title = 'Base16 Colorschemes',
@@ -97,9 +95,9 @@ end)
 vim.cmd('colorscheme ' .. vim.fn.readfile(base16_theme_fname)[1])
 
 local ERROR_ICON = ''
-local WARN_ICON  = ''
-local INFO_ICON  = ''
-local HINT_ICON  = ''
+local WARN_ICON = ''
+local INFO_ICON = ''
+local HINT_ICON = ''
 vim.cmd(string.format('sign define DiagnosticSignError text=%s texthl=DiagnosticSignError linehl= numhl=', ERROR_ICON))
 vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s texthl=DiagnosticSignWarn  linehl= numhl=', WARN_ICON))
 vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s texthl=DiagnosticSignInfo  linehl= numhl=', INFO_ICON))
@@ -117,7 +115,8 @@ vim.diagnostic.config({
     },
 })
 
--- vim.notify = notify
+local notify = require('notify')
+vim.notify = notify
 vim.keymap.set('n', '<leader>n', notify.dismiss)
 notify.setup({
     icons = {
@@ -129,17 +128,31 @@ notify.setup({
     }
 })
 
+require('illuminate').configure({
+    large_file_cutoff = 12500,
+    large_file_overrides = {
+        providers = { 'regex' },
+        delay = 500,
+    }
+})
 require('indent_blankline').setup({
     show_current_context = true,
     indent_blankline_char = '│',
     indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby' },
     indent_blankline_use_treesitter = true,
 })
-
 require('Comment').setup()
-
 require('nvim-autopairs').setup({
     check_ts = true,
+})
+require('mason').setup({})
+require('mason-lspconfig').setup({
+    ensure_installed = {
+        'lua-language-server',
+        'gopls',
+        'sorbet',
+        'rust_analyzer',
+    },
 })
 
 local function on_attach(client, bufnr)
@@ -158,12 +171,13 @@ local function on_attach(client, bufnr)
     vim.keymap.set(
         'n',
         '\\d',
-        function() vim.diagnostic.open_float({ float = { border = 'single' } }) end,
+        function() vim.diagnostic.open_float({ border = 'single' }) end,
         { buffer = true }
     )
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = true })
     vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, { buffer = true })
     vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, { buffer = true })
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = true })
     vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, { buffer = true })
     vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = true })
@@ -171,22 +185,23 @@ local function on_attach(client, bufnr)
     vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, { buffer = true })
     vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, { buffer = true })
     if client and client.supports_method('textDocument/formatting') then
+        local format_enabled = false
+        vim.api.nvim_buf_create_user_command(0, 'FormatDisable', function() format_enabled = false end, {})
+        vim.api.nvim_buf_create_user_command(0, 'FormatEnable', function() format_enabled = true end, {})
         local lsp_augroup = 'rrethy_lsp_augroup' .. bufnr
         vim.api.nvim_create_augroup(lsp_augroup, { clear = true })
         vim.api.nvim_create_autocmd('BufWritePre', {
             group = lsp_augroup,
             buffer = bufnr,
             callback = function()
-                if not DISABLE_FMT then
+                if format_enabled then
                     vim.lsp.buf.format({ timeout_ms = 3000 })
                 end
-            end
+            end,
         })
     end
     vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
 end
-
-lsp_installer.setup({})
 
 local default_lsp_config = {
     on_attach = on_attach,
@@ -267,13 +282,13 @@ local function location_handler(_, result, ctx, _, config)
                     title = 'LSP locations',
                     items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
                 })
-                vim.cmd("botright lopen")
+                vim.cmd('botright lopen')
             else
                 vim.fn.setqflist({}, ' ', {
                     title = 'LSP locations',
                     items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
                 })
-                vim.cmd("botright copen")
+                vim.cmd('botright copen')
             end
         end
     else
@@ -283,7 +298,7 @@ end
 
 vim.lsp.handlers['textDocument/signatureHelp']  = vim.lsp.with(vim.lsp.handlers['signature_help'], {
     border = 'single',
-    close_events = { "CursorMoved", "BufHidden" },
+    close_events = { 'CursorMoved', 'BufHidden' },
 })
 vim.lsp.handlers['textDocument/hover']          = vim.lsp.with(vim.lsp.handlers['hover'], { border = 'single' })
 vim.lsp.handlers['textDocument/references']     = vim.lsp.with(vim.lsp.handlers['textDocument/references'], {
@@ -302,14 +317,6 @@ treesitter.setup {
     playground = {
         enable = true,
     },
-    -- refactor = {
-    --     smart_rename = {
-    --         enable = true,
-    --         keymaps = {
-    --             smart_rename = "<leader>r",
-    --         },
-    --     },
-    -- },
     textobjects = {
         move = {
             enable = true,
@@ -347,9 +354,9 @@ telescope.setup {
         }
     },
     defaults = {
-        prompt_prefix = " ",
-        selection_caret = " ",
-        entry_prefix = " ",
+        prompt_prefix = ' ',
+        selection_caret = ' ',
+        entry_prefix = ' ',
         color_devicons = true,
         mappings = {
             i = {
@@ -373,10 +380,17 @@ vim.keymap.set('n', '<c-p>', function()
     telescope_builtin.find_files(require('telescope.themes').get_dropdown({ previewer = false }))
 end)
 vim.keymap.set('n', '<leader>b', function()
-    telescope_builtin.buffers(require("telescope.themes").get_dropdown({ previewer = false }))
+    telescope_builtin.buffers(require('telescope.themes').get_dropdown({ previewer = false }))
 end)
 vim.keymap.set('n', '<leader>h', telescope_builtin.help_tags)
 vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep)
+vim.keymap.set('n', '<a-g>', function()
+    vim.ui.input({ prompt = 'Directory to search: ', completion = 'dir' }, function(input)
+        if input and #input > 0 then
+            telescope_builtin.live_grep({ search_dirs = { input } })
+        end
+    end)
+end)
 
 vim.cmd('hi DiffAdd     guibg=#2e3c34 guifg=NONE gui=NONE')
 vim.cmd('hi DiffChange  guibg=NONE    guifg=NONE gui=NONE')
@@ -551,14 +565,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 vim.fn.mkdir(vim.fn.stdpath('data') .. '/backup/', 'p')
 
-vim.keymap.set('n', '<a-n>', function()
-    require('illuminate').next_reference({ wrap = true })
-end)
-vim.keymap.set('n', '<a-p>', function()
-    require('illuminate').next_reference({ reverse = true, wrap = true })
-end)
-vim.keymap.set('n', '<a-i>', require('illuminate').toggle_pause)
-
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
 vim.keymap.set('n', 'yow', function()
@@ -642,6 +648,11 @@ vim.keymap.set('n', 'N', '"nN"[v:searchforward]', { expr = true })
 vim.keymap.set('n', ';', 'getcharsearch().forward ? ";" : ","', { expr = true })
 vim.keymap.set('n', ',', 'getcharsearch().forward ? "," : ";"', { expr = true })
 vim.keymap.set('n', 'gp', '`[v`]')
+vim.keymap.set('n', '<c-q>l', function()
+    vim.fn.setloclist(vim.fn.winnr(), vim.fn.getqflist())
+    vim.cmd('cclose')
+    vim.cmd('lopen')
+end)
 
 vim.keymap.set('n', '<leader>tf', '<cmd>TestFile<cr>')
 vim.keymap.set('n', '<leader>tn', '<cmd>TestNearest<cr>')
@@ -728,12 +739,9 @@ vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
-vim.cmd('command! LlistToQlist call setqflist(getloclist(winnr()))')
-vim.cmd('command! ClistToLlist call setloclist(winnr(), getqflist())')
 
 vim.g.qf_disable_statusline = true -- This should be the default
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
-vim.g.Illuminate_ftwhitelist = { 'vim' } -- Only use lsp highlighting from the plugin
 vim.g.netrw_banner = false
 vim.g.Hexokinase_highlighters = { 'backgroundfull' }
 vim.g.Hexokinase_optInPatterns = { 'full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla' }
@@ -747,5 +755,4 @@ vim.g.vimtex_compiler_latexmk = {
 vim.g['test#strategy'] = 'neovim'
 vim.g.tex_flavor = 'latex'
 vim.g.loaded_ruby_provider = false
-vim.g.Illuminate_delay = 100
 vim.g.vimsyn_embed = 'l'
