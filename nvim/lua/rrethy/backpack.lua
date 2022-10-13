@@ -8,11 +8,7 @@ local run_stack  = {}
 local MAX_TASKS  = 10
 
 local function to_git_url(author, plugin)
-    if vim.env.BACKPACK_NO_SSH == nil and author == 'RRethy' then
-        return string.format('git@github.com:%s/%s.git', author, plugin)
-    else
-        return string.format('https://github.com/%s/%s.git', author, plugin)
-    end
+    return string.format('https://github.com/%s/%s.git', author, plugin)
 end
 
 local function parse_url(url)
