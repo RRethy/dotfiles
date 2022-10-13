@@ -1,5 +1,6 @@
 require('rrethy.backpack').setup()
 
+local current_file = string.sub(debug.getinfo(1).source, 2)
 local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
 local lspconfig = require('lspconfig')
@@ -31,10 +32,9 @@ local function watch_file(fname, cb, time)
     File_watchers[fname]:start(fname, time, vim.schedule_wrap(cb))
 end
 
-local init_lua = vim.fn.stdpath('config') .. '/init.lua'
-watch_file(init_lua, function()
-    dofile(init_lua)
-    vim.notify('Reloaded init.lua', vim.lsp.log_levels.INFO)
+watch_file(current_file, function()
+    dofile(current_file)
+    vim.notify('Reloaded ' .. current_file, vim.lsp.log_levels.INFO)
 end, 500)
 
 -- this files holds a single line describing my terminal and Neovim colorscheme. e.g. base16-schemer-dark
@@ -138,14 +138,18 @@ require('illuminate').configure({
 require('indent_blankline').setup({
     show_current_context = true,
     indent_blankline_char = '│',
-    indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby' },
+    indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby', 'yaml' },
     indent_blankline_use_treesitter = true,
 })
 require('Comment').setup()
 require('nvim-autopairs').setup({
     check_ts = true,
 })
-require('mason').setup({})
+require('mason').setup({
+    ui = {
+        border = 'single',
+    },
+})
 require('mason-lspconfig').setup({
     ensure_installed = {
         'lua-language-server',
@@ -185,7 +189,7 @@ local function on_attach(client, bufnr)
     vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, { buffer = true })
     vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, { buffer = true })
     if client and client.supports_method('textDocument/formatting') then
-        local format_enabled = false
+        local format_enabled = true
         vim.api.nvim_buf_create_user_command(0, 'FormatDisable', function() format_enabled = false end, {})
         vim.api.nvim_buf_create_user_command(0, 'FormatEnable', function() format_enabled = true end, {})
         local lsp_augroup = 'rrethy_lsp_augroup' .. bufnr
@@ -194,6 +198,7 @@ local function on_attach(client, bufnr)
             group = lsp_augroup,
             buffer = bufnr,
             callback = function()
+                print('formatting', format_enabled)
                 if format_enabled then
                     vim.lsp.buf.format({ timeout_ms = 3000 })
                 end
@@ -312,12 +317,20 @@ vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler,
 treesitter.setup {
     highlight = {
         enable = true,
-        disable = { 'latex', 'haskell', 'python' },
     },
     playground = {
         enable = true,
     },
     textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+                ["ia"] = "@parameter.inner",
+                ["aa"] = "@parameter.outer",
+            },
+            include_surrounding_whitespace = true,
+        },
         move = {
             enable = true,
             goto_next_start = {
@@ -629,7 +642,6 @@ end)
 vim.keymap.set('n', '<c-w>t', '<cmd>tabnew<cr>')
 -- clear line
 vim.keymap.set('n', 'cl', '0D')
--- why isn't this default??? maybe it's because of old keyboard configuration
 vim.keymap.set('n', "'", '`')
 -- like <c-e> and <c-y> but for horizontal
 vim.keymap.set('n', '<A-l>', '2zl')
@@ -740,19 +752,17 @@ vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
 
-vim.g.qf_disable_statusline = true -- This should be the default
+vim.g.qf_disable_statusline = true
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
+vim.g.loaded_netrwPlugin = true -- don't load netrw
 vim.g.netrw_banner = false
-vim.g.Hexokinase_highlighters = { 'backgroundfull' }
-vim.g.Hexokinase_optInPatterns = { 'full_hex', 'triple_hex', 'rgb', 'rgba', 'hsl', 'hsla' }
-vim.g.Hexokinase_refreshEvents = { 'BufRead', 'BufWrite' }
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_view_method = 'skim'
 vim.g.vimtex_quickfix_mode = true
 vim.g.vimtex_compiler_latexmk = {
     options = { '-pdf', '-shell-escape', '-verbose', '-file-line-error', '-synctex=1', '-interaction=nonstopmode' }
 }
-vim.g['test#strategy'] = 'neovim'
 vim.g.tex_flavor = 'latex'
+vim.g['test#strategy'] = 'neovim'
 vim.g.loaded_ruby_provider = false
 vim.g.vimsyn_embed = 'l'

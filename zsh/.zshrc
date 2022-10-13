@@ -41,7 +41,7 @@ system_env() {
         echo -n "\xea\xa9\x9c"
     fi
 }
-PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
+PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
 precmd() {
     # Setup title bar to pwd tail
     print -Pn "\e]0;%~\a"
