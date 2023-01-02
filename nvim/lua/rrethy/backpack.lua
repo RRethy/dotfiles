@@ -1,11 +1,11 @@
 local M = {}
 
-local opt      = vim.fn.stdpath('data') .. '/site/pack/backpack/opt/'
+local opt = vim.fn.stdpath('data') .. '/site/pack/backpack/opt/'
 local manifest = vim.fn.stdpath('config') .. '/packmanifest.lua'
 
 local wait_stack = {}
-local run_stack  = {}
-local MAX_TASKS  = 10
+local run_stack = {}
+local MAX_TASKS = 10
 
 local function to_git_url(author, plugin)
     return string.format('https://github.com/%s/%s.git', author, plugin)
@@ -17,12 +17,7 @@ local function parse_url(url)
         return
     end
 
-    local git_url
-    if username == 'RRethy' then
-        git_url = string.format('git@github.com:%s/%s.git', username, plugin)
-    else
-        git_url = string.format('https://github.com/%s/%s.git', username, plugin)
-    end
+    local git_url = string.format('https://github.com/%s/%s.git', username, plugin)
 
     return git_url, username, plugin
 end

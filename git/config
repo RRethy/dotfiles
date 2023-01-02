@@ -16,7 +16,7 @@
     enabled = true
 [merge]
     tool = fugitive
-    conflictStyle = diff3
+    ; conflictStyle = diff3
 [mergetool "fugitive"]
     cmd = nvim -f -c "Gdiff" "$MERGED"
 [diff]

@@ -1,4 +1,5 @@
 vim.cmd('packadd! cfilter')
+use { 'RRethy/diffview.nvim' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
@@ -21,6 +22,7 @@ use { 'nvim-telescope/telescope-fzy-native.nvim' }
 use { 'nvim-telescope/telescope-symbols.nvim' }
 use { 'nvim-telescope/telescope.nvim' }
 use { 'nvim-treesitter/nvim-treesitter' }
+use { 'nvim-treesitter/nvim-treesitter-refactor' }
 use { 'nvim-treesitter/nvim-treesitter-textobjects' }
 use { 'nvim-treesitter/playground' }
 use { 'rcarriga/nvim-notify' } -- bug with quickfix line
@@ -38,3 +40,5 @@ use { 'wsdjeg/vim-fetch' }
 use { 'williamboman/mason.nvim' }
 use { 'williamboman/mason-lspconfig.nvim' }
 use { 'dstein64/vim-startuptime' }
+use { 'nvim-treesitter/nvim-treesitter-context' }
+use { 'nvim-treesitter/nvim-treesitter-context' }

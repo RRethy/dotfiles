@@ -5,9 +5,7 @@ local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
 local lspconfig = require('lspconfig')
 local telescope = require('telescope')
-local telescope_builtin = require('telescope.builtin')
 local telescope_actions = require('telescope.actions')
-local log = require('vim.lsp.log')
 
 vim.g.mapleader = ' '
 
@@ -93,6 +91,17 @@ vim.keymap.set('n', '<leader>c', function()
     }):find()
 end)
 vim.cmd('colorscheme ' .. vim.fn.readfile(base16_theme_fname)[1])
+vim.cmd('hi DiffChange       guibg=NONE    guifg=NONE gui=NONE')
+vim.cmd('hi DiffText         guibg=#342e3c guifg=NONE gui=NONE')
+vim.cmd('hi DiffAdded        guibg=#2e3c34 guifg=NONE gui=NONE')
+vim.cmd('hi DiffAdd          guibg=#2c3732 guifg=NONE gui=NONE')
+vim.cmd('hi DiffDeleteAsAdd  guibg=#2c3732 guifg=NONE gui=NONE')
+vim.cmd('hi DiffDelete       guibg=#3e2f32 guifg=NONE gui=NONE')
+vim.cmd('hi DiffAddAsDelete  guibg=#3e2f32 guifg=NONE gui=NONE')
+vim.cmd('hi DiffTextAdd      guibg=#3e543f guifg=NONE gui=NONE')
+vim.cmd('hi DiffTextDelete   guibg=#693d3c guifg=NONE gui=NONE')
+vim.cmd('hi DiffChangeAdd    guibg=#2c3732 guifg=NONE gui=NONE')
+vim.cmd('hi DiffChangeDelete guibg=#3e2f32 guifg=NONE gui=NONE')
 
 local ERROR_ICON = ''
 local WARN_ICON = ''
@@ -128,13 +137,16 @@ notify.setup({
     }
 })
 
-require('illuminate').configure({
-    large_file_cutoff = 12500,
-    large_file_overrides = {
-        providers = { 'regex' },
-        delay = 500,
-    }
+require('diffview').setup({
+    enhanced_diff_hl = true,
 })
+require('illuminate').configure({
+    large_file_cutoff = 5000,
+})
+require 'treesitter-context'.setup({
+    enable = true,
+})
+-- require('gitsigns').setup()
 require('indent_blankline').setup({
     show_current_context = true,
     indent_blankline_char = '│',
@@ -152,7 +164,7 @@ require('mason').setup({
 })
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'lua-language-server',
+        'sumneko_lua',
         'gopls',
         'sorbet',
         'rust_analyzer',
@@ -183,7 +195,7 @@ local function on_attach(client, bufnr)
     vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, { buffer = true })
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = true })
     vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, { buffer = true })
-    vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
+    -- vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = true })
     vim.keymap.set('n', 'gu', vim.lsp.buf.references, { buffer = true })
     vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, { buffer = true })
@@ -226,6 +238,7 @@ lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
         },
     },
 }))
+lspconfig.texlab.setup(default_lsp_config)
 lspconfig.gopls.setup(default_lsp_config)
 lspconfig.sorbet.setup(default_lsp_config)
 lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
@@ -253,6 +266,7 @@ lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
                     'teardown',
                     'pending',
                     'bit',
+                    'use',
                 },
             },
             workspace = {
@@ -272,7 +286,7 @@ lspconfig.dartls.setup(vim.tbl_extend("force", default_lsp_config, {
 
 local function location_handler(_, result, ctx, _, config)
     if result == nil or vim.tbl_isempty(result) then
-        local _ = log.info() and log.info(ctx.method, 'No location found')
+        local _ = require('vim.lsp.log').info() and require('vim.lsp.log').info(ctx.method, 'No location found')
         return nil
     end
     local client = vim.lsp.get_client_by_id(ctx.client_id)
@@ -390,26 +404,20 @@ telescope.setup {
 telescope.load_extension('fzy_native')
 telescope.load_extension('fzf')
 vim.keymap.set('n', '<c-p>', function()
-    telescope_builtin.find_files(require('telescope.themes').get_dropdown({ previewer = false }))
+    require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({ previewer = false }))
 end)
 vim.keymap.set('n', '<leader>b', function()
-    telescope_builtin.buffers(require('telescope.themes').get_dropdown({ previewer = false }))
+    require('telescope.builtin').buffers(require('telescope.themes').get_dropdown({ previewer = false }))
 end)
-vim.keymap.set('n', '<leader>h', telescope_builtin.help_tags)
-vim.keymap.set('n', '<leader>g', telescope_builtin.live_grep)
+vim.keymap.set('n', '<leader>h', require('telescope.builtin').help_tags)
+vim.keymap.set('n', '<leader>g', require('telescope.builtin').live_grep)
 vim.keymap.set('n', '<a-g>', function()
     vim.ui.input({ prompt = 'Directory to search: ', completion = 'dir' }, function(input)
         if input and #input > 0 then
-            telescope_builtin.live_grep({ search_dirs = { input } })
+            require('telescope.builtin').live_grep({ search_dirs = { input } })
         end
     end)
 end)
-
-vim.cmd('hi DiffAdd     guibg=#2e3c34 guifg=NONE gui=NONE')
-vim.cmd('hi DiffChange  guibg=NONE    guifg=NONE gui=NONE')
-vim.cmd('hi DiffDelete  guibg=#342426 guifg=NONE gui=NONE')
-vim.cmd('hi DiffText    guibg=#342e3c guifg=NONE gui=NONE')
-vim.cmd('hi DiffAdded   guibg=#2e3c34 guifg=NONE gui=NONE')
 
 if vim.fn.has('vim_starting') then
     vim.opt.tabstop = 4
@@ -420,7 +428,6 @@ if vim.fn.has('vim_starting') then
 end
 vim.opt.fillchars = 'diff: '
 vim.opt.foldmethod = 'expr'
-vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.inccommand = 'nosplit'
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -443,6 +450,7 @@ vim.opt.ruler = false
 vim.opt.showmatch = true
 vim.opt.matchtime = 5
 vim.opt.spelllang = 'en_ca'
+vim.opt.spell = true
 vim.opt.shortmess:append('Ic')
 vim.opt.startofline = false
 vim.opt.backup = true
@@ -554,6 +562,7 @@ on_ft('ruby', function()
     vim.bo.tabstop = 2
     vim.bo.softtabstop = 2
     vim.bo.shiftwidth = 2
+    vim.bo.iskeyword = vim.bo.iskeyword .. ',!'
 end)
 on_ft({ 'c', 'cpp', 'java' }, function()
     vim.bo.commentstring = '// %s'
@@ -747,6 +756,22 @@ vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<C
 vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
 
 vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
+
+vim.keymap.set('n', 'gr', function()
+    local lsp_support = false
+    if vim.lsp.for_each_buffer_client then
+        vim.lsp.for_each_buffer_client(0, function(client)
+            if client and client.supports_method('textDocument/rename') then
+                lsp_support = true
+            end
+        end)
+    end
+    if lsp_support then
+        vim.lsp.buf.rename()
+    else
+        require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
+    end
+end)
 
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')

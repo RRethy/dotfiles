@@ -20,7 +20,8 @@ compinit
 # case insensitive completion
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
 # expand /u/lo/b to /usr/local/bin
-zstyle ':completion:*' list-suffixes zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' list-suffixes
+zstyle ':completion:*' expand prefix suffix
 # show the currently selected completion candidate
 zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
@@ -43,9 +44,18 @@ system_env() {
 }
 PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
 precmd() {
-    # Setup title bar to pwd tail
-    print -Pn "\e]0;%~\a"
-    # print -Pn "\e]0;%1~\a"
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        if [[ "$PWD" == "$HOME" ]]; then
+            kitty @ set-tab-title "~" 
+        elif [[ "$PWD" == "$HOME"* ]]; then
+            kitty @ set-tab-title "$(pwd | sed -En 's/.*\/([^\/]+)$/\1/p')"
+        else
+            kitty @ set-tab-title "$PWD"
+        fi
+    fi
+    # I used to use this print statement, but it broke due to a security
+    # vulnerability patch
+    # print -Pn "\e]0;%~\a"
 }
 
 # some readline movements
