@@ -137,6 +137,7 @@ notify.setup({
     }
 })
 
+require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
@@ -154,9 +155,9 @@ require('indent_blankline').setup({
     indent_blankline_use_treesitter = true,
 })
 require('Comment').setup()
-require('nvim-autopairs').setup({
-    check_ts = true,
-})
+-- require('nvim-autopairs').setup({
+--     check_ts = true,
+-- })
 require('mason').setup({
     ui = {
         border = 'single',
@@ -170,6 +171,80 @@ require('mason-lspconfig').setup({
         'rust_analyzer',
     },
 })
+require("inlay-hints").setup()
+require('mini.completion').setup({})
+-- delay = { completion = 100, info = 100, signature = 50 },
+-- window = {
+--     info = { height = 25, width = 80, border = 'single' },
+--     signature = { height = 25, width = 80, border = 'single' },
+-- },
+-- })
+-- local cmp = require('cmp')
+-- cmp.setup({
+--     completion = {
+--         autocomplete = false,
+--     },
+--     performance = {
+--         debounce = 250
+--     },
+--     preselect = cmp.PreselectMode.None,
+--     sorting = {
+--         priority_weight = 2,
+--         comparators = {
+--             require('cmp.config.compare').kind,
+--             require('cmp.config.compare').sort_text,
+--         },
+--     },
+--     formatting = {
+--         fields = { "kind", "abbr", "menu" },
+--         format = function(entry, vim_item)
+--             local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+--             local strings = vim.split(kind.kind, "%s", { trimempty = true })
+--             kind.kind = " " .. (strings[1] or "") .. " "
+--             kind.menu = "    [" .. (strings[2] or "") .. "]"
+--             return kind
+--         end,
+--         expandable_indicator = false,
+--     },
+--     window = {
+--         documentation = {
+--             border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
+--             winhighlight = 'FloatBorder:NormalFloat',
+--         },
+--         completion = {
+--             winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuSel,Search:None',
+--             scrolloff = 0,
+--             col_offset = -3,
+--             side_padding = 0,
+--             scrollbar = true,
+--         },
+--     },
+--     sources = {
+--         { name = 'nvim_lsp' },
+--     },
+--     mapping = {
+--         ['<c-x><c-o>'] = cmp.mapping.complete({
+--             config = {
+--                 sources = {
+--                     { name = 'nvim_lsp' },
+--                 },
+--             },
+--         }),
+--         ['<c-x><c-n>'] = cmp.mapping.complete({
+--             config = {
+--                 sources = {
+--                     { name = 'buffer' },
+--                 },
+--             },
+--         }),
+--         ['<c-n>'] = cmp.mapping.select_next_item(),
+--         ['<c-p>'] = cmp.mapping.select_prev_item(),
+--         ['<c-y>'] = cmp.mapping.confirm({ select = true }),
+--         ['<c-e>'] = cmp.mapping.abort(),
+--         ['<C-d>'] = cmp.mapping.scroll_docs(4),
+--         ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+--     },
+-- })
 
 local function on_attach(client, bufnr)
     vim.keymap.set(
@@ -217,7 +292,7 @@ local function on_attach(client, bufnr)
             end,
         })
     end
-    vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
+    -- vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
 end
 
 local default_lsp_config = {
@@ -235,11 +310,28 @@ lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
             procMacro = {
                 enable = true
             },
+            inlay_hints = {
+                auto = false,
+            },
         },
     },
 }))
 lspconfig.texlab.setup(default_lsp_config)
-lspconfig.gopls.setup(default_lsp_config)
+lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
+    settings = {
+        gopls = {
+            hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+            },
+        },
+    },
+}))
 lspconfig.sorbet.setup(default_lsp_config)
 lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
@@ -328,9 +420,13 @@ vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler,
 vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, { loclist = true })
 vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, { loclist = true })
 
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.opt.foldenable = false
 treesitter.setup {
     highlight = {
         enable = true,
+        disable = { 'python' }
     },
     playground = {
         enable = true,
@@ -451,7 +547,7 @@ vim.opt.showmatch = true
 vim.opt.matchtime = 5
 vim.opt.spelllang = 'en_ca'
 vim.opt.spell = true
-vim.opt.shortmess:append('Ic')
+-- vim.opt.shortmess:append('Ic')
 vim.opt.startofline = false
 vim.opt.backup = true
 vim.opt.backupdir = vim.fn.expand('~/.local/share/nvim/backup')
@@ -459,7 +555,7 @@ vim.opt.lazyredraw = true
 vim.opt.grepprg = 'rg --smart-case --vimgrep $*'
 vim.opt.grepformat = '%f:%l:%c:%m'
 vim.opt.cpoptions:append('>')
-vim.opt.completeopt = 'menu'
+-- vim.opt.completeopt = 'menu'
 vim.opt.hlsearch = true
 vim.opt.pumblend = 10
 vim.opt.signcolumn = 'number'
@@ -776,6 +872,36 @@ end)
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
+
+-- vim.cmd('hi CmpItemAbbrDeprecated guifg=#7E8294 guibg=NONE gui=strikethrough')
+-- vim.cmd('hi CmpItemAbbrMatch guifg=#82AAFF guibg=NONE gui=bold')
+-- vim.cmd('hi CmpItemAbbrMatchFuzzy guifg=#82AAFF guibg=NONE gui=bold')
+-- vim.cmd('hi CmpItemMenu guifg=#C792EA guibg=NONE gui=italic')
+-- vim.cmd('hi CmpItemKindField guifg=#EED8DA guibg=#B5585F')
+-- vim.cmd('hi CmpItemKindProperty guifg=#EED8DA guibg=#B5585F')
+-- vim.cmd('hi CmpItemKindEvent guifg=#EED8DA guibg=#B5585F')
+-- vim.cmd('hi CmpItemKindText guifg=#C3E88D guibg=#9FBD73')
+-- vim.cmd('hi CmpItemKindEnum guifg=#C3E88D guibg=#9FBD73')
+-- vim.cmd('hi CmpItemKindKeyword guifg=#C3E88D guibg=#9FBD73')
+-- vim.cmd('hi CmpItemKindConstant guifg=#FFE082 guibg=#D4BB6C')
+-- vim.cmd('hi CmpItemKindConstructor guifg=#FFE082 guibg=#D4BB6C')
+-- vim.cmd('hi CmpItemKindReference guifg=#FFE082 guibg=#D4BB6C')
+-- vim.cmd('hi CmpItemKindFunction guifg=#EADFF0 guibg=#A377BF')
+-- vim.cmd('hi CmpItemKindStruct guifg=#EADFF0 guibg=#A377BF')
+-- vim.cmd('hi CmpItemKindClass guifg=#EADFF0 guibg=#A377BF')
+-- vim.cmd('hi CmpItemKindModule guifg=#EADFF0 guibg=#A377BF')
+-- vim.cmd('hi CmpItemKindOperator guifg=#EADFF0 guibg=#A377BF')
+-- vim.cmd('hi CmpItemKindVariable guifg=#C5CDD9 guibg=#7E8294')
+-- vim.cmd('hi CmpItemKindFile guifg=#C5CDD9 guibg=#7E8294')
+-- vim.cmd('hi CmpItemKindUnit guifg=#F5EBD9 guibg=#D4A959')
+-- vim.cmd('hi CmpItemKindSnippet guifg=#F5EBD9 guibg=#D4A959')
+-- vim.cmd('hi CmpItemKindFolder guifg=#F5EBD9 guibg=#D4A959')
+-- vim.cmd('hi CmpItemKindMethod guifg=#DDE5F5 guibg=#6C8ED4')
+-- vim.cmd('hi CmpItemKindValue guifg=#DDE5F5 guibg=#6C8ED4')
+-- vim.cmd('hi CmpItemKindEnumMember guifg=#DDE5F5 guibg=#6C8ED4')
+-- vim.cmd('hi CmpItemKindInterface guifg=#D8EEEB guibg=#58B5A8')
+-- vim.cmd('hi CmpItemKindColor guifg=#D8EEEB guibg=#58B5A8')
+-- vim.cmd('hi CmpItemKindTypeParameter guifg=#D8EEEB guibg=#58B5A8')
 
 vim.g.qf_disable_statusline = true
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch

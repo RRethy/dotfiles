@@ -1,6 +1,7 @@
 [user]
     name = Adam P. Regasz-Rethy
-    email = adam.regaszrethy@shopify.com
+    ; email = adam.regaszrethy@shopify.com
+    email = adam.regaszrethy@gmail.com
     ; email = "if [[ $PERSONAL_LAPTOP -eq 1 ]]; then EMAIL='adam.regaszrethy@gmail.com'; else EMAIL='adam.regaszrethy@shopify.com'; fi; $EMAIL"
 [core]
     editor = nvim

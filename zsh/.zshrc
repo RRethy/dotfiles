@@ -214,7 +214,7 @@ alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 # alias python="python3"
 alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
 alias todo="kitty @ set-tab-title todo;v ~/.todo/hometodo.md -c 'cd %:p:h'"
-command -v rwc &> /dev/null && alias wc="rwc"
+# command -v rwc &> /dev/null && alias wc="rwc"
 if [[ $(command -v gls) ]]; then
     # alias ls="gls --hyperlink=auto --color -p"
     alias ls="gls --color -p"
