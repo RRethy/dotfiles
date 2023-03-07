@@ -162,7 +162,7 @@ require('mason').setup({
 })
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'lua-language-server',
+        'lua_ls',
         'gopls',
         'sorbet',
         'rust_analyzer',
@@ -264,7 +264,7 @@ lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
     },
 }))
 lspconfig.sorbet.setup(default_lsp_config)
-lspconfig.sumneko_lua.setup(vim.tbl_extend("force", default_lsp_config, {
+lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
         Lua = {
             format = {
