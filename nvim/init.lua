@@ -154,9 +154,7 @@ require('indent_blankline').setup({
     indent_blankline_use_treesitter = true,
 })
 require('Comment').setup()
--- require('nvim-autopairs').setup({
---     check_ts = true,
--- })
+-- require("lsp-inlayhints").setup()
 require('mason').setup({
     ui = {
         border = 'single',
@@ -170,7 +168,6 @@ require('mason-lspconfig').setup({
         'rust_analyzer',
     },
 })
-require("inlay-hints").setup()
 require('mini.completion').setup({
     delay = { completion = 10 ^ 7, info = 400, signature = 50 },
     window = {
@@ -246,9 +243,6 @@ lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
             },
             procMacro = {
                 enable = true
-            },
-            inlay_hints = {
-                auto = false,
             },
         },
     },
@@ -357,9 +351,9 @@ vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler,
 vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, { loclist = true })
 vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, { loclist = true })
 
-vim.opt.foldmethod = 'expr'
-vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.opt.foldenable = false
+vim.opt.foldmethod                              = 'expr'
+vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
+vim.opt.foldenable                              = false
 treesitter.setup {
     highlight = {
         enable = true,
@@ -617,6 +611,20 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank({ timeout = 250 })
     end,
 })
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = init_lua_augroup,
+    callback = function(args)
+        -- print(">>", vim.inspect(args))
+        if not (args.data and args.data.client_id) then
+            return
+        end
+
+        require("lsp-inlayhints").on_attach(
+            vim.lsp.get_client_by_id(args.data.client_id),
+            args.buf
+        )
+    end,
+})
 
 vim.fn.mkdir(vim.fn.stdpath('data') .. '/backup/', 'p')
 
@@ -753,7 +761,6 @@ vim.keymap.set('n', '<c-l>', '<c-w>l')
 vim.keymap.set('n', '<c-k>', '<c-w>k')
 vim.keymap.set('n', '<c-j>', '<c-w>j')
 vim.keymap.set('n', '<c-h>', '<c-w>h')
-
 vim.keymap.set('n', '<c-w>l', function()
     vim.cmd('lclose')
 end)
@@ -843,7 +850,7 @@ vim.cmd('hi! link MiniCompletionActiveParameter CursorLine')
 
 vim.g.qf_disable_statusline = true
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch
-vim.g.loaded_netrwPlugin = true -- don't load netrw
+vim.g.loaded_netrwPlugin = true     -- don't load netrw
 vim.g.netrw_banner = false
 vim.g.tex_flavor = 'latex'
 vim.g.vimtex_view_method = 'skim'

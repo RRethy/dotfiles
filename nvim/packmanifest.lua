@@ -35,7 +35,6 @@ use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
 use { 'tpope/vim-sleuth' }
 use { 'vim-test/vim-test' }
--- use { 'windwp/nvim-autopairs' }
 use { 'wsdjeg/vim-fetch' }
 use { 'williamboman/mason.nvim' }
 use { 'williamboman/mason-lspconfig.nvim' }
@@ -44,9 +43,6 @@ use { 'nvim-treesitter/nvim-treesitter-context' }
 use { 'nvim-treesitter/nvim-treesitter-context' }
 use { 'simrat39/symbols-outline.nvim' }
 use { 'github/copilot.vim' }
-use { 'simrat39/inlay-hints.nvim' }
 use { 'onsails/lspkind.nvim' }
--- use { 'hrsh7th/nvim-cmp' }
--- use { 'hrsh7th/cmp-buffer' }
--- use { 'hrsh7th/cmp-nvim-lsp' }
 use { 'echasnovski/mini.nvim' }
+use { 'lvimuser/lsp-inlayhints.nvim' }
