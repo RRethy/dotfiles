@@ -7,6 +7,8 @@ local lspconfig = require('lspconfig')
 local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
 
+-- vim.loader.enable()
+
 vim.g.mapleader = ' '
 
 File_watchers = File_watchers or {}
@@ -169,7 +171,7 @@ require('mason-lspconfig').setup({
     },
 })
 require('mini.completion').setup({
-    delay = { completion = 10 ^ 7, info = 400, signature = 50 },
+    delay = { completion = 10 ^ 7, info = 400, signature = 10 ^ 7 },
     window = {
         info = { height = 25, width = 80, border = 'single' },
         signature = { height = 25, width = 80, border = 'single' },
@@ -203,6 +205,7 @@ local function on_attach(client, bufnr)
     vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, { buffer = true })
     vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, { buffer = true })
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = true })
+    vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = true })
     vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, { buffer = true })
     -- vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = true })
@@ -237,12 +240,15 @@ local default_lsp_config = {
 }
 lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
-        ["rust-analyzer"] = {
+            ["rust-analyzer"] = {
             cargo = {
                 loadOutDirsFromCheck = true
             },
             procMacro = {
                 enable = true
+            },
+            checkOnSave = {
+                command = "clippy"
             },
         },
     },
@@ -294,8 +300,8 @@ lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
             },
             workspace = {
                 library = {
-                    [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-                    [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+                        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
                 },
             },
         },
@@ -367,18 +373,18 @@ treesitter.setup {
             enable = true,
             lookahead = true,
             keymaps = {
-                ["ia"] = "@parameter.inner",
-                ["aa"] = "@parameter.outer",
+                    ["ia"] = "@parameter.inner",
+                    ["aa"] = "@parameter.outer",
             },
             include_surrounding_whitespace = true,
         },
         move = {
             enable = true,
             goto_next_start = {
-                [']m'] = '@function.outer',
+                    [']m'] = '@function.outer',
             },
             goto_previous_start = {
-                ['[m'] = '@function.outer',
+                    ['[m'] = '@function.outer',
             },
         },
     },
@@ -389,9 +395,9 @@ treesitter.setup {
         enable = true,
         prev_selection = ',',
         keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
+                ['.'] = 'textsubjects-smart',
+                [';'] = 'textsubjects-container-outer',
+                ['i;'] = 'textsubjects-container-inner',
         },
     },
 }
@@ -414,16 +420,16 @@ telescope.setup {
         color_devicons = true,
         mappings = {
             i = {
-                ['<c-p>'] = telescope_actions.cycle_history_prev,
-                ['<c-n>'] = telescope_actions.cycle_history_next,
-                ['<esc>'] = telescope_actions.close,
-                ['<c-u>'] = false, -- inoremap'd to clear line
-                ['<c-a>'] = false, -- inoremap'd to move to start of line
-                ['<c-e>'] = false, -- inoremap'd to move to end of line
-                ['<c-w>'] = false, -- inoremap'd to delete previous word
-                ['<c-b>'] = telescope_actions.preview_scrolling_up,
-                ['<c-f>'] = telescope_actions.preview_scrolling_down,
-                ['<c-l>'] = telescope_actions.smart_send_to_loclist,
+                    ['<c-p>'] = telescope_actions.cycle_history_prev,
+                    ['<c-n>'] = telescope_actions.cycle_history_next,
+                    ['<esc>'] = telescope_actions.close,
+                    ['<c-u>'] = false, -- inoremap'd to clear line
+                    ['<c-a>'] = false, -- inoremap'd to move to start of line
+                    ['<c-e>'] = false, -- inoremap'd to move to end of line
+                    ['<c-w>'] = false, -- inoremap'd to delete previous word
+                    ['<c-b>'] = telescope_actions.preview_scrolling_up,
+                    ['<c-f>'] = telescope_actions.preview_scrolling_down,
+                    ['<c-l>'] = telescope_actions.smart_send_to_loclist,
             }
         }
     },
@@ -614,7 +620,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd("LspAttach", {
     group = init_lua_augroup,
     callback = function(args)
-        -- print(">>", vim.inspect(args))
         if not (args.data and args.data.client_id) then
             return
         end
@@ -816,37 +821,6 @@ end)
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
-
--- vim.cmd('hi CmpItemAbbrDeprecated guifg=#7E8294 guibg=NONE gui=strikethrough')
--- vim.cmd('hi CmpItemAbbrMatch guifg=#82AAFF guibg=NONE gui=bold')
--- vim.cmd('hi CmpItemAbbrMatchFuzzy guifg=#82AAFF guibg=NONE gui=bold')
--- vim.cmd('hi CmpItemMenu guifg=#C792EA guibg=NONE gui=italic')
--- vim.cmd('hi CmpItemKindField guifg=#EED8DA guibg=#B5585F')
--- vim.cmd('hi CmpItemKindProperty guifg=#EED8DA guibg=#B5585F')
--- vim.cmd('hi CmpItemKindEvent guifg=#EED8DA guibg=#B5585F')
--- vim.cmd('hi CmpItemKindText guifg=#C3E88D guibg=#9FBD73')
--- vim.cmd('hi CmpItemKindEnum guifg=#C3E88D guibg=#9FBD73')
--- vim.cmd('hi CmpItemKindKeyword guifg=#C3E88D guibg=#9FBD73')
--- vim.cmd('hi CmpItemKindConstant guifg=#FFE082 guibg=#D4BB6C')
--- vim.cmd('hi CmpItemKindConstructor guifg=#FFE082 guibg=#D4BB6C')
--- vim.cmd('hi CmpItemKindReference guifg=#FFE082 guibg=#D4BB6C')
--- vim.cmd('hi CmpItemKindFunction guifg=#EADFF0 guibg=#A377BF')
--- vim.cmd('hi CmpItemKindStruct guifg=#EADFF0 guibg=#A377BF')
--- vim.cmd('hi CmpItemKindClass guifg=#EADFF0 guibg=#A377BF')
--- vim.cmd('hi CmpItemKindModule guifg=#EADFF0 guibg=#A377BF')
--- vim.cmd('hi CmpItemKindOperator guifg=#EADFF0 guibg=#A377BF')
--- vim.cmd('hi CmpItemKindVariable guifg=#C5CDD9 guibg=#7E8294')
--- vim.cmd('hi CmpItemKindFile guifg=#C5CDD9 guibg=#7E8294')
--- vim.cmd('hi CmpItemKindUnit guifg=#F5EBD9 guibg=#D4A959')
--- vim.cmd('hi CmpItemKindSnippet guifg=#F5EBD9 guibg=#D4A959')
--- vim.cmd('hi CmpItemKindFolder guifg=#F5EBD9 guibg=#D4A959')
--- vim.cmd('hi CmpItemKindMethod guifg=#DDE5F5 guibg=#6C8ED4')
--- vim.cmd('hi CmpItemKindValue guifg=#DDE5F5 guibg=#6C8ED4')
--- vim.cmd('hi CmpItemKindEnumMember guifg=#DDE5F5 guibg=#6C8ED4')
--- vim.cmd('hi CmpItemKindInterface guifg=#D8EEEB guibg=#58B5A8')
--- vim.cmd('hi CmpItemKindColor guifg=#D8EEEB guibg=#58B5A8')
--- vim.cmd('hi CmpItemKindTypeParameter guifg=#D8EEEB guibg=#58B5A8')
-vim.cmd('hi! link MiniCompletionActiveParameter CursorLine')
 
 vim.g.qf_disable_statusline = true
 vim.g.Eunuch_find_executable = 'fd' -- I use my fork of vim-eunuch

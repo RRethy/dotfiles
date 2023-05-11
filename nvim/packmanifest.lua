@@ -40,7 +40,6 @@ use { 'williamboman/mason.nvim' }
 use { 'williamboman/mason-lspconfig.nvim' }
 use { 'dstein64/vim-startuptime' }
 use { 'nvim-treesitter/nvim-treesitter-context' }
-use { 'nvim-treesitter/nvim-treesitter-context' }
 use { 'simrat39/symbols-outline.nvim' }
 use { 'github/copilot.vim' }
 use { 'onsails/lspkind.nvim' }
