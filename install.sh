@@ -40,7 +40,7 @@ sudo add-apt-repository -y ppa:neovim-ppa/unstable
 sudo apt update
 sudo apt install -y neovim
 
-nvim -c "PackUpdate"
+nvim -c "PackUpdate" -c "q"
 cd "$XDG_DATA_HOME/nvim/site/pack/backpack/opt/telescope-fzy-native.nvim/"
 git submodule update
 git submodule init

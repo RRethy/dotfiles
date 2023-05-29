@@ -240,7 +240,7 @@ local default_lsp_config = {
 }
 lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
-            ["rust-analyzer"] = {
+        ["rust-analyzer"] = {
             cargo = {
                 loadOutDirsFromCheck = true
             },
@@ -300,8 +300,8 @@ lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
             },
             workspace = {
                 library = {
-                        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-                        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+                    [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                    [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
                 },
             },
         },
@@ -373,18 +373,18 @@ treesitter.setup {
             enable = true,
             lookahead = true,
             keymaps = {
-                    ["ia"] = "@parameter.inner",
-                    ["aa"] = "@parameter.outer",
+                ["ia"] = "@parameter.inner",
+                ["aa"] = "@parameter.outer",
             },
             include_surrounding_whitespace = true,
         },
         move = {
             enable = true,
             goto_next_start = {
-                    [']m'] = '@function.outer',
+                [']m'] = '@function.outer',
             },
             goto_previous_start = {
-                    ['[m'] = '@function.outer',
+                ['[m'] = '@function.outer',
             },
         },
     },
@@ -395,9 +395,9 @@ treesitter.setup {
         enable = true,
         prev_selection = ',',
         keymaps = {
-                ['.'] = 'textsubjects-smart',
-                [';'] = 'textsubjects-container-outer',
-                ['i;'] = 'textsubjects-container-inner',
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
         },
     },
 }
@@ -420,16 +420,16 @@ telescope.setup {
         color_devicons = true,
         mappings = {
             i = {
-                    ['<c-p>'] = telescope_actions.cycle_history_prev,
-                    ['<c-n>'] = telescope_actions.cycle_history_next,
-                    ['<esc>'] = telescope_actions.close,
-                    ['<c-u>'] = false, -- inoremap'd to clear line
-                    ['<c-a>'] = false, -- inoremap'd to move to start of line
-                    ['<c-e>'] = false, -- inoremap'd to move to end of line
-                    ['<c-w>'] = false, -- inoremap'd to delete previous word
-                    ['<c-b>'] = telescope_actions.preview_scrolling_up,
-                    ['<c-f>'] = telescope_actions.preview_scrolling_down,
-                    ['<c-l>'] = telescope_actions.smart_send_to_loclist,
+                ['<c-p>'] = telescope_actions.cycle_history_prev,
+                ['<c-n>'] = telescope_actions.cycle_history_next,
+                ['<esc>'] = telescope_actions.close,
+                ['<c-u>'] = false,     -- inoremap'd to clear line
+                ['<c-a>'] = false,     -- inoremap'd to move to start of line
+                ['<c-e>'] = false,     -- inoremap'd to move to end of line
+                ['<c-w>'] = false,     -- inoremap'd to delete previous word
+                ['<c-b>'] = telescope_actions.preview_scrolling_up,
+                ['<c-f>'] = telescope_actions.preview_scrolling_down,
+                ['<c-l>'] = telescope_actions.smart_send_to_loclist,
             }
         }
     },
