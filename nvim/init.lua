@@ -139,12 +139,24 @@ notify.setup({
     }
 })
 
+-- plugins
+require('ufo').setup({
+    provider_selector = function()
+        return { 'treesitter', 'indent' }
+    end
+})
 require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
 require('illuminate').configure({
-    large_file_cutoff = 5000,
+    large_file_cutoff = 10000,
+    -- large_file_overrides = {
+    --     providers = {
+    --         'lsp',
+    --         'regex',
+    --     },
+    -- }
 })
 require 'treesitter-context'.setup({
     enable = true,
@@ -180,6 +192,10 @@ require('mini.completion').setup({
         force_twostep = '<c-x><c-o>',
         force_fallback = '',
     },
+})
+require('gitsigns').setup({
+    signcolumn = true,
+    numhl = false,
 })
 
 local function on_attach(client, bufnr)
@@ -229,6 +245,7 @@ local function on_attach(client, bufnr)
             end,
         })
     end
+    require("lsp-inlayhints").on_attach(client, bufnr)
     -- vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
 end
 
@@ -269,6 +286,7 @@ lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
         },
     },
 }))
+
 lspconfig.sorbet.setup(default_lsp_config)
 lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
@@ -397,7 +415,7 @@ treesitter.setup {
         keymaps = {
             ['.'] = 'textsubjects-smart',
             [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
+            ['i;'] = { 'textsubjects-container-inner', desc = "Select inside containers (classes, functions, etc.)" },
         },
     },
 }
@@ -423,10 +441,10 @@ telescope.setup {
                 ['<c-p>'] = telescope_actions.cycle_history_prev,
                 ['<c-n>'] = telescope_actions.cycle_history_next,
                 ['<esc>'] = telescope_actions.close,
-                ['<c-u>'] = false,     -- inoremap'd to clear line
-                ['<c-a>'] = false,     -- inoremap'd to move to start of line
-                ['<c-e>'] = false,     -- inoremap'd to move to end of line
-                ['<c-w>'] = false,     -- inoremap'd to delete previous word
+                ['<c-u>'] = false, -- inoremap'd to clear line
+                ['<c-a>'] = false, -- inoremap'd to move to start of line
+                ['<c-e>'] = false, -- inoremap'd to move to end of line
+                ['<c-w>'] = false, -- inoremap'd to delete previous word
                 ['<c-b>'] = telescope_actions.preview_scrolling_up,
                 ['<c-f>'] = telescope_actions.preview_scrolling_down,
                 ['<c-l>'] = telescope_actions.smart_send_to_loclist,
@@ -495,7 +513,8 @@ vim.opt.cpoptions:append('>')
 -- vim.opt.completeopt = 'menu'
 vim.opt.hlsearch = true
 vim.opt.pumblend = 10
-vim.opt.signcolumn = 'number'
+-- vim.opt.signcolumn = 'number'
+vim.opt.signcolumn = 'yes:1'
 vim.opt.dictionary:append('/usr/share/dict/words')
 vim.opt.diffopt:append('hiddenoff')
 vim.opt.showtabline = 1
@@ -610,6 +629,11 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     group = init_lua_augroup,
     pattern = { 'tex' },
     command = '0r!cat ~/.config/nvim/skeletons/latex.skel',
+})
+vim.api.nvim_create_autocmd('BufRead', {
+    group = init_lua_augroup,
+    pattern = { 'Kptfile', 'manifest.yaml.lock' },
+    command = 'set filetype=yaml',
 })
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = init_lua_augroup,
