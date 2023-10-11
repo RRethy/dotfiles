@@ -242,28 +242,30 @@ function fzy_path {
 zle -N fzy_path
 bindkey '^T' fzy_path
 
-[[ -f /opt/dev/dev.sh ]] && source /opt/dev/dev.sh
-[[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+if [[ -f /opt/dev/dev.sh ]];then
+    [[ -f /opt/dev/dev.sh ]] && source /opt/dev/dev.sh
+    [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 
-# cloudplatform: add Shopify clusters to your local kubernetes config
-export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}"$HOME/.kube/config":"$HOME/.kube/config.shopify.cloudplatform"
-export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
-export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}/Users/adamregasz-rethy/.kube/config:/Users/adamregasz-rethy/.kube/config.shopify.cloudplatform
-if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
-    for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
-        source ${file};
-    done
+    # cloudplatform: add Shopify clusters to your local kubernetes config
+    export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}"$HOME/.kube/config":"$HOME/.kube/config.shopify.cloudplatform"
+    export KUBECONFIG=$KUBECONFIG:~/.kube/config.shopify.production-registry
+    export KUBECONFIG=${KUBECONFIG:+$KUBECONFIG:}/Users/adamregasz-rethy/.kube/config:/Users/adamregasz-rethy/.kube/config.shopify.cloudplatform
+    if [[ -d $HOME/src/github.com/Shopify/cloudplatform/workflow-utils ]]; then
+        for file in $HOME/src/github.com/Shopify/cloudplatform/workflow-utils/*.bash; do
+            source ${file};
+        done
+    fi
+    command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
+
+    function list_clusters {
+        k config view -o jsonpath='{.contexts}' | jq -Rc 'fromjson? | .[].name' | sed -En 's/"((apps|tierstaging)-.*)"/\1/p'
+    }
+
+    # The next line updates PATH for the Google Cloud SDK.
+    if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
+
+    # The next line enables shell command completion for gcloud.
+    if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
+
+    [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
-
-function list_clusters {
-    k config view -o jsonpath='{.contexts}' | jq -Rc 'fromjson? | .[].name' | sed -En 's/"((apps|tierstaging)-.*)"/\1/p'
-}
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
-
-[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"

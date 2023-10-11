@@ -46,5 +46,3 @@ use { 'onsails/lspkind.nvim' }
 use { 'echasnovski/mini.nvim' }
 use { 'lvimuser/lsp-inlayhints.nvim' }
 use { 'lewis6991/gitsigns.nvim' }
-use { 'kevinhwang91/nvim-ufo' }
-use { 'kevinhwang91/promise-async' }

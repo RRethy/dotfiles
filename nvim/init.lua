@@ -140,11 +140,6 @@ notify.setup({
 })
 
 -- plugins
-require('ufo').setup({
-    provider_selector = function()
-        return { 'treesitter', 'indent' }
-    end
-})
 require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
@@ -161,12 +156,19 @@ require('illuminate').configure({
 require 'treesitter-context'.setup({
     enable = true,
 })
-require('indent_blankline').setup({
-    show_current_context = true,
-    indent_blankline_char = '│',
-    indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby', 'yaml' },
-    indent_blankline_use_treesitter = true,
+require("ibl").setup({
+    indent = { char = "│" },
+    scope = {
+        show_start = false,
+        show_end = false,
+    },
 })
+-- require('indent_blankline').setup({
+--     show_current_context = true,
+--     indent_blankline_char = '│',
+--     indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby', 'yaml' },
+--     indent_blankline_use_treesitter = true,
+-- })
 require('Comment').setup()
 -- require("lsp-inlayhints").setup()
 require('mason').setup({
