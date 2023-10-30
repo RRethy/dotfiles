@@ -735,6 +735,8 @@ vim.keymap.set('n', '<right>', 'gt')
 vim.keymap.set('n', '<backspace>', '<c-^>')
 -- <leader>r replaces this for treesitter supported languages
 vim.keymap.set('n', '<c-s>', [[:%s/\C\<<c-r><c-w>\>/]])
+vim.keymap.set('n', '<c-f>', [[:call search('\v(^|\W)\zs\w', 'Wz')<CR>]], { silent = true })
+vim.keymap.set('n', '<c-b>', [[:call search('\v(^|\W)\zs\w', 'bW')<CR>]], { silent = true })
 vim.keymap.set('n', 'g>', '<cmd>20messages<cr>')
 vim.keymap.set('n', 'n', '"Nn"[v:searchforward]', { expr = true })
 vim.keymap.set('n', 'N', '"nN"[v:searchforward]', { expr = true })

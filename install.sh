@@ -28,6 +28,7 @@ ln -sf "$HOME/dotfiles/.base16_theme" "$HOME/.config/.base16_theme"
 
 # https://sw.kovidgoyal.net/kitty/faq/#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
 # tic -x -o \~/.terminfo ~/dotfiles/kitty/infocmp.txt
+# sudo apt-get install kitty-terminfo
 
 sudo apt-get install -y fzy
 sudo apt-get install -y fzf
