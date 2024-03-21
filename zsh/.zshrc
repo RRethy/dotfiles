@@ -32,6 +32,7 @@ GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUPSTREAM="verbose"
 GIT_PS1_SHOWCOLORHINTS=1
+source $XDG_CONFIG_HOME/zsh/kube-ps1.sh
 setopt prompt_subst
 system_env() {
     if [[ $OSTYPE == "darwin"* ]]; then
@@ -42,8 +43,11 @@ system_env() {
         echo -n "\xea\xa9\x9c"
     fi
 }
-PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
+# PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(kube_ps1) $(__git_ps1 "%s") '
+export PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
 precmd() {
+    # print -rP "$(kube_ps1)"
+
     if [[ "$(uname -s)" == "Darwin" ]]; then
         if [[ "$PWD" == "$HOME" ]]; then
             kitty @ set-tab-title "~" 
@@ -179,6 +183,7 @@ function - {
 }
 
 export GOPATH="$HOME/go"
+export GOBIN="$GOPATH/bin"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$XDG_CONFIG_HOME/bin"
@@ -269,3 +274,18 @@ if [[ -f /opt/dev/dev.sh ]];then
 
     [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+# # Load the kubectl completion code for zsh[1] into the current shell
+# source <(/opt/homebrew/bin/kubectl completion zsh)
+# # Set the kubectl completion code for zsh[1] to autoload on startup
+# /opt/homebrew/bin/kubectl completion zsh > "${fpath[1]}/_kubectl"
+
+# export PATH="$GOPATH/src/k8s.io/kubernetes/third_party/etcd:${PATH}"
+# GNUBINS="$(find `brew --prefix`/opt -type d -follow -name gnubin -print)"
+#
+# for bindir in ${GNUBINS[@]}
+# do
+#   export PATH=$bindir:$PATH
+# done
+#
+# export PATH

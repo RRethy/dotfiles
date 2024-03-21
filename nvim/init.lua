@@ -10,6 +10,7 @@ local telescope_actions = require('telescope.actions')
 -- vim.loader.enable()
 
 vim.g.mapleader = ' '
+vim.opt.termguicolors = true
 
 File_watchers = File_watchers or {}
 local watch_file_augroup = 'watch_file_augroup'
@@ -232,17 +233,31 @@ local function on_attach(client, bufnr)
     vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, { buffer = true })
     if client and client.supports_method('textDocument/formatting') then
         local format_enabled = true
-        vim.api.nvim_buf_create_user_command(0, 'FormatDisable', function() format_enabled = false end, {})
-        vim.api.nvim_buf_create_user_command(0, 'FormatEnable', function() format_enabled = true end, {})
+        vim.api.nvim_buf_create_user_command(bufnr, 'FormatDisable', function() format_enabled = false end, {})
+        vim.api.nvim_buf_create_user_command(bufnr, 'FormatEnable', function() format_enabled = true end, {})
         local lsp_augroup = 'rrethy_lsp_augroup' .. bufnr
         vim.api.nvim_create_augroup(lsp_augroup, { clear = true })
         vim.api.nvim_create_autocmd('BufWritePre', {
             group = lsp_augroup,
             buffer = bufnr,
             callback = function()
-                print('formatting', format_enabled)
+                if vim.bo.filetype == 'go' then
+                    local params = vim.lsp.util.make_range_params()
+                    params.context = { only = { "source.organizeImports" } }
+                    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+                    for cid, res in pairs(result or {}) do
+                        for _, r in pairs(res.result or {}) do
+                            if r.edit then
+                                local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+                                vim.lsp.util.apply_workspace_edit(r.edit, enc)
+                            end
+                        end
+                    end
+                end
+
                 if format_enabled then
-                    vim.lsp.buf.format({ timeout_ms = 3000 })
+                    print('formatting', format_enabled)
+                    vim.lsp.buf.format({ async = false, timeout_ms = 3000 })
                 end
             end,
         })
@@ -276,6 +291,11 @@ lspconfig.texlab.setup(default_lsp_config)
 lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
         gopls = {
+            analyses = {
+                unusedparams = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
             hints = {
                 assignVariableTypes = true,
                 compositeLiteralFields = true,
@@ -431,7 +451,7 @@ telescope.setup {
         fzf = {
             override_generic_sorter = true,
             override_file_sorter = false,
-        }
+        },
     },
     defaults = {
         prompt_prefix = ' ',
@@ -523,7 +543,6 @@ vim.opt.showtabline = 1
 vim.opt.timeoutlen = 250
 vim.opt.ttimeoutlen = -1
 vim.opt.equalalways = true
-vim.opt.termguicolors = true
 vim.opt.foldnestmax = 4
 vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
@@ -549,6 +568,16 @@ vim.opt.winbar = hotline.format {
     ' ',
     vim.fn.bufnr,
     ' ',
+    function()
+        local devicons, ok = pcall(require, 'nvim-web-devicons')
+        if not ok then
+            return ''
+        end
+
+        -- TODO: this doesn't work for ruby files??
+        local icon, _ = require('nvim-web-devicons').get_icon(vim.fn.expand('%:t'), vim.bo.filetype)
+        return string.format('%s', icon) .. ' '
+    end,
     function()
         -- filetype
         return #vim.bo.filetype == 0 and '' or string.format('[%s]', vim.bo.filetype)
@@ -749,9 +778,9 @@ vim.keymap.set('n', '<c-q>l', function()
     vim.cmd('lopen')
 end)
 
-vim.keymap.set('n', '<leader>tf', '<cmd>TestFile<cr>')
-vim.keymap.set('n', '<leader>tn', '<cmd>TestNearest<cr>')
-vim.keymap.set('n', '<leader>tl', '<cmd>TestLast<cr>')
+vim.keymap.set('n', '<c-t><c-f>', '<cmd>TestFile<cr>')
+vim.keymap.set('n', '<c-t><c-n>', '<cmd>TestNearest<cr>')
+vim.keymap.set('n', '<c-t><c-l>', '<cmd>TestLast<cr>')
 vim.keymap.set('n', '<leader>m', '<cmd>mksession!<cr>')
 vim.keymap.set('n', '<leader>e', ':e %%', { remap = true })
 
@@ -800,6 +829,9 @@ end)
 vim.keymap.set('n', '<c-w>q', function()
     vim.cmd('cclose')
 end)
+
+vim.keymap.set('n', 'g;', '<cmd>norm! g;zz<cr>')
+vim.keymap.set('n', 'g,', '<cmd>norm! g,zz<cr>')
 
 vim.keymap.set('i', 'jk', '<esc>')
 vim.keymap.set('i', 'kj', '<esc>')

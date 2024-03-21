@@ -108,3 +108,17 @@ runtime
 versioned
 unless/!
 labels/!
+tcp
+approvers
+LastAppliedAnnotation
+unless
+keda
+NewScaledObject
+apiVersion
+metadata
+namespace
+v1alpha1
+ScaledObject
+GCS
+ReplicaSetNamespace
+finalizers
