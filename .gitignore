@@ -26,3 +26,6 @@ gh/
 zsh/.zsh_sessions
 github-copilot/
 gtk-2.0/
+dlv/
+schemas/
+temporalio/
