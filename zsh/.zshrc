@@ -185,7 +185,6 @@ function - {
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
-export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$XDG_CONFIG_HOME/bin"
 export PATH="$PATH:/usr/local/bin"
 export PATH=$HOME/.cargo/bin/:$PATH
@@ -199,6 +198,7 @@ export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
 export PATH=$HOME/src/github.com/Shopify/runtime-gem/dev_exe:$PATH
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH="$PATH:$HOME/bin"
 
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
@@ -262,9 +262,9 @@ if [[ -f /opt/dev/dev.sh ]];then
     fi
     command -v kubectl-short-aliases &> /dev/null && kubectl-short-aliases
 
-    function list_clusters {
-        k config view -o jsonpath='{.contexts}' | jq -Rc 'fromjson? | .[].name' | sed -En 's/"((apps|tierstaging)-.*)"/\1/p'
-    }
+    # function list_clusters {
+    #     k config view -o jsonpath='{.contexts}' | jq -Rc 'fromjson? | .[].name' | sed -En 's/"((apps|tierstaging)-.*)"/\1/p'
+    # }
 
     # The next line updates PATH for the Google Cloud SDK.
     if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
@@ -275,17 +275,10 @@ if [[ -f /opt/dev/dev.sh ]];then
     [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# # Load the kubectl completion code for zsh[1] into the current shell
-# source <(/opt/homebrew/bin/kubectl completion zsh)
-# # Set the kubectl completion code for zsh[1] to autoload on startup
-# /opt/homebrew/bin/kubectl completion zsh > "${fpath[1]}/_kubectl"
+if [[ -x /opt/homebrew/bin/kubectl ]]; then
+    source <(/opt/homebrew/bin/kubectl completion zsh)
+fi
 
-# export PATH="$GOPATH/src/k8s.io/kubernetes/third_party/etcd:${PATH}"
-# GNUBINS="$(find `brew --prefix`/opt -type d -follow -name gnubin -print)"
-#
-# for bindir in ${GNUBINS[@]}
-# do
-#   export PATH=$bindir:$PATH
-# done
-#
-# export PATH
+if [[ -x $HOME/bin/kubectl-pi ]]; then
+    source <($HOME/bin/kubectl-pi completion zsh)
+fi
