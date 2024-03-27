@@ -1,0 +1,5 @@
+apiVersion: kubectlpi.io/v1
+kind: KubectlPiConfig
+mine:
+  - kind: application
+    name: rrethy-test-keda
