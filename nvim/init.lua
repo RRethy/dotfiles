@@ -701,25 +701,13 @@ vim.keymap.set('n', 'yow', function()
 end)
 
 vim.keymap.set('n', 'yon', function()
-    if vim.wo.number then
-        vim.wo.number = false
-    else
-        vim.wo.number = true
-    end
+    vim.wo.number = not vim.wo.number
 end)
 vim.keymap.set('n', 'yor', function()
-    if vim.wo.relativenumber then
-        vim.wo.relativenumber = false
-    else
-        vim.wo.relativenumber = true
-    end
+    vim.wo.relativenumber = not vim.wo.relativenumber
 end)
 vim.keymap.set('n', 'yoc', function()
-    if vim.wo.cursorcolumn then
-        vim.wo.cursorcolumn = false
-    else
-        vim.wo.cursorcolumn = true
-    end
+    vim.wo.cursorline = not vim.wo.cursorline
 end)
 vim.keymap.set('n', 'yos', function()
     if vim.wo.spell then
