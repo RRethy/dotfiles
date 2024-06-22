@@ -9,6 +9,13 @@ local telescope_actions = require('telescope.actions')
 
 -- vim.loader.enable()
 
+-- TODO: look into this stuff
+-- vim.snippet
+-- vim.lsp.codelens.refresh()
+-- inlay hints
+-- vim.lsp.buf.typehierarchy()
+-- fold-foldtext
+
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
 
@@ -29,13 +36,13 @@ local function watch_file(fname, cb, time)
         File_watchers[fname] = nil
     end
 
-    File_watchers[fname] = vim.loop.new_fs_poll()
+    File_watchers[fname] = vim.uv.new_fs_poll()
     File_watchers[fname]:start(fname, time, vim.schedule_wrap(cb))
 end
 
 watch_file(current_file, function()
     dofile(current_file)
-    vim.notify('Reloaded ' .. current_file, vim.lsp.log_levels.INFO)
+    vim.notify('Reloaded ' .. current_file, vim.log.levels.INFO)
 end, 500)
 
 -- this files holds a single line describing my terminal and Neovim colorscheme. e.g. base16-schemer-dark
@@ -46,7 +53,7 @@ end
 local function notify_colorscheme_changes(name)
     Colorscheme_counter = Colorscheme_counter + 1
     vim.fn.writefile({ name }, base16_theme_fname)
-    vim.loop.spawn('kitty', {
+    vim.uv.spawn('kitty', {
         args = {
             '@',
             'set-colors',
@@ -63,7 +70,7 @@ watch_file(base16_theme_fname, function()
     else
         local colorscheme = vim.fn.readfile(base16_theme_fname)[1]
         vim.cmd('colorscheme ' .. colorscheme)
-        vim.notify('colorscheme: ' .. colorscheme, vim.lsp.log_levels.INFO)
+        vim.notify('colorscheme: ' .. colorscheme, vim.log.levels.INFO)
     end
 end, 500)
 vim.keymap.set('n', '<leader>c', function()
@@ -164,13 +171,6 @@ require("ibl").setup({
         show_end = false,
     },
 })
--- require('indent_blankline').setup({
---     show_current_context = true,
---     indent_blankline_char = '│',
---     indent_blankline_filetype = { 'rust', 'go', 'lua', 'json', 'ruby', 'yaml' },
---     indent_blankline_use_treesitter = true,
--- })
-require('Comment').setup()
 -- require("lsp-inlayhints").setup()
 require('mason').setup({
     ui = {
@@ -204,31 +204,18 @@ require('gitsigns').setup({
 local function on_attach(client, bufnr)
     vim.keymap.set(
         'n',
-        ']d',
-        function() vim.diagnostic.goto_next({ float = { border = 'single' } }) end,
-        { buffer = true }
-    )
-    vim.keymap.set(
-        'n',
-        '[d',
-        function() vim.diagnostic.goto_prev({ float = { border = 'single' } }) end,
-        { buffer = true }
-    )
-    vim.keymap.set(
-        'n',
-        '\\d',
+        '<c-w><c-d>',
         function() vim.diagnostic.open_float({ border = 'single' }) end,
         { buffer = true }
     )
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = true })
-    vim.keymap.set('n', '<c-]>', vim.lsp.buf.definition, { buffer = true })
-    vim.keymap.set('n', 'gd', vim.lsp.buf.type_definition, { buffer = true })
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = true })
+    vim.keymap.set('n', '<c-]>', function() vim.lsp.buf.definition({ loclist = true }) end, { buffer = true })
+    vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
+    vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
     vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = true })
     vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, { buffer = true })
     -- vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = true })
-    vim.keymap.set('n', 'gu', vim.lsp.buf.references, { buffer = true })
+    vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
+    vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
     vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, { buffer = true })
     vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, { buffer = true })
     if client and client.supports_method('textDocument/formatting') then
@@ -360,27 +347,29 @@ local function location_handler(_, result, ctx, _, config)
     end
     local client = vim.lsp.get_client_by_id(ctx.client_id)
 
-    if vim.tbl_islist(result) then
-        vim.lsp.util.jump_to_location(result[1], client.offset_encoding)
+    if client ~= nil then
+        if vim.islist(result) then
+            vim.lsp.util.jump_to_location(result[1], client.offset_encoding)
 
-        if #result > 1 then
-            config = config or {}
-            if config.loclist then
-                vim.fn.setloclist(0, {}, ' ', {
-                    title = 'LSP locations',
-                    items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
-                })
-                vim.cmd('botright lopen')
-            else
-                vim.fn.setqflist({}, ' ', {
-                    title = 'LSP locations',
-                    items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
-                })
-                vim.cmd('botright copen')
+            if #result > 1 then
+                config = config or {}
+                if config.loclist then
+                    vim.fn.setloclist(0, {}, ' ', {
+                        title = 'LSP locations',
+                        items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
+                    })
+                    vim.cmd('botright lopen')
+                else
+                    vim.fn.setqflist({}, ' ', {
+                        title = 'LSP locations',
+                        items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
+                    })
+                    vim.cmd('botright copen')
+                end
             end
+        else
+            vim.lsp.util.jump_to_location(result, client.offset_encoding)
         end
-    else
-        vim.lsp.util.jump_to_location(result, client.offset_encoding)
     end
 end
 
@@ -398,8 +387,8 @@ vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler,
 vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, { loclist = true })
 
 vim.opt.foldmethod                              = 'expr'
-vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
-vim.opt.foldenable                              = false
+-- vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
+-- vim.opt.foldenable                              = false
 treesitter.setup {
     highlight = {
         enable = true,
@@ -409,15 +398,6 @@ treesitter.setup {
         enable = true,
     },
     textobjects = {
-        select = {
-            enable = true,
-            lookahead = true,
-            keymaps = {
-                ["ia"] = "@parameter.inner",
-                ["aa"] = "@parameter.outer",
-            },
-            include_surrounding_whitespace = true,
-        },
         move = {
             enable = true,
             goto_next_start = {
@@ -437,7 +417,7 @@ treesitter.setup {
         keymaps = {
             ['.'] = 'textsubjects-smart',
             [';'] = 'textsubjects-container-outer',
-            ['i;'] = { 'textsubjects-container-inner', desc = "Select inside containers (classes, functions, etc.)" },
+            ['i;'] = 'textsubjects-container-inner',
         },
     },
 }
@@ -532,7 +512,7 @@ vim.opt.lazyredraw = true
 vim.opt.grepprg = 'rg --smart-case --vimgrep $*'
 vim.opt.grepformat = '%f:%l:%c:%m'
 vim.opt.cpoptions:append('>')
--- vim.opt.completeopt = 'menu'
+-- vim.opt.completeopt = 'menu,popup'
 vim.opt.hlsearch = true
 vim.opt.pumblend = 10
 -- vim.opt.signcolumn = 'number'
@@ -548,9 +528,10 @@ vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
 vim.opt.laststatus = 3
+-- vim.opt.guicursor:append('n-v-c:blinkon500-blinkoff500')
 local function lsp_diagnostic_count(name, icon)
     return function()
-        if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+        if vim.tbl_isempty(vim.lsp.get_clients({ bufnr = 0 })) then
             return ''
         else
             local count = #vim.diagnostic.get(0, { severity = name })
@@ -656,6 +637,9 @@ end)
 on_ft('toml', function()
     vim.bo.commentstring = '# %s'
 end)
+-- on_ft('help', function()
+--     vim.opt.conceallevel = 0
+-- end)
 vim.api.nvim_create_autocmd('BufNewFile', {
     group = init_lua_augroup,
     pattern = { 'tex' },
@@ -712,28 +696,28 @@ end)
 vim.keymap.set('n', 'yos', function()
     if vim.wo.spell then
         vim.wo.spell = false
-        vim.notify("'spell'", vim.lsp.log_levels.ERROR)
+        vim.notify("'spell'", vim.log.levels.ERROR)
     else
         vim.wo.spell = true
-        vim.notify("'spell'", vim.lsp.log_levels.INFO)
+        vim.notify("'spell'", vim.log.levels.INFO)
     end
 end)
 vim.keymap.set('n', 'yob', function()
     if vim.wo.scrollbind then
         vim.wo.scrollbind = false
-        vim.notify("'scrollbind'", vim.lsp.log_levels.ERROR)
+        vim.notify("'scrollbind'", vim.log.levels.ERROR)
     else
         vim.wo.scrollbind = true
-        vim.notify("'scrollbind'", vim.lsp.log_levels.INFO)
+        vim.notify("'scrollbind'", vim.log.levels.INFO)
     end
 end)
 vim.keymap.set('n', 'yoh', function()
     if vim.o.hlsearch then
         vim.o.hlsearch = false
-        vim.notify("'hlsearch'", vim.lsp.log_levels.ERROR)
+        vim.notify("'hlsearch'", vim.log.levels.ERROR)
     else
         vim.o.hlsearch = true
-        vim.notify("'hlsearch'", vim.lsp.log_levels.INFO)
+        vim.notify("'hlsearch'", vim.log.levels.INFO)
     end
 end)
 
@@ -852,12 +836,10 @@ vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
 
 vim.keymap.set('n', 'gr', function()
     local lsp_support = false
-    if vim.lsp.for_each_buffer_client then
-        vim.lsp.for_each_buffer_client(0, function(client)
-            if client and client.supports_method('textDocument/rename') then
-                lsp_support = true
-            end
-        end)
+    for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+        if client and client.supports_method('textDocument/rename') then
+            lsp_support = true
+        end
     end
     if lsp_support then
         vim.lsp.buf.rename()
@@ -884,3 +866,7 @@ vim.g.tex_flavor = 'latex'
 vim.g['test#strategy'] = 'neovim'
 vim.g.loaded_ruby_provider = false
 vim.g.vimsyn_embed = 'l'
+
+-- vim.api.nvim_create_user_command('GH', function()
+--     vim.api.nvim_open_win(-1, true, {})
+-- end, { bang = true })

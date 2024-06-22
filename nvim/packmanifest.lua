@@ -14,7 +14,6 @@ use { 'justinmk/vim-dirvish' }
 use { 'kyazdani42/nvim-web-devicons' }
 use { 'lukas-reineke/indent-blankline.nvim' }
 use { 'neovim/nvim-lspconfig' }
-use { 'numToStr/Comment.nvim' }
 use { 'nvim-lua/plenary.nvim' }
 use { 'nvim-lua/popup.nvim' }
 use { 'nvim-telescope/telescope-fzf-native.nvim' }

@@ -183,7 +183,7 @@ function - {
 }
 
 export GOPATH="$HOME/go"
-export GOBIN="$GOPATH/bin"
+# export GOBIN="$GOPATH/bin"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export PATH="$PATH:$XDG_CONFIG_HOME/bin"
 export PATH="$PATH:/usr/local/bin"
@@ -215,6 +215,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 alias src="source ~/.config/zsh/.zshrc"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
+alias tf="terraform"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 # alias python="python3"
 alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
