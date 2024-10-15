@@ -15,6 +15,7 @@ local telescope_actions = require('telescope.actions')
 -- inlay hints
 -- vim.lsp.buf.typehierarchy()
 -- fold-foldtext
+-- TODO: update statusline post write/format
 
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
@@ -179,10 +180,14 @@ require('mason').setup({
 })
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'lua_ls',
+        -- 'golangci_lint_ls',
         'gopls',
-        'sorbet',
+        'lua_ls',
+        'lua_ls',
         'rust_analyzer',
+        'solargraph',
+        'sorbet',
+        'texlab',
     },
 })
 require('mini.completion').setup({
@@ -275,6 +280,7 @@ lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
     },
 }))
 lspconfig.texlab.setup(default_lsp_config)
+-- lspconfig.golangci_lint_ls.setup(default_lsp_config)
 lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
         gopls = {
@@ -282,6 +288,7 @@ lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
                 unusedparams = true,
             },
             staticcheck = true,
+            ['local'] = 'github.com/Shopify/kubectl-pi',
             gofumpt = true,
             hints = {
                 assignVariableTypes = true,
@@ -386,9 +393,10 @@ vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler,
 vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, { loclist = true })
 vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, { loclist = true })
 
-vim.opt.foldmethod                              = 'expr'
+-- vim.opt.foldmethod                              = 'expr'
 -- vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
--- vim.opt.foldenable                              = false
+-- vim.opt.foldenable = false
+-- vim.opt.foldtext                                = 'v:lua.vim.treesitter.foldtext()'
 treesitter.setup {
     highlight = {
         enable = true,
@@ -401,10 +409,10 @@ treesitter.setup {
         move = {
             enable = true,
             goto_next_start = {
-                [']m'] = '@function.outer',
+                [']]'] = '@function.outer',
             },
             goto_previous_start = {
-                ['[m'] = '@function.outer',
+                ['[['] = '@function.outer',
             },
         },
     },
@@ -637,6 +645,9 @@ end)
 on_ft('toml', function()
     vim.bo.commentstring = '# %s'
 end)
+on_ft('Makefile', function()
+    vim.bo.expandtab = false
+end)
 -- on_ft('help', function()
 --     vim.opt.conceallevel = 0
 -- end)
@@ -795,13 +806,9 @@ vim.keymap.set('n', '<c-l>', '<c-w>l')
 vim.keymap.set('n', '<c-k>', '<c-w>k')
 vim.keymap.set('n', '<c-j>', '<c-w>j')
 vim.keymap.set('n', '<c-h>', '<c-w>h')
-vim.keymap.set('n', '<c-w>l', function()
-    vim.cmd('lclose')
-end)
-vim.keymap.set('n', '<c-w>q', function()
-    vim.cmd('cclose')
-end)
-
+vim.keymap.set('n', '<c-w>l', function() vim.cmd('lclose') end)
+vim.keymap.set('n', '<c-w>q', function() vim.cmd('cclose') end)
+vim.keymap.set('n', '<c-bs>', function() vim.cmd('b term') end)
 vim.keymap.set('n', 'g;', '<cmd>norm! g;zz<cr>')
 vim.keymap.set('n', 'g,', '<cmd>norm! g,zz<cr>')
 

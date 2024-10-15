@@ -215,6 +215,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 alias src="source ~/.config/zsh/.zshrc"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
+alias g="git"
 alias tf="terraform"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 # alias python="python3"
