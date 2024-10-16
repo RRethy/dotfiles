@@ -37,7 +37,7 @@ local function watch_file(fname, cb, time)
         File_watchers[fname] = nil
     end
 
-    File_watchers[fname] = vim.uv.new_fs_poll()
+    File_watchers[fname] = vim.loop.new_fs_poll()
     File_watchers[fname]:start(fname, time, vim.schedule_wrap(cb))
 end
 
@@ -54,7 +54,7 @@ end
 local function notify_colorscheme_changes(name)
     Colorscheme_counter = Colorscheme_counter + 1
     vim.fn.writefile({ name }, base16_theme_fname)
-    vim.uv.spawn('kitty', {
+    vim.loop.spawn('kitty', {
         args = {
             '@',
             'set-colors',
@@ -539,15 +539,11 @@ vim.opt.laststatus = 3
 -- vim.opt.guicursor:append('n-v-c:blinkon500-blinkoff500')
 local function lsp_diagnostic_count(name, icon)
     return function()
-        if vim.tbl_isempty(vim.lsp.get_clients({ bufnr = 0 })) then
-            return ''
-        else
-            local count = #vim.diagnostic.get(0, { severity = name })
-            if count > 0 then
-                return string.format(' %s %d ', icon, count)
-            end
-            return ''
+        local count = #vim.diagnostic.get(0, { severity = name })
+        if count > 0 then
+            return string.format(' %s %d ', icon, count)
         end
+        return ''
     end
 end
 
