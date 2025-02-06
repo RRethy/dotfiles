@@ -185,7 +185,7 @@ require('mason-lspconfig').setup({
         'lua_ls',
         'lua_ls',
         'rust_analyzer',
-        'solargraph',
+        -- 'solargraph',
         'sorbet',
         'texlab',
     },
