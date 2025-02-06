@@ -273,9 +273,8 @@ if [[ -f /opt/dev/dev.sh ]];then
 
     # The next line enables shell command completion for gcloud.
     if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
-
-    [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 if [[ -x /opt/homebrew/bin/kubectl ]]; then
     source <(/opt/homebrew/bin/kubectl completion zsh)
