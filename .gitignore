@@ -29,3 +29,5 @@ gtk-2.0/
 dlv/
 schemas/
 temporalio/
+graphite/
+uv/

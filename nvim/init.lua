@@ -835,7 +835,7 @@ vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<C
 
 vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
 
-vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
+-- vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
 
 vim.keymap.set('n', 'gr', function()
     local lsp_support = false
