@@ -153,15 +153,6 @@ require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
-require('illuminate').configure({
-    large_file_cutoff = 10000,
-    -- large_file_overrides = {
-    --     providers = {
-    --         'lsp',
-    --         'regex',
-    --     },
-    -- }
-})
 require 'treesitter-context'.setup({
     enable = true,
 })
