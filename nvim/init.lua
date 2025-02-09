@@ -153,6 +153,21 @@ require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
+-- require('nvim-treesitter-textsubjects').configure({
+--     prev_selection = ',',
+--     keymaps = {
+--         ['.'] = 'textsubjects-smart',
+--         [';'] = 'textsubjects-container-outer',
+--         ['i;'] = 'textsubjects-container-inner',
+--     },
+-- })
+-- require('illuminate').configure({
+--     providers = {
+--         'lsp',
+--         'treesitter',
+--         'regex',
+--     },
+-- })
 require 'treesitter-context'.setup({
     enable = true,
 })
@@ -405,18 +420,6 @@ treesitter.setup {
             goto_previous_start = {
                 ['[['] = '@function.outer',
             },
-        },
-    },
-    endwise = {
-        enable = true,
-    },
-    textsubjects = {
-        enable = true,
-        prev_selection = ',',
-        keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
         },
     },
 }
