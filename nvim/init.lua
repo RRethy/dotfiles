@@ -16,6 +16,7 @@ local telescope_actions = require('telescope.actions')
 -- vim.lsp.buf.typehierarchy()
 -- fold-foldtext
 -- TODO: update statusline post write/format
+-- TODO: gd
 
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
