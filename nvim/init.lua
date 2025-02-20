@@ -17,6 +17,7 @@ local telescope_actions = require('telescope.actions')
 -- fold-foldtext
 -- TODO: update statusline post write/format
 -- TODO: gd
+-- statuscolumn
 
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
@@ -550,7 +551,7 @@ vim.opt.winbar = hotline.format {
     vim.fn.bufnr,
     ' ',
     function()
-        local devicons, ok = pcall(require, 'nvim-web-devicons')
+        local _, ok = pcall(require, 'nvim-web-devicons')
         if not ok then
             return ''
         end
