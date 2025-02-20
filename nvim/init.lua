@@ -18,6 +18,7 @@ local telescope_actions = require('telescope.actions')
 -- TODO: update statusline post write/format
 -- TODO: gd
 -- statuscolumn
+-- loc list for all lsp stuff
 
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
