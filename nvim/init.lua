@@ -817,6 +817,8 @@ vim.keymap.set('i', 'kJ', '<esc>')
 
 vim.keymap.set('i', '<c-a>', '<esc>gI')
 vim.keymap.set('i', '<c-e>', '<esc>A')
+vim.keymap.set('c', '<c-a>', '<home>')
+vim.keymap.set('c', '<c-e>', '<end>')
 
 vim.keymap.set('o', 'A', '<cmd>normal! ggVG<cr>')
 
@@ -824,8 +826,6 @@ vim.keymap.set('v', '<c-g>', '"*y')
 vim.keymap.set('v', 'gn', ':normal! ')
 
 vim.keymap.set('c', '%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', { expr = true })
-vim.keymap.set('c', '<c-a>', '<home>')
-vim.keymap.set('c', '<c-e>', '<end>')
 -- vim.keymap.set('c', '<c-k>', '<>') TODO get this delete from cursor to end of line
 vim.keymap.set('c', 'qq', '"q!"', { expr = true })
 vim.keymap.set('c', '<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', { expr = true })
