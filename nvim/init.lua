@@ -781,8 +781,18 @@ vim.keymap.set('n', ']b', '<cmd>bnext<cr>')
 vim.keymap.set('n', '[B', '<cmd>bfirst<cr>')
 vim.keymap.set('n', ']B', '<cmd>blast<cr>')
 
-vim.keymap.set('n', '<up>', '<cmd>lprevious<cr>')
-vim.keymap.set('n', '<down>', '<cmd>lnext<cr>')
+vim.keymap.set('n', '<up>', function()
+    local ok, _ = pcall(vim.cmd, 'lprevious')
+    if ok then
+        pcall(vim.cmd, 'norm! zz')
+    end
+end)
+vim.keymap.set('n', '<down>', function()
+    local ok, _ = pcall(vim.cmd, 'lnext')
+    if ok then
+        pcall(vim.cmd, 'norm! zz')
+    end
+end)
 vim.keymap.set('n', '[L', '<cmd>lfirst<cr>')
 vim.keymap.set('n', ']L', '<cmd>llast<cr>')
 
