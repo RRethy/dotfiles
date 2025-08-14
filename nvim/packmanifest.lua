@@ -1,5 +1,5 @@
 vim.cmd('packadd! cfilter')
-use { 'RRethy/diffview.nvim' }
+use { 'sindrets/diffview.nvim' }
 use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
@@ -38,7 +38,6 @@ use { 'williamboman/mason.nvim' }
 use { 'williamboman/mason-lspconfig.nvim' }
 use { 'dstein64/vim-startuptime' }
 use { 'nvim-treesitter/nvim-treesitter-context' }
-use { 'simrat39/symbols-outline.nvim' }
 use { 'github/copilot.vim' }
 use { 'onsails/lspkind.nvim' }
 use { 'echasnovski/mini.nvim' }

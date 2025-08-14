@@ -152,7 +152,6 @@ notify.setup({
 })
 
 -- plugins
-require('symbols-outline').setup()
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
