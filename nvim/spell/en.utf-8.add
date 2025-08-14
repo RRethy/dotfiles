@@ -158,3 +158,10 @@ cpu
 http
 infrastructure
 APIService
+Kustomization
+bool
+OpenAI
+Config
+deployable
+untyped
+MCP

@@ -4,7 +4,6 @@ use { 'RRethy/nvim-align' }
 use { 'RRethy/nvim-base16' }
 use { 'RRethy/nvim-hotline' }
 use { 'RRethy/nvim-treesitter-endwise' }
-use { 'RRethy/nvim-treesitter-textsubjects' }
 use { 'RRethy/vim-eunuch' }
 use { 'RRethy/vim-lacklustertab' }
 use { 'RRethy/vim-tranquille' }
@@ -23,12 +22,12 @@ use { 'nvim-telescope/telescope.nvim' }
 use { 'nvim-treesitter/nvim-treesitter' }
 use { 'nvim-treesitter/nvim-treesitter-refactor' }
 use { 'nvim-treesitter/nvim-treesitter-textobjects' }
-use { 'nvim-treesitter/playground' }
+-- use { 'nvim-treesitter/playground' }
 use { 'rcarriga/nvim-notify' } -- bug with quickfix line
 use { 'romainl/vim-cool' }
 use { 'tpope/vim-abolish' }
 use { 'tpope/vim-fugitive' }
-use { 'tpope/vim-projectionist' }
+-- use { 'tpope/vim-projectionist' }
 use { 'tpope/vim-repeat' }
 use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
@@ -45,3 +44,5 @@ use { 'onsails/lspkind.nvim' }
 use { 'echasnovski/mini.nvim' }
 use { 'lvimuser/lsp-inlayhints.nvim' }
 use { 'lewis6991/gitsigns.nvim' }
+-- use { 'kevinhwang91/nvim-ufo' }
+-- use { 'kevinhwang91/promise-async' }

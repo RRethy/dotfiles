@@ -45,6 +45,14 @@ system_env() {
 }
 # PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(kube_ps1) $(__git_ps1 "%s") '
 export PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
+
+# Right prompt showing Kubernetes context/namespace
+kube_prompt() {
+    if command -v kubectl-x &> /dev/null; then
+        kubectl-x cur --prompt 2>/dev/null || echo ""
+    fi
+}
+export RPROMPT='%F{yellow}$(kube_prompt)%f'
 precmd() {
     # print -rP "$(kube_ps1)"
 
@@ -187,6 +195,7 @@ export GOPATH="$HOME/go"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
 export PATH="$PATH:$XDG_CONFIG_HOME/bin"
 export PATH="$PATH:/usr/local/bin"
+export PATH="$PATH:~/.claude/local"
 export PATH=$HOME/.cargo/bin/:$PATH
 export PATH=$HOME/.config/bin/:$PATH
 export PATH=/usr/local/opt/openssl/bin:$PATH
@@ -213,6 +222,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 [[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 alias src="source ~/.config/zsh/.zshrc"
+alias c="claude --dangerously-skip-permissions"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias g="git"
@@ -280,6 +290,12 @@ if [[ -x /opt/homebrew/bin/kubectl ]]; then
     source <(/opt/homebrew/bin/kubectl completion zsh)
 fi
 
-if [[ -x $HOME/bin/kubectl-pi ]]; then
-    source <($HOME/bin/kubectl-pi completion zsh)
+if [[ -x /usr/local/bin/kubectl-pi ]]; then
+    source <(/usr/local/bin/kubectl-pi completion zsh)
 fi
+
+if [[ -x /usr/local/bin/kubectl-x ]]; then
+    source <(/usr/local/bin/kubectl-x completion zsh)
+fi
+
+alias claude="/Users/adamregasz-rethy/.claude/local/claude"

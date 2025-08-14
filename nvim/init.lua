@@ -1,7 +1,7 @@
 require('rrethy.backpack').setup()
 
 local current_file = string.sub(debug.getinfo(1).source, 2)
-local treesitter = require('nvim-treesitter.configs')
+-- local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
 local lspconfig = require('lspconfig')
 local telescope = require('telescope')
@@ -166,9 +166,9 @@ require('diffview').setup({
 -- })
 -- require('illuminate').configure({
 --     providers = {
---         'lsp',
---         'treesitter',
---         'regex',
+--         -- 'lsp',
+--         -- 'treesitter',
+--         -- 'regex',
 --     },
 -- })
 require 'treesitter-context'.setup({
@@ -317,13 +317,13 @@ lspconfig.sorbet.setup(default_lsp_config)
 lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
     settings = {
         Lua = {
-            format = {
-                enable = true,
-                defaultConfig = {
-                    indent_style = "space",
-                    indent_size = "4",
-                },
-            },
+            -- format = {
+            --     enable = true,
+            --     defaultConfig = {
+            --         indent_style = "space",
+            --         indent_size = "4",
+            --     },
+            -- },
             runtime = {
                 version = 'LuaJIT',
                 path = vim.split(package.path, ";"),
@@ -407,26 +407,26 @@ vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler,
 -- vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
 -- vim.opt.foldenable = false
 -- vim.opt.foldtext                                = 'v:lua.vim.treesitter.foldtext()'
-treesitter.setup {
-    highlight = {
-        enable = true,
-        disable = { 'python' }
-    },
-    playground = {
-        enable = true,
-    },
-    textobjects = {
-        move = {
-            enable = true,
-            goto_next_start = {
-                [']]'] = '@function.outer',
-            },
-            goto_previous_start = {
-                ['[['] = '@function.outer',
-            },
-        },
-    },
-}
+-- treesitter.setup {
+--     highlight = {
+--         enable = true,
+--         disable = { 'python' }
+--     },
+--     playground = {
+--         enable = true,
+--     },
+--     textobjects = {
+--         move = {
+--             enable = true,
+--             goto_next_start = {
+--                 [']]'] = '@function.outer',
+--             },
+--             goto_previous_start = {
+--                 ['[['] = '@function.outer',
+--             },
+--         },
+--     },
+-- }
 
 telescope.setup {
     extensions = {
@@ -486,7 +486,7 @@ if vim.fn.has('vim_starting') then
     vim.opt.foldlevel = 999
 end
 vim.opt.fillchars = 'diff: '
-vim.opt.foldmethod = 'expr'
+-- vim.opt.foldmethod = 'expr'
 vim.opt.inccommand = 'nosplit'
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -527,13 +527,16 @@ vim.opt.dictionary:append('/usr/share/dict/words')
 vim.opt.diffopt:append('hiddenoff')
 vim.opt.showtabline = 1
 vim.opt.timeoutlen = 250
-vim.opt.ttimeoutlen = -1
+-- vim.opt.ttimeoutlen = -1
 vim.opt.equalalways = true
 vim.opt.foldnestmax = 4
 vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
 vim.opt.laststatus = 3
+vim.opt.autoread = true
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
 -- vim.opt.guicursor:append('n-v-c:blinkon500-blinkoff500')
 local function lsp_diagnostic_count(name, icon)
     return function()
@@ -658,7 +661,7 @@ vim.api.nvim_create_autocmd('BufRead', {
 vim.api.nvim_create_autocmd('TextYankPost', {
     group = init_lua_augroup,
     callback = function()
-        vim.highlight.on_yank({ timeout = 250 })
+        vim.hl.on_yank({ timeout = 250 })
     end,
 })
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -860,7 +863,7 @@ vim.keymap.set('n', 'gr', function()
 end)
 
 vim.cmd('command! WS write|source %')
-vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
+-- vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
 
 vim.g.qf_disable_statusline = true

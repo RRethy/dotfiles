@@ -11,3 +11,4 @@ cscope.out
 .todo.md
 .tagrity_config.yml
 .git_worktrees/
+.claude/settings.local.json
