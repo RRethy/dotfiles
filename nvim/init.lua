@@ -8,9 +8,7 @@ local telescope_actions = require('telescope.actions')
 
 vim.loader.enable()
 -- vim.snippet
--- vim.lsp.codelens.refresh()
 -- inlay hints
--- vim.lsp.buf.typehierarchy()
 -- TODO: update statusline post write/format
 -- TODO: gd
 -- statuscolumn
@@ -502,6 +500,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set('n', 'grp', function() vim.lsp.buf.typehierarchy('supertypes') end, { buffer = true })
         if client:supports_method('textDocument/completion') then
             vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+        end
+        if client:supports_method('textDocument/inlayHint') then
+            vim.lsp.inlay_hint.enable(false, { bufnr = args.buf })
+            vim.keymap.set('n', 'yoi', function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
+            end, { buffer = true })
         end
         if not client:supports_method('textDocument/willSaveWaitUntil')
             and client:supports_method('textDocument/formatting') then
