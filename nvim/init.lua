@@ -715,7 +715,7 @@ vim.keymap.set('n', 'gr', function()
 end)
 
 vim.cmd('command! WS write|source %')
--- vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
+vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
 vim.cmd('command! Yankfname let @* = expand("%")')
 
 vim.g.qf_disable_statusline = true
@@ -730,7 +730,3 @@ vim.g.vimtex_compiler_latexmk = {
 }
 vim.g.loaded_ruby_provider = false
 vim.g.vimsyn_embed = 'l'
-
--- vim.api.nvim_create_user_command('GH', function()
---     vim.api.nvim_open_win(-1, true, {})
--- end, { bang = true })
