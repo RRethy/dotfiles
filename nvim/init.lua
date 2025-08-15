@@ -190,6 +190,13 @@ vim.lsp.enable({
     'sorbet',
 })
 vim.lsp.config('gopls', {
+    capabilities = {
+        workspace = {
+            didChangeWatchedFiles = {
+                dynamicRegistration = false,
+            }
+        }
+    },
     settings = {
         gopls = {
             analyses = {
