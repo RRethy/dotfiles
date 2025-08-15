@@ -9,8 +9,6 @@ local telescope_actions = require('telescope.actions')
 vim.loader.enable()
 -- vim.snippet
 -- inlay hints
--- TODO: update statusline post write/format
--- TODO: gd
 -- statuscolumn
 -- loc list for all lsp stuff
 
@@ -483,6 +481,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     group = init_lua_augroup,
     callback = function()
         vim.hl.on_yank({ timeout = 250 })
+    end,
+})
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+    group = init_lua_augroup,
+    callback = function()
+        vim.cmd('redrawstatus')
     end,
 })
 vim.api.nvim_create_autocmd("LspAttach", {
