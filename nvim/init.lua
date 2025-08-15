@@ -489,15 +489,37 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = init_lua_augroup,
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
         vim.keymap.set('n', '<c-w><c-d>', vim.diagnostic.open_float, { buffer = true })
-        vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
-        vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
-        vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
-        vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
-        vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
-        vim.keymap.set('n', 'gO', function() vim.lsp.buf.document_symbol({ loclist = true }) end, { buffer = true })
-        vim.keymap.set('n', 'grc', function() vim.lsp.buf.typehierarchy('subtypes') end, { buffer = true })
-        vim.keymap.set('n', 'grp', function() vim.lsp.buf.typehierarchy('supertypes') end, { buffer = true })
+
+        if client:supports_method('textDocument/typeDefinition') then
+            vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/declaration') then
+            vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/rename') then
+            vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/implementation') then
+            vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/references') then
+            vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/documentSymbol') then
+            vim.keymap.set('n', 'gO', function() vim.lsp.buf.document_symbol({ loclist = true }) end, { buffer = true })
+        end
+
+        if client:supports_method('textDocument/prepareTypeHierarchy') then
+            vim.keymap.set('n', 'grc', function() vim.lsp.buf.typehierarchy('subtypes') end, { buffer = true })
+            vim.keymap.set('n', 'grp', function() vim.lsp.buf.typehierarchy('supertypes') end, { buffer = true })
+        end
         if client:supports_method('textDocument/completion') then
             vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
         end
@@ -688,19 +710,9 @@ vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<C
 
 vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
 
--- vim.keymap.set('n', 'gr', function()
---     local lsp_support = false
---     for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
---         if client and client.supports_method('textDocument/rename') then
---             lsp_support = true
---         end
---     end
---     if lsp_support then
---         vim.lsp.buf.rename()
---     else
---         require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
---     end
--- end)
+vim.keymap.set('n', 'gr', function()
+    require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
+end)
 
 vim.cmd('command! WS write|source %')
 -- vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
