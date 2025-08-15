@@ -6,13 +6,11 @@ local hotline = require('hotline')
 local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
 
--- vim.loader.enable()
--- TODO: look into this stuff
+vim.loader.enable()
 -- vim.snippet
 -- vim.lsp.codelens.refresh()
 -- inlay hints
 -- vim.lsp.buf.typehierarchy()
--- fold-foldtext
 -- TODO: update statusline post write/format
 -- TODO: gd
 -- statuscolumn
@@ -351,7 +349,7 @@ vim.opt.showtabline = 1
 vim.opt.timeoutlen = 250
 -- vim.opt.ttimeoutlen = -1
 vim.opt.equalalways = true
-vim.opt.foldnestmax = 4
+-- vim.opt.foldnestmax = 4
 vim.opt.breakindent = true
 vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
@@ -500,18 +498,20 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
         vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
         vim.keymap.set('n', 'gO', function() vim.lsp.buf.document_symbol({ loclist = true }) end, { buffer = true })
+        vim.keymap.set('n', 'grc', function() vim.lsp.buf.typehierarchy('subtypes') end, { buffer = true })
+        vim.keymap.set('n', 'grp', function() vim.lsp.buf.typehierarchy('supertypes') end, { buffer = true })
         if client:supports_method('textDocument/completion') then
-          vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
         end
         if not client:supports_method('textDocument/willSaveWaitUntil')
             and client:supports_method('textDocument/formatting') then
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            group = vim.api.nvim_create_augroup(init_lua_augroup, { clear=false }),
-            buffer = args.buf,
-            callback = function()
-              vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
-            end,
-          })
+            vim.api.nvim_create_autocmd('BufWritePre', {
+                group = vim.api.nvim_create_augroup(init_lua_augroup, { clear = false }),
+                buffer = args.buf,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
+                end,
+            })
         end
     end,
 })
