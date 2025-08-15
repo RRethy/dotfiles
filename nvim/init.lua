@@ -7,10 +7,6 @@ local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
 
 vim.loader.enable()
--- vim.snippet
--- inlay hints
--- statuscolumn
--- loc list for all lsp stuff
 
 vim.g.mapleader = ' '
 vim.opt.termguicolors = true
