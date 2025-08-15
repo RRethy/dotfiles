@@ -27,7 +27,7 @@ use { 'rcarriga/nvim-notify' } -- bug with quickfix line
 use { 'romainl/vim-cool' }
 use { 'tpope/vim-abolish' }
 use { 'tpope/vim-fugitive' }
--- use { 'tpope/vim-projectionist' }
+use { 'tpope/vim-projectionist' }
 use { 'tpope/vim-repeat' }
 use { 'tpope/vim-rhubarb' }
 use { 'tpope/vim-surround' }
@@ -35,7 +35,7 @@ use { 'tpope/vim-sleuth' }
 use { 'vim-test/vim-test' }
 use { 'wsdjeg/vim-fetch' }
 use { 'williamboman/mason.nvim' }
-use { 'williamboman/mason-lspconfig.nvim' }
+-- use { 'williamboman/mason-lspconfig.nvim' }
 use { 'dstein64/vim-startuptime' }
 use { 'nvim-treesitter/nvim-treesitter-context' }
 use { 'github/copilot.vim' }

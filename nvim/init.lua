@@ -1,14 +1,12 @@
 require('rrethy.backpack').setup()
 
 local current_file = string.sub(debug.getinfo(1).source, 2)
--- local treesitter = require('nvim-treesitter.configs')
+local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
-local lspconfig = require('lspconfig')
 local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
 
 -- vim.loader.enable()
-
 -- TODO: look into this stuff
 -- vim.snippet
 -- vim.lsp.codelens.refresh()
@@ -40,7 +38,7 @@ local function watch_file(fname, cb, time)
         File_watchers[fname] = nil
     end
 
-    File_watchers[fname] = vim.loop.new_fs_poll()
+    File_watchers[fname] = vim.uv.new_fs_poll()
     File_watchers[fname]:start(fname, time, vim.schedule_wrap(cb))
 end
 
@@ -57,7 +55,7 @@ end
 local function notify_colorscheme_changes(name)
     Colorscheme_counter = Colorscheme_counter + 1
     vim.fn.writefile({ name }, base16_theme_fname)
-    vim.loop.spawn('kitty', {
+    vim.uv.spawn('kitty', {
         args = {
             '@',
             'set-colors',
@@ -105,27 +103,37 @@ vim.keymap.set('n', '<leader>c', function()
     }):find()
 end)
 vim.cmd('colorscheme ' .. vim.fn.readfile(base16_theme_fname)[1])
-vim.cmd('hi DiffChange       guibg=NONE    guifg=NONE gui=NONE')
-vim.cmd('hi DiffText         guibg=#342e3c guifg=NONE gui=NONE')
-vim.cmd('hi DiffAdded        guibg=#2e3c34 guifg=NONE gui=NONE')
-vim.cmd('hi DiffAdd          guibg=#2c3732 guifg=NONE gui=NONE')
-vim.cmd('hi DiffDeleteAsAdd  guibg=#2c3732 guifg=NONE gui=NONE')
-vim.cmd('hi DiffDelete       guibg=#3e2f32 guifg=NONE gui=NONE')
-vim.cmd('hi DiffAddAsDelete  guibg=#3e2f32 guifg=NONE gui=NONE')
-vim.cmd('hi DiffTextAdd      guibg=#3e543f guifg=NONE gui=NONE')
-vim.cmd('hi DiffTextDelete   guibg=#693d3c guifg=NONE gui=NONE')
-vim.cmd('hi DiffChangeAdd    guibg=#2c3732 guifg=NONE gui=NONE')
-vim.cmd('hi DiffChangeDelete guibg=#3e2f32 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffChange       guibg=NONE    guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffText         guibg=#342e3c guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffAdded        guibg=#2e3c34 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffAdd          guibg=#2c3732 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffDeleteAsAdd  guibg=#2c3732 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffDelete       guibg=#3e2f32 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffAddAsDelete  guibg=#3e2f32 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffTextAdd      guibg=#3e543f guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffTextDelete   guibg=#693d3c guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffChangeAdd    guibg=#2c3732 guifg=NONE gui=NONE')
+-- vim.cmd('hi DiffChangeDelete guibg=#3e2f32 guifg=NONE gui=NONE')
 
 local ERROR_ICON = ''
 local WARN_ICON = ''
 local INFO_ICON = ''
 local HINT_ICON = ''
-vim.cmd(string.format('sign define DiagnosticSignError text=%s texthl=DiagnosticSignError linehl= numhl=', ERROR_ICON))
-vim.cmd(string.format('sign define DiagnosticSignWarn  text=%s texthl=DiagnosticSignWarn  linehl= numhl=', WARN_ICON))
-vim.cmd(string.format('sign define DiagnosticSignInfo  text=%s texthl=DiagnosticSignInfo  linehl= numhl=', INFO_ICON))
-vim.cmd(string.format('sign define DiagnosticSignHint  text=%s texthl=DiagnosticSignHint  linehl= numhl=', HINT_ICON))
 vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = ERROR_ICON,
+            [vim.diagnostic.severity.WARN] = WARN_ICON,
+            [vim.diagnostic.severity.INFO] = INFO_ICON,
+            [vim.diagnostic.severity.HINT] = HINT_ICON,
+        },
+        texthl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+        },
+    },
     virtual_text = {
         prefix = '',
         format = function(diagnostic)
@@ -135,6 +143,11 @@ vim.diagnostic.config({
                 or diagnostic.severity == vim.diagnostic.severity.HINT and HINT_ICON
             return string.format("%s %s", icon, diagnostic.message)
         end,
+    },
+    handlers = {
+        loclist = {
+            open = true,
+        },
     },
 })
 
@@ -151,25 +164,9 @@ notify.setup({
     }
 })
 
--- plugins
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
--- require('nvim-treesitter-textsubjects').configure({
---     prev_selection = ',',
---     keymaps = {
---         ['.'] = 'textsubjects-smart',
---         [';'] = 'textsubjects-container-outer',
---         ['i;'] = 'textsubjects-container-inner',
---     },
--- })
--- require('illuminate').configure({
---     providers = {
---         -- 'lsp',
---         -- 'treesitter',
---         -- 'regex',
---     },
--- })
 require 'treesitter-context'.setup({
     enable = true,
     max_lines = 4
@@ -181,123 +178,24 @@ require("ibl").setup({
         show_end = false,
     },
 })
--- require("lsp-inlayhints").setup()
-require('mason').setup({
-    ui = {
-        border = 'single',
-    },
-})
-require('mason-lspconfig').setup({
-    ensure_installed = {
-        -- 'golangci_lint_ls',
-        'gopls',
-        'lua_ls',
-        'lua_ls',
-        'rust_analyzer',
-        -- 'solargraph',
-        'sorbet',
-        'texlab',
-    },
-})
-require('mini.completion').setup({
-    delay = { completion = 10 ^ 7, info = 400, signature = 10 ^ 7 },
-    window = {
-        info = { height = 25, width = 80, border = 'single' },
-        signature = { height = 25, width = 80, border = 'single' },
-    },
-    mappings = {
-        force_twostep = '<c-x><c-o>',
-        force_fallback = '',
-    },
-})
+require('mason').setup()
 require('gitsigns').setup({
     signcolumn = true,
     numhl = false,
 })
 
-local function on_attach(client, bufnr)
-    vim.keymap.set(
-        'n',
-        '<c-w><c-d>',
-        function() vim.diagnostic.open_float({ border = 'single' }) end,
-        { buffer = true }
-    )
-    vim.keymap.set('n', '<c-]>', function() vim.lsp.buf.definition({ loclist = true }) end, { buffer = true })
-    vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
-    vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
-    vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, { buffer = true })
-    vim.keymap.set('i', '<c-s>', vim.lsp.buf.signature_help, { buffer = true })
-    -- vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
-    vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
-    vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
-    vim.keymap.set('n', '<leader>s', require('telescope.builtin').lsp_dynamic_workspace_symbols, { buffer = true })
-    vim.keymap.set('n', '<leader>d', require('telescope.builtin').lsp_document_symbols, { buffer = true })
-    if client and client.supports_method('textDocument/formatting') then
-        local format_enabled = true
-        vim.api.nvim_buf_create_user_command(bufnr, 'FormatDisable', function() format_enabled = false end, {})
-        vim.api.nvim_buf_create_user_command(bufnr, 'FormatEnable', function() format_enabled = true end, {})
-        local lsp_augroup = 'rrethy_lsp_augroup' .. bufnr
-        vim.api.nvim_create_augroup(lsp_augroup, { clear = true })
-        vim.api.nvim_create_autocmd('BufWritePre', {
-            group = lsp_augroup,
-            buffer = bufnr,
-            callback = function()
-                if vim.bo.filetype == 'go' then
-                    local params = vim.lsp.util.make_range_params()
-                    params.context = { only = { "source.organizeImports" } }
-                    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
-                    for cid, res in pairs(result or {}) do
-                        for _, r in pairs(res.result or {}) do
-                            if r.edit then
-                                local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
-                                vim.lsp.util.apply_workspace_edit(r.edit, enc)
-                            end
-                        end
-                    end
-                end
-
-                if format_enabled then
-                    print('formatting', format_enabled)
-                    vim.lsp.buf.format({ async = false, timeout_ms = 3000 })
-                end
-            end,
-        })
-    end
-    require("lsp-inlayhints").on_attach(client, bufnr)
-    -- vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
-end
-
-local default_lsp_config = {
-    on_attach = on_attach,
-    flags = {
-        debounce_text_changes = 500,
-    },
-}
-lspconfig.rust_analyzer.setup(vim.tbl_extend("force", default_lsp_config, {
-    settings = {
-        ["rust-analyzer"] = {
-            cargo = {
-                loadOutDirsFromCheck = true
-            },
-            procMacro = {
-                enable = true
-            },
-            checkOnSave = {
-                command = "clippy"
-            },
-        },
-    },
-}))
-lspconfig.texlab.setup(default_lsp_config)
--- lspconfig.golangci_lint_ls.setup(default_lsp_config)
-lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
+vim.lsp.enable({
+    'gopls',
+    'lua_ls',
+    'sorbet',
+})
+vim.lsp.config('gopls', {
     settings = {
         gopls = {
             analyses = {
                 unusedparams = true,
             },
             staticcheck = true,
-            ['local'] = 'github.com/Shopify/kubectl-pi',
             gofumpt = true,
             hints = {
                 assignVariableTypes = true,
@@ -310,19 +208,10 @@ lspconfig.gopls.setup(vim.tbl_extend("force", default_lsp_config, {
             },
         },
     },
-}))
-
-lspconfig.sorbet.setup(default_lsp_config)
-lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
+})
+vim.lsp.config('lua_ls', {
     settings = {
         Lua = {
-            -- format = {
-            --     enable = true,
-            --     defaultConfig = {
-            --         indent_style = "space",
-            --         indent_size = "4",
-            --     },
-            -- },
             runtime = {
                 version = 'LuaJIT',
                 path = vim.split(package.path, ";"),
@@ -331,14 +220,6 @@ lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
                 enable = true,
                 globals = {
                     'vim',
-                    'describe',
-                    'it',
-                    'before_each',
-                    'after_each',
-                    'teardown',
-                    'pending',
-                    'bit',
-                    'use',
                 },
             },
             workspace = {
@@ -349,83 +230,18 @@ lspconfig.lua_ls.setup(vim.tbl_extend("force", default_lsp_config, {
             },
         },
     },
-}))
-lspconfig.dartls.setup(vim.tbl_extend("force", default_lsp_config, {
-    init_options = {
-        closingLabels = true,
-    },
-}))
-
-local function location_handler(_, result, ctx, _, config)
-    if result == nil or vim.tbl_isempty(result) then
-        local _ = require('vim.lsp.log').info() and require('vim.lsp.log').info(ctx.method, 'No location found')
-        return nil
-    end
-    local client = vim.lsp.get_client_by_id(ctx.client_id)
-
-    if client ~= nil then
-        if vim.islist(result) then
-            vim.lsp.util.jump_to_location(result[1], client.offset_encoding)
-
-            if #result > 1 then
-                config = config or {}
-                if config.loclist then
-                    vim.fn.setloclist(0, {}, ' ', {
-                        title = 'LSP locations',
-                        items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
-                    })
-                    vim.cmd('botright lopen')
-                else
-                    vim.fn.setqflist({}, ' ', {
-                        title = 'LSP locations',
-                        items = vim.lsp.util.locations_to_items(result, client.offset_encoding)
-                    })
-                    vim.cmd('botright copen')
-                end
-            end
-        else
-            vim.lsp.util.jump_to_location(result, client.offset_encoding)
-        end
-    end
-end
-
-vim.lsp.handlers['textDocument/signatureHelp']  = vim.lsp.with(vim.lsp.handlers['signature_help'], {
-    border = 'single',
-    close_events = { 'CursorMoved', 'BufHidden' },
 })
-vim.lsp.handlers['textDocument/hover']          = vim.lsp.with(vim.lsp.handlers['hover'], { border = 'single' })
-vim.lsp.handlers['textDocument/references']     = vim.lsp.with(vim.lsp.handlers['textDocument/references'], {
-    loclist = true
-})
-vim.lsp.handlers['textDocument/typeDefinition'] = vim.lsp.with(location_handler, { loclist = true })
-vim.lsp.handlers['textDocument/declaration']    = vim.lsp.with(location_handler, { loclist = true })
-vim.lsp.handlers['textDocument/definition']     = vim.lsp.with(location_handler, { loclist = true })
-vim.lsp.handlers['textDocument/implementation'] = vim.lsp.with(location_handler, { loclist = true })
 
 -- vim.opt.foldmethod                              = 'expr'
 -- vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
 -- vim.opt.foldenable = false
 -- vim.opt.foldtext                                = 'v:lua.vim.treesitter.foldtext()'
--- treesitter.setup {
---     highlight = {
---         enable = true,
---         disable = { 'python' }
---     },
---     playground = {
---         enable = true,
---     },
---     textobjects = {
---         move = {
---             enable = true,
---             goto_next_start = {
---                 [']]'] = '@function.outer',
---             },
---             goto_previous_start = {
---                 ['[['] = '@function.outer',
---             },
---         },
---     },
--- }
+treesitter.setup {
+    highlight = {
+        enable = true,
+        disable = { 'python' }
+    },
+}
 
 telescope.setup {
     extensions = {
@@ -536,6 +352,7 @@ vim.opt.laststatus = 3
 vim.opt.autoread = true
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
+vim.opt.winborder = 'single'
 -- vim.opt.guicursor:append('n-v-c:blinkon500-blinkoff500')
 local function lsp_diagnostic_count(name, icon)
     return function()
@@ -595,13 +412,13 @@ vim.opt.statusline = hotline.format {
     lsp_diagnostic_count(vim.diagnostic.severity.ERROR, ERROR_ICON),
     -- User2 hlgroup
     '%2*',
-    lsp_diagnostic_count(vim.diagnostic.severity.Warning, WARN_ICON),
+    lsp_diagnostic_count(vim.diagnostic.severity.WARN, WARN_ICON),
     -- User3 hlgroup
     '%3*',
-    lsp_diagnostic_count(vim.diagnostic.severity.Information, INFO_ICON),
+    lsp_diagnostic_count(vim.diagnostic.severity.INFO, INFO_ICON),
     -- User4 hlgroup
     '%4*',
-    lsp_diagnostic_count(vim.diagnostic.severity.Hint, HINT_ICON),
+    lsp_diagnostic_count(vim.diagnostic.severity.HINT, HINT_ICON),
     -- Reset hlgroup
     '%0*',
     -- Right alignment
@@ -666,14 +483,27 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd("LspAttach", {
     group = init_lua_augroup,
     callback = function(args)
-        if not (args.data and args.data.client_id) then
-            return
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+        vim.keymap.set('n', '<c-w><c-d>', vim.diagnostic.open_float, { buffer = true })
+        vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
+        vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
+        vim.keymap.set('n', 'gr', vim.lsp.buf.rename, { buffer = true })
+        vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
+        vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
+        vim.keymap.set('n', 'gO', function() vim.lsp.buf.document_symbol({ loclist = true }) end, { buffer = true })
+        if client:supports_method('textDocument/completion') then
+          vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
         end
-
-        require("lsp-inlayhints").on_attach(
-            vim.lsp.get_client_by_id(args.data.client_id),
-            args.buf
-        )
+        if not client:supports_method('textDocument/willSaveWaitUntil')
+            and client:supports_method('textDocument/formatting') then
+          vim.api.nvim_create_autocmd('BufWritePre', {
+            group = vim.api.nvim_create_augroup(init_lua_augroup, { clear=false }),
+            buffer = args.buf,
+            callback = function()
+              vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
+            end,
+          })
+        end
     end,
 })
 
@@ -845,21 +675,19 @@ vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<C
 
 vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
 
--- vim.keymap.set('t', 'gt', '"<c-\\><c-n>gt"', { expr = true, remap = true })
-
-vim.keymap.set('n', 'gr', function()
-    local lsp_support = false
-    for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
-        if client and client.supports_method('textDocument/rename') then
-            lsp_support = true
-        end
-    end
-    if lsp_support then
-        vim.lsp.buf.rename()
-    else
-        require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
-    end
-end)
+-- vim.keymap.set('n', 'gr', function()
+--     local lsp_support = false
+--     for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+--         if client and client.supports_method('textDocument/rename') then
+--             lsp_support = true
+--         end
+--     end
+--     if lsp_support then
+--         vim.lsp.buf.rename()
+--     else
+--         require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
+--     end
+-- end)
 
 vim.cmd('command! WS write|source %')
 -- vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')
@@ -875,8 +703,6 @@ vim.g.vimtex_quickfix_mode = true
 vim.g.vimtex_compiler_latexmk = {
     options = { '-pdf', '-shell-escape', '-verbose', '-file-line-error', '-synctex=1', '-interaction=nonstopmode' }
 }
-vim.g.tex_flavor = 'latex'
-vim.g['test#strategy'] = 'neovim'
 vim.g.loaded_ruby_provider = false
 vim.g.vimsyn_embed = 'l'
 
