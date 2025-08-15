@@ -357,8 +357,10 @@ vim.opt.sessionoptions:remove('folds')
 vim.opt.modelines = 0
 vim.opt.laststatus = 3
 vim.opt.autoread = true
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.lsp.foldexpr()"
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldtext = ''
+vim.opt.fillchars:append('fold: ')
 vim.opt.winborder = 'single'
 -- vim.opt.guicursor:append('n-v-c:blinkon500-blinkoff500')
 local function lsp_diagnostic_count(name, icon)
