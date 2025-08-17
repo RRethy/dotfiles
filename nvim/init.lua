@@ -191,9 +191,25 @@ vim.lsp.config('gopls', {
         gopls = {
             analyses = {
                 unusedparams = true,
+                unusedvariable = true,
+                shadow = true,
             },
             staticcheck = true,
             gofumpt = true,
+            completeUnimported = true,
+            usePlaceholders = true,
+            matcher = "Fuzzy",
+            codelenses = {
+                gc_details = true,
+                generate = true,
+                regenerate_cgo = true,
+                test = true,
+                tidy = true,
+                upgrade_dependency = true,
+                vendor = true,
+            },
+            semanticTokens = true,
+            hoverKind = "FullDocumentation",
             hints = {
                 assignVariableTypes = true,
                 compositeLiteralFields = true,
@@ -229,10 +245,6 @@ vim.lsp.config('lua_ls', {
     },
 })
 
--- vim.opt.foldmethod                              = 'expr'
--- vim.opt.foldexpr                                = 'nvim_treesitter#foldexpr()'
--- vim.opt.foldenable = false
--- vim.opt.foldtext                                = 'v:lua.vim.treesitter.foldtext()'
 treesitter.setup {
     highlight = {
         enable = true,
@@ -330,7 +342,7 @@ vim.opt.lazyredraw = true
 vim.opt.grepprg = 'rg --smart-case --vimgrep $*'
 vim.opt.grepformat = '%f:%l:%c:%m'
 vim.opt.cpoptions:append('>')
--- vim.opt.completeopt = 'menu,popup'
+vim.opt.completeopt = 'fuzzy,menuone,noselect,popup'
 vim.opt.hlsearch = true
 vim.opt.pumblend = 10
 -- vim.opt.signcolumn = 'number'
@@ -460,9 +472,6 @@ end)
 on_ft('Makefile', function()
     vim.bo.expandtab = false
 end)
--- on_ft('help', function()
---     vim.opt.conceallevel = 0
--- end)
 vim.api.nvim_create_autocmd('BufNewFile', {
     group = init_lua_augroup,
     pattern = { 'tex' },
@@ -490,14 +499,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 
-        vim.keymap.set('n', '<c-w><c-d>', vim.diagnostic.open_float, { buffer = true })
-
         if client:supports_method('textDocument/typeDefinition') then
-            vim.keymap.set('n', 'gd', function() vim.lsp.buf.type_definition({ loclist = true }) end, { buffer = true })
+            vim.keymap.set('n', 'gd', function()
+                vim.lsp.buf.type_definition({ loclist = true })
+            end, { buffer = true })
         end
 
         if client:supports_method('textDocument/declaration') then
-            vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration({ loclist = true }) end, { buffer = true })
+            vim.keymap.set('n', 'gD', function()
+                vim.lsp.buf.declaration({ loclist = true })
+            end, { buffer = true })
         end
 
         if client:supports_method('textDocument/rename') then
@@ -505,36 +516,61 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         if client:supports_method('textDocument/implementation') then
-            vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation({ loclist = true }) end, { buffer = true })
+            vim.keymap.set('n', 'gi', function()
+                vim.lsp.buf.implementation({ loclist = true })
+            end, { buffer = true })
         end
 
         if client:supports_method('textDocument/references') then
-            vim.keymap.set('n', 'gu', function() vim.lsp.buf.references(nil, { loclist = true }) end, { buffer = true })
+            vim.keymap.set('n', 'gu', function()
+                vim.lsp.buf.references(nil, { loclist = true })
+            end, { buffer = true })
         end
 
         if client:supports_method('textDocument/documentSymbol') then
-            vim.keymap.set('n', 'gO', function() vim.lsp.buf.document_symbol({ loclist = true }) end, { buffer = true })
+            vim.keymap.set('n', 'gO', function()
+                vim.lsp.buf.document_symbol({ loclist = true })
+            end, { buffer = true })
         end
 
         if client:supports_method('textDocument/prepareTypeHierarchy') then
-            vim.keymap.set('n', 'grc', function() vim.lsp.buf.typehierarchy('subtypes') end, { buffer = true })
-            vim.keymap.set('n', 'grp', function() vim.lsp.buf.typehierarchy('supertypes') end, { buffer = true })
+            vim.keymap.set('n', 'grc', function()
+                vim.lsp.buf.typehierarchy('subtypes')
+            end, { buffer = true })
+            vim.keymap.set('n', 'grp', function()
+                vim.lsp.buf.typehierarchy('supertypes')
+            end, { buffer = true })
         end
+
         if client:supports_method('textDocument/completion') then
             vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
         end
+
+        if client:supports_method('textDocument/signatureHelp') then
+            vim.keymap.set('i', '<c-s>', function()
+                vim.lsp.buf.signature_help({ close_events = { 'InsertLeave' }, })
+            end, { buffer = true })
+        end
+
         if client:supports_method('textDocument/inlayHint') then
             vim.lsp.inlay_hint.enable(false, { bufnr = args.buf })
             vim.keymap.set('n', 'yoi', function()
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
             end, { buffer = true })
         end
-        if not client:supports_method('textDocument/willSaveWaitUntil')
-            and client:supports_method('textDocument/formatting') then
+
+        if client:supports_method('textDocument/formatting') then
             vim.api.nvim_create_autocmd('BufWritePre', {
                 group = vim.api.nvim_create_augroup(init_lua_augroup, { clear = false }),
                 buffer = args.buf,
                 callback = function()
+                    if vim.bo.filetype == 'go' and client.name == 'gopls' then
+                        vim.lsp.buf.code_action({
+                            context = { only = { 'source.organizeImports' } },
+                            apply = true,
+                        })
+                        vim.wait(100)
+                    end
                     vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
                 end,
             })
@@ -680,6 +716,7 @@ vim.keymap.set('n', '<c-h>', '<c-w>h')
 vim.keymap.set('n', '<c-w>l', function() vim.cmd('lclose') end)
 vim.keymap.set('n', '<c-w>q', function() vim.cmd('cclose') end)
 vim.keymap.set('n', '<c-bs>', function() vim.cmd('b term') end)
+vim.keymap.set('n', '<c-w><c-d>', vim.diagnostic.open_float, { buffer = true })
 vim.keymap.set('n', 'g;', '<cmd>norm! g;zz<cr>')
 vim.keymap.set('n', 'g,', '<cmd>norm! g,zz<cr>')
 
@@ -703,7 +740,7 @@ vim.keymap.set('v', '<c-g>', '"*y')
 vim.keymap.set('v', 'gn', ':normal! ')
 
 vim.keymap.set('c', '%%', 'getcmdtype() == ":" ? expand("%:h")."/" : "%%"', { expr = true })
--- vim.keymap.set('c', '<c-k>', '<>') TODO get this delete from cursor to end of line
+vim.keymap.set('c', '<c-k>', '<c-\\>egetcmdline()[:getcmdpos()-2]<cr>')
 vim.keymap.set('c', 'qq', '"q!"', { expr = true })
 vim.keymap.set('c', '<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>/<C-r>/" : "<C-z>"', { expr = true })
 vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', { expr = true })
