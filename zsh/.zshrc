@@ -223,6 +223,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 
 alias src="source ~/.config/zsh/.zshrc"
 alias c="claude --dangerously-skip-permissions"
+alias cc="claude --dangerously-skip-permissions --continue"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
 alias v="nvim"
 alias g="git"
