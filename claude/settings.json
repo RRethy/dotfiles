@@ -5,6 +5,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "input=$(cat); printf \"%s@%s:%s\" \"$(whoami)\" \"$(hostname -s)\" \"$(echo \"$input\" | jq -r '.workspace.current_dir' | sed 's|^/Users/adamregasz-rethy|~|')\""
+    "command": "input=$(cat); current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir'); git_info() { if git rev-parse --git-dir >/dev/null 2>&1; then local branch=$(git branch --show-current 2>/dev/null); if [[ -n \"$branch\" ]]; then printf \" %s\" \"$branch\"; fi; fi; }; kube_info() { if command -v kubectl-x &> /dev/null; then kubectl-x cur --prompt 2>/dev/null || echo \"\"; fi; }; format_dir() { printf \"%s\" \"${1/#$HOME/~}\"; }; printf \"\\033[34m%s\\033[37m%s\" \"$(format_dir \"$current_dir\")\" \"$(git_info)\"; kube_context=$(kube_info); if [[ -n \"$kube_context\" ]]; then printf \" \\033[33m%s\\033[0m\" \"$kube_context\"; fi; printf \"\\033[0m\""
   }
 }
