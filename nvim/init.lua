@@ -333,7 +333,7 @@ vim.opt.ruler = false
 vim.opt.showmatch = true
 vim.opt.matchtime = 5
 vim.opt.spelllang = 'en_ca'
-vim.opt.spell = true
+vim.opt.spell = false
 -- vim.opt.shortmess:append('Ic')
 vim.opt.startofline = false
 vim.opt.backup = true
@@ -543,7 +543,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         if client:supports_method('textDocument/completion') then
-            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
         end
 
         if client:supports_method('textDocument/signatureHelp') then
@@ -564,6 +564,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup(init_lua_augroup, { clear = false }),
                 buffer = args.buf,
                 callback = function()
+                    -- Skip formatting for base16-colorscheme.lua
+                    local filepath = vim.api.nvim_buf_get_name(args.buf)
+                    if filepath:match("nvim%-base16/lua/base16%-colorscheme%.lua$") then
+                        return
+                    end
+
                     if vim.bo.filetype == 'go' and client.name == 'gopls' then
                         vim.lsp.buf.code_action({
                             context = { only = { 'source.organizeImports' } },

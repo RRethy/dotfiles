@@ -190,6 +190,10 @@ function - {
     cd - &> /dev/null
 }
 
+function klocal {
+    export KUBECONFIG=$(kubectl-x kubeconfig copy)
+}
+
 export GOPATH="$HOME/go"
 # export GOBIN="$GOPATH/bin"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -222,6 +226,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 [[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 alias src="source ~/.config/zsh/.zshrc"
+alias klogs='list-running-containers-by-pod | fzf --preview "kubectl logs {1} {2}" --height=100%'
 alias c="claude --dangerously-skip-permissions"
 alias cc="claude --dangerously-skip-permissions --continue"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
