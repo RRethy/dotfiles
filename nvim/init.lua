@@ -183,7 +183,7 @@ vim.lsp.config('gopls', {
     capabilities = {
         workspace = {
             didChangeWatchedFiles = {
-                dynamicRegistration = false,
+                dynamicRegistration = true,
             }
         }
     },
@@ -193,6 +193,7 @@ vim.lsp.config('gopls', {
                 unusedparams = true,
                 unusedvariable = true,
                 shadow = true,
+                ST1000 = false, -- Disable package comment check
             },
             staticcheck = true,
             gofumpt = true,
