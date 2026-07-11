@@ -1,23 +1,14 @@
 [user]
     name = Adam P. Regasz-Rethy
-    email = adam.regaszrethy@shopify.com
-    ; email = adam.regaszrethy@gmail.com
-    ; email = "if [[ $PERSONAL_LAPTOP -eq 1 ]]; then EMAIL='adam.regaszrethy@gmail.com'; else EMAIL='adam.regaszrethy@shopify.com'; fi; $EMAIL"
-[core]
-    editor = nvim
-    excludesfile = ~/.config/git/gitignore_global
+    email = adam.regaszrethy@airbnb.com
 [commit]
     verbose = true
-[push]
-    default = current
-    autoSetupRemote = true
 [pull]
     rebase = true
 [rerere]
     enabled = true
 [merge]
     tool = fugitive
-    ; conflictStyle = diff3
 [mergetool "fugitive"]
     cmd = nvim -f -c "Gdiff" "$MERGED"
 [diff]
@@ -25,8 +16,6 @@
 [difftool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE
     trustExitCode = true
-[feature]
-    manyFiles = true
 [alias]
     default = !git checkout $(git symbolic-ref refs/remotes/origin/HEAD --short | sed -En 's|^.*/||p')
     co = checkout
@@ -44,10 +33,11 @@
     cp = cherry-pick
     cob = !git checkout $(git branch --sort=committerdate | fzf)
     d = diff --cached --diff-algorithm=minimal
-[filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
-    required = true
-[include]
-    path = /Users/adam.regaszrethy/.config/dev/gitconfig
+    dt = "!f() { nvim -c \"Git difftool -y ${1:-HEAD~1}\"; }; f"
+[credential "https://git.musta.ch"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[core]
+	fsmonitor = true
+[feature]
+	manyFiles = true

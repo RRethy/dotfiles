@@ -1516,6 +1516,10 @@
                 {
                     "from": { "key_code": "right_shift" },
                     "to": [{ "key_code": "delete_or_backspace" }]
+                },
+                {
+                    "from": { "key_code": "f5" },
+                    "to": [{ "key_code": "caps_lock" }]
                 }
             ],
             "virtual_hid_keyboard": {

@@ -11,8 +11,8 @@ setopt no_correct
 setopt no_correct_all
 
 HISTFILE=$XDG_DATA_HOME/.zsh_history
-SAVEHIST=5000
-HISTSIZE=5000
+SAVEHIST=10000
+HISTSIZE=10000
 
 # enables completion
 autoload -Uz compinit
@@ -44,7 +44,7 @@ system_env() {
     fi
 }
 # PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(kube_ps1) $(__git_ps1 "%s") '
-export PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d, %Y - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
+export PROMPT='%F{white}$(system_env) %F{magenta}%? %F{cyan}$(date +"%b %d - %r %Z%z") %F{blue}%~%F{white} $(__git_ps1 "%s") '
 
 # Right prompt showing Kubernetes context/namespace
 kube_prompt() {
@@ -54,20 +54,7 @@ kube_prompt() {
 }
 export RPROMPT='%F{yellow}$(kube_prompt)%f'
 precmd() {
-    # print -rP "$(kube_ps1)"
-
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-        if [[ "$PWD" == "$HOME" ]]; then
-            kitty @ set-tab-title "~" 
-        elif [[ "$PWD" == "$HOME"* ]]; then
-            kitty @ set-tab-title "$(pwd | sed -En 's/.*\/([^\/]+)$/\1/p')"
-        else
-            kitty @ set-tab-title "$PWD"
-        fi
-    fi
-    # I used to use this print statement, but it broke due to a security
-    # vulnerability patch
-    # print -Pn "\e]0;%~\a"
+    [[ "$(uname -s)" == "Darwin" ]] && set_kitty_tab_title
 }
 
 # some readline movements
@@ -132,31 +119,55 @@ bindkey $JUMPDIR_KEYBIND fzy_jd
 # cd, that is, change the pwd to $HOME
 eval "alias $(echo $JUMPDIR_KEYBIND|xargs)=cd"
 
+JUMPTASK_KEYBIND='jt '
+function fzy_jt {
+    if [[ ! -z $BUFFER ]]; then
+        BUFFER=$BUFFER$JUMPTASK_KEYBIND
+        zle end-of-line
+        return 0
+    fi
+    local dir=$(find $HOME/repos/work -mindepth 1 -maxdepth 2 -type d | fzy)
+    if [[ -z $dir ]]; then
+        zle reset-prompt
+        return 0
+    fi
+    BUFFER="cd $dir"
+    zle accept-line
+    local ret=$?
+    zle reset-prompt
+    return $ret
+}
+zle -N fzy_jt
+bindkey $JUMPTASK_KEYBIND fzy_jt
+eval "alias $(echo $JUMPTASK_KEYBIND|xargs)=cd"
+
+# TODO: add something to toggle --as compute:cluster-admin
+
 if command -v kitty &> /dev/null ; then
     # set the terminal window's colors based on the current base16 theme
     eval "kitty @ set-colors -c $XDG_CONFIG_HOME/kitty/themes/$(cat $XDG_CONFIG_HOME/.base16_theme).conf"
     # keybinding to change my terminal colors with fzy
-    COLORS_KEYBIND=' c'
-    function fzy_colors {
-        if [[ ! -z $BUFFER ]]; then
-            BUFFER="$BUFFER c"
-            zle end-of-line
-            return 0
-        fi
-        local color=$(gls --color=never $XDG_CONFIG_HOME/kitty/themes/ | grep -v "256"| fzy)
-        if [[ -z $color ]]; then
-            zle reset-prompt
-            return 0
-        fi
-        BUFFER="kitty @ set-colors -c -a $XDG_CONFIG_HOME/kitty/themes/$color"
-        echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
-        zle accept-line
-        local ret=$?
-        zle reset-prompt
-        return $ret
-    }
-    zle -N fzy_colors
-    bindkey ' c' fzy_colors
+    # COLORS_KEYBIND=' c'
+    # function fzy_colors {
+    #     if [[ ! -z $BUFFER ]]; then
+    #         BUFFER="$BUFFER c"
+    #         zle end-of-line
+    #         return 0
+    #     fi
+    #     local color=$(gls --color=never $XDG_CONFIG_HOME/kitty/themes/ | grep -v "256"| fzy)
+    #     if [[ -z $color ]]; then
+    #         zle reset-prompt
+    #         return 0
+    #     fi
+    #     BUFFER="kitty @ set-colors -c -a $XDG_CONFIG_HOME/kitty/themes/$color"
+    #     echo $(echo $color | cut -f 1 -d '.') > $XDG_CONFIG_HOME/.base16_theme
+    #     zle accept-line
+    #     local ret=$?
+    #     zle reset-prompt
+    #     return $ret
+    # }
+    # zle -N fzy_colors
+    # bindkey ' c' fzy_colors
 
     alias showpng="kitty +kitten icat"
     alias ssh="kitty +kitten ssh"
@@ -194,6 +205,11 @@ function klocal {
     export KUBECONFIG=$(kubectl-x kubeconfig copy)
 }
 
+function dataplane {
+    kubectl --context $1 get events -A --field-selector reason=DisruptionBlocked -o json | jq -r '.items[] | select(.involvedObject.kind=="NodeClaim") | "\(.involvedObject.name)\t\(.count)x\t\(.message | capture("PodDisruptionBudget=\\[(?<pdb>[^\\]]+)\\]").pdb)"' | sort -u | column -t 
+    kubectl --context $1 get no -L lifecycle.airbnb.com/chef-branch -L node-role -L node.airbnb.com/initializer-version
+}
+
 export GOPATH="$HOME/go"
 # export GOBIN="$GOPATH/bin"
 export SSH_KEY_PATH="~/.ssh/id_rsa"
@@ -207,12 +223,16 @@ export PATH=$GOPATH/bin/:$PATH
 export PATH=/usr/local/go/bin:$PATH
 export PATH=~/Library/Android/sdk/tools/bin/:$PATH
 export PATH=$XDG_CONFIG_HOME/git/bin:$PATH
-export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
+# export PATH=~/.rbenv/versions/2.7.1/bin:$PATH
 export PATH=$HOME/Library/Python/3.7/bin:$PATH
 export PATH=$HOME/src/github.com/Shopify/runtime-gem/dev_exe:$PATH
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export PATH="$PATH:$HOME/bin"
+export PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+export PATH="$PATH:$HOME/repos/sysops/optica_tools"
 
+# export CLAUDE_CODE_DISABLE_AUTO_MEMORY=1
+export ENABLE_LSP_TOOL=1
 export VISUAL='nvim'
 export LANG=en_US.UTF-8
 export EDITOR='nvim'
@@ -222,17 +242,85 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=dark
 --layout=reverse
 '
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 [[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
+set_kitty_tab_title() {
+    local prefix="$1"
+    local title
+
+    if [[ "$PWD" == "$HOME" ]]; then
+        title="~"
+    elif [[ "$PWD" == "$HOME"* ]]; then
+        local dirname="$(pwd | sed -En 's/.*\/([^\/]+)$/\1/p')"
+        if [ ${#dirname} -gt 17 ]; then
+            dirname="${dirname:0:17}..."
+        fi
+        title="$dirname"
+    else
+        title="$PWD"
+    fi
+
+    if [[ -n "$prefix" ]]; then
+        kitty @ set-tab-title --match id:$KITTY_WINDOW_ID "$prefix $title"
+    else
+        kitty @ set-tab-title --match id:$KITTY_WINDOW_ID "$title"
+    fi
+}
+
+c() {
+    set_kitty_tab_title "(c)"
+    # airchat --no-git-root --no-banner claude -- --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "global.anthropic.claude-opus-4-6-v1[1m]" --effort high --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "global.anthropic.claude-opus-4-6-v1[1m]" --effort max --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --api-mode enterprise --no-git-root --no-banner claude -- --model "opus[1m]" --effort max --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus[1m]" --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus[1m]" --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus[1m]" --effort medium --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus[1m]" --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus" --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "opus (global.anthropic.claude-opus-4-6-v1)" --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "claude-opus-4-6[1m]" --permission-mode acceptEdits --allow-dangerously-skip-permissions "$@"
+    # airchat --api-mode enterprise --no-git-root --no-banner claude -- --model "opus[1m]" --effort xhigh --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --no-git-root --no-banner claude -- --model "global.anthropic.claude-opus-4-6-v1[1m]" --effort xhigh --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --api-mode enterprise --no-git-root --no-banner claude -- --model "opus[1m]" --effort xhigh --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    # airchat --api-mode enterprise --no-git-root --no-banner claude -- --model "opus[1m]" --effort high --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+    airchat --no-git-root --api-mode bedrock --no-banner claude -- --model "global.anthropic.claude-opus-4-6-v1[1m]" --effort xhigh --permission-mode bypassPermissions --allow-dangerously-skip-permissions "$@"
+}
+
+v() {
+    set_kitty_tab_title "(v)"
+    nvim "$@"
+}
+
+create-worktree() {
+    local output=$(ac -- -p "/create-worktree $@ and ONLY print the absolute path to the worktree directory")
+    local worktree_dir=$(echo "$output" | grep -Eo '/[^ ]+/[^ ]+' | tail -1)
+
+    if [[ -n "$worktree_dir" && -d "$worktree_dir" ]]; then
+        echo "Changing to worktree directory: $worktree_dir"
+        cd "$worktree_dir" && c
+    else
+        echo "Failed to extract worktree directory from output"
+        echo "$output"
+        return 1
+    fi
+}
+
+alias e="excalibur"
 alias src="source ~/.config/zsh/.zshrc"
 alias klogs='list-running-containers-by-pod | fzf --preview "kubectl logs {1} {2}" --height=100%'
-alias c="claude --dangerously-skip-permissions"
-alias cc="claude --dangerously-skip-permissions --continue"
+alias i="kubectl"
+# alias kt="/usr/local/bin/k"
+# alias c="claude --dangerously-skip-permissions"
+alias cc="c --continue"
+# alias cc="claude --dangerously-skip-permissions --continue"
 alias esrc="v ~/.config/zsh/.zshrc -c 'cd %:p:h'"
-alias v="nvim"
 alias g="git"
 alias tf="terraform"
+alias t="excalibur"
 alias nrc="v ~/.config/nvim/init.lua -c 'cd ~/.config/nvim' -S"
 # alias python="python3"
 alias pdfcat='gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=-'
@@ -304,4 +392,24 @@ if [[ -x /usr/local/bin/kubectl-x ]]; then
     source <(/usr/local/bin/kubectl-x completion zsh)
 fi
 
-alias claude="/Users/adamregasz-rethy/.claude/local/claude"
+if [[ -x /usr/local/bin/excalibur ]]; then
+    source <(/usr/local/bin/excalibur completion zsh)
+fi
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+unset GEM_HOME && unset GEM_PATH && eval "$(rbenv init -)"
+
+# bun completions
+[ -s "/Users/adam_regaszrethy/.bun/_bun" ] && source "/Users/adam_regaszrethy/.bun/_bun"
+
+# Created by `pipx` on 2026-01-24 00:21:46
+export PATH="$PATH:/Users/adam_regaszrethy/.local/bin"
+
+# opencode
+export PATH=/Users/adam_regaszrethy/.opencode/bin:$PATH

@@ -1,7 +1,48 @@
-require('rrethy.backpack').setup()
+vim.cmd('packadd! cfilter')
+vim.pack.add({
+    'https://github.com/arborist-ts/arborist.nvim',
+    'https://github.com/sindrets/diffview.nvim',
+    'https://github.com/RRethy/nvim-align',
+    'https://github.com/RRethy/nvim-base16',
+    'https://github.com/RRethy/nvim-hotline',
+    'https://github.com/RRethy/vim-eunuch',
+    'https://github.com/RRethy/vim-lacklustertab',
+    'https://github.com/RRethy/vim-tranquille',
+    'https://github.com/RRethy/vim-illuminate',
+    'https://github.com/hashivim/vim-terraform',
+    'https://github.com/justinmk/vim-dirvish',
+    'https://github.com/kyazdani42/nvim-web-devicons',
+    'https://github.com/lukas-reineke/indent-blankline.nvim',
+    'https://github.com/neovim/nvim-lspconfig',
+    'https://github.com/nvim-lua/plenary.nvim',
+    'https://github.com/nvim-lua/popup.nvim',
+    'https://github.com/nvim-telescope/telescope-fzf-native.nvim',
+    'https://github.com/nvim-telescope/telescope-fzy-native.nvim',
+    'https://github.com/nvim-telescope/telescope-symbols.nvim',
+    'https://github.com/nvim-telescope/telescope.nvim',
+    'https://github.com/rcarriga/nvim-notify',
+    'https://github.com/romainl/vim-cool',
+    'https://github.com/tpope/vim-abolish',
+    'https://github.com/tpope/vim-fugitive',
+    'https://github.com/tpope/vim-projectionist',
+    'https://github.com/tpope/vim-repeat',
+    'https://github.com/tpope/vim-rhubarb',
+    'https://github.com/tpope/vim-surround',
+    'https://github.com/tpope/vim-sleuth',
+    'https://github.com/wsdjeg/vim-fetch',
+    'https://github.com/williamboman/mason.nvim',
+    'https://github.com/dstein64/vim-startuptime',
+    'https://github.com/github/copilot.vim',
+    'https://github.com/onsails/lspkind.nvim',
+    'https://github.com/echasnovski/mini.nvim',
+    'https://github.com/lvimuser/lsp-inlayhints.nvim',
+    'https://github.com/lewis6991/gitsigns.nvim',
+})
+require('arborist').setup()
 
+-- require('rrethy.backpack').setup()
+--
 local current_file = string.sub(debug.getinfo(1).source, 2)
-local treesitter = require('nvim-treesitter.configs')
 local hotline = require('hotline')
 local telescope = require('telescope')
 local telescope_actions = require('telescope.actions')
@@ -157,10 +198,6 @@ notify.setup({
 require('diffview').setup({
     enhanced_diff_hl = true,
 })
-require 'treesitter-context'.setup({
-    enable = true,
-    max_lines = 4
-})
 require("ibl").setup({
     indent = { char = "│" },
     scope = {
@@ -173,11 +210,26 @@ require('gitsigns').setup({
     signcolumn = true,
     numhl = false,
 })
-
 vim.lsp.enable({
     'gopls',
-    'lua_ls',
+    'solargraph',
+    'typescript-language-server',
+    'rust-analyzer',
     'sorbet',
+    'lua_ls',
+    'pyright',
+})
+vim.lsp.config('pyright', {
+    before_init = function(_, config)
+        local dir = config.root_dir
+        while dir and dir ~= '/' do
+            if vim.uv.fs_stat(dir .. '/.venv/bin/python') then
+                config.settings.python.pythonPath = dir .. '/.venv/bin/python'
+                return
+            end
+            dir = vim.fs.dirname(dir)
+        end
+    end,
 })
 vim.lsp.config('gopls', {
     capabilities = {
@@ -245,14 +297,6 @@ vim.lsp.config('lua_ls', {
         },
     },
 })
-
-treesitter.setup {
-    highlight = {
-        enable = true,
-        disable = { 'python' }
-    },
-}
-
 telescope.setup {
     extensions = {
         fzy_native = {
@@ -349,7 +393,8 @@ vim.opt.pumblend = 10
 -- vim.opt.signcolumn = 'number'
 vim.opt.signcolumn = 'yes:1'
 vim.opt.dictionary:append('/usr/share/dict/words')
-vim.opt.diffopt:append('hiddenoff')
+-- vim.opt.diffopt:append('hiddenoff')
+vim.opt.diffopt = 'internal,filler,closeoff,algorithm:patience,indent-heuristic,inline:char,linematch:40'
 vim.opt.showtabline = 1
 vim.opt.timeoutlen = 250
 -- vim.opt.ttimeoutlen = -1
@@ -753,10 +798,6 @@ vim.keymap.set('c', '<Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>
 vim.keymap.set('c', '<S-Tab>', 'getcmdtype() == "/" || getcmdtype() == "?" ? "<CR>?<C-r>/" : "<S-Tab>"', { expr = true })
 
 vim.keymap.set('t', '<esc>', '<c-\\><c-n>')
-
-vim.keymap.set('n', 'gr', function()
-    require('nvim-treesitter-refactor.smart_rename').smart_rename(vim.fn.bufnr())
-end)
 
 vim.cmd('command! WS write|source %')
 vim.cmd('command! StripWhitespace %s/\\v\\s+$//g')

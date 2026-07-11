@@ -8,7 +8,7 @@ description: Create PR and branch with changes
    - Verify we're in a git repository
 
 2. **Create descriptive branch**
-   - Generate branch name based on changes (e.g., `feat/add-login`, `fix/header-bug`, `refactor/api-client`)
+   - Generate branch name based on changes (e.g., `arr_feat_add-login`, `arr_fix_header-bug`, `arr_ref_api-client`)
    - Create and switch to new branch: `git checkout -b <branch-name>`
    - If branch creation fails, keep going until a unique name is found
 
@@ -24,6 +24,7 @@ description: Create PR and branch with changes
 
 5. **Create pull request**
    - Check for PR template: `test -f .github/pull_request_template.md || test -f .github/PULL_REQUEST_TEMPLATE.md || test -f docs/pull_request_template.md`
+   - If no PR template the have 2 sections, "## Summary" with a short but concise summary, and "## Test Plan" with 1 or more "- [x] <some test plan>" items.
    - Create PR with: `gh pr create --title "<title>" --body "<description>"`
    - Options:
      - `--draft` if user wants draft PR
